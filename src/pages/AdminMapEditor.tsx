@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import AdminMapEditor from '@/components/AdminMapEditor';
+import AdminLeafletEditor from '@/components/AdminLeafletEditor';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -68,7 +68,7 @@ const AdminMapEditorPage = () => {
     );
   }
 
-  return <AdminMapEditor />;
+  return <AdminLeafletEditor />;
 };
 
 export default AdminMapEditorPage;
