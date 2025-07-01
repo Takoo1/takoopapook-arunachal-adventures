@@ -108,87 +108,89 @@ const LeafletMap = ({
   return (
     <>
       <div ref={mapRef} className="w-full h-full rounded-xl overflow-hidden" />
-      <style jsx>{`
-        .custom-marker {
-          background: transparent !important;
-          border: none !important;
-        }
-        
-        .marker-container {
-          position: relative;
-          width: 24px;
-          height: 24px;
-        }
-        
-        .marker-pulse {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          background: rgba(16, 185, 129, 0.4);
-          animation: pulse 2s infinite;
-        }
-        
-        .marker-container.selected .marker-pulse {
-          background: rgba(251, 146, 60, 0.4);
-        }
-        
-        .marker-dot {
-          position: absolute;
-          top: 4px;
-          left: 4px;
-          width: 16px;
-          height: 16px;
-          border-radius: 50%;
-          background: #10b981;
-          border: 2px solid white;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-        
-        .marker-container.selected .marker-dot {
-          background: #ea580c;
-          transform: scale(1.2);
-        }
-        
-        .marker-tooltip {
-          position: absolute;
-          top: -35px;
-          left: 50%;
-          transform: translateX(-50%);
-          background: #1f2937;
-          color: white;
-          padding: 4px 8px;
-          border-radius: 4px;
-          font-size: 10px;
-          white-space: nowrap;
-          z-index: 1000;
-        }
-        
-        .marker-tooltip::after {
-          content: '';
-          position: absolute;
-          top: 100%;
-          left: 50%;
-          transform: translateX(-50%);
-          border: 4px solid transparent;
-          border-top-color: #1f2937;
-        }
-        
-        @keyframes pulse {
-          0% {
-            transform: scale(1);
-            opacity: 1;
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          .custom-marker {
+            background: transparent !important;
+            border: none !important;
           }
-          100% {
-            transform: scale(1.5);
-            opacity: 0;
+          
+          .marker-container {
+            position: relative;
+            width: 24px;
+            height: 24px;
           }
-        }
-      `}</style>
+          
+          .marker-pulse {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.4);
+            animation: pulse 2s infinite;
+          }
+          
+          .marker-container.selected .marker-pulse {
+            background: rgba(251, 146, 60, 0.4);
+          }
+          
+          .marker-dot {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #10b981;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+          }
+          
+          .marker-container.selected .marker-dot {
+            background: #ea580c;
+            transform: scale(1.2);
+          }
+          
+          .marker-tooltip {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
+            z-index: 1000;
+          }
+          
+          .marker-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 4px solid transparent;
+            border-top-color: #1f2937;
+          }
+          
+          @keyframes pulse {
+            0% {
+              transform: scale(1);
+              opacity: 1;
+            }
+            100% {
+              transform: scale(1.5);
+              opacity: 0;
+            }
+          }
+        `
+      }} />
     </>
   );
 };
