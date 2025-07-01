@@ -9,7 +9,75 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      locations: {
+        Row: {
+          bullet_points: string[] | null
+          coordinates_x: number
+          coordinates_y: number
+          created_at: string | null
+          description: string | null
+          id: string
+          images: string[] | null
+          is_active: boolean | null
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          bullet_points?: string[] | null
+          coordinates_x: number
+          coordinates_y: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          images?: string[] | null
+          is_active?: boolean | null
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          bullet_points?: string[] | null
+          coordinates_x?: number
+          coordinates_y?: number
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          images?: string[] | null
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      map_settings: {
+        Row: {
+          center_x: number | null
+          center_y: number | null
+          id: string
+          initial_zoom: number | null
+          max_zoom: number | null
+          min_zoom: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          center_x?: number | null
+          center_y?: number | null
+          id?: string
+          initial_zoom?: number | null
+          max_zoom?: number | null
+          min_zoom?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          center_x?: number | null
+          center_y?: number | null
+          id?: string
+          initial_zoom?: number | null
+          max_zoom?: number | null
+          min_zoom?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
