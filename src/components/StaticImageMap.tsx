@@ -265,15 +265,28 @@ const StaticImageMap = ({
           {/* Location Markers */}
           {locations.filter(loc => loc.is_active).map((location) => {
             const isSelected = selectedLocation?.id === location.id;
-            console.log('Rendering marker for location:', location.name, 'at:', location.coordinates_x, location.coordinates_y);
+            
+            // Ensure coordinates are valid numbers
+            const markerX = Math.round(Number(location.coordinates_x) || 0);
+            const markerY = Math.round(Number(location.coordinates_y) || 0);
+            
+            // Skip rendering if coordinates are invalid
+            if (markerX < 0 || markerX > 2000 || markerY < 0 || markerY > 1200) {
+              console.warn(`Invalid coordinates for location ${location.name}:`, markerX, markerY);
+              return null;
+            }
+            
+            console.log('Rendering marker for location:', location.name, 'at map coordinates:', markerX, markerY);
+            
             return (
               <div
                 key={location.id}
-                className="absolute transform -translate-x-1/2 -translate-y-full pointer-events-auto cursor-pointer"
+                className="absolute transform -translate-x-1/2 -translate-y-full pointer-events-auto cursor-pointer z-20"
                 style={{
-                  left: `${location.coordinates_x}px`,
-                  top: `${location.coordinates_y}px`,
-                  zIndex: 20
+                  left: `${markerX}px`,
+                  top: `${markerY}px`,
+                  // Ensure marker stays on top
+                  zIndex: isSelected ? 25 : 20
                 }}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -282,7 +295,7 @@ const StaticImageMap = ({
                   }
                 }}
               >
-                {/* Marker Pin */}
+                {/* Marker Pin - Fixed size regardless of zoom */}
                 <div className={`relative transition-all duration-300 ${isSelected ? 'scale-125' : 'hover:scale-110'}`}>
                   <div className={`w-8 h-8 rounded-full border-3 border-white shadow-lg flex items-center justify-center ${
                     isSelected ? 'bg-orange-500' : 'bg-emerald-500'
@@ -290,14 +303,14 @@ const StaticImageMap = ({
                     <MapPin className="h-4 w-4 text-white" />
                   </div>
                   
-                  {/* Pulse Animation */}
-                  <div className={`absolute inset-0 rounded-full animate-ping ${
-                    isSelected ? 'bg-orange-400' : 'bg-emerald-400'
-                  } opacity-75`} />
-                  
-                  {/* Location Label */}
+                  {/* Pulse Animation for selected marker */}
                   {isSelected && (
-                    <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-3 py-1 rounded-lg text-sm font-medium whitespace-nowrap">
+                    <div className="absolute inset-0 rounded-full animate-ping bg-orange-400 opacity-75" />
+                  )}
+                  
+                  {/* Location Label for selected marker */}
+                  {isSelected && (
+                    <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-3 py-1 rounded-lg text-sm font-medium whitespace-nowrap z-30">
                       {location.name}
                       <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45" />
                     </div>
