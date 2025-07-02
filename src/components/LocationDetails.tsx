@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Location } from '@/types/database';
 import { ChevronLeft, ChevronRight, MapPin, Camera, Info } from 'lucide-react';
+import PlanButton from './PlanButton';
 
 interface LocationDetailsProps {
   location: Location | null;
@@ -133,7 +134,7 @@ const LocationDetails = ({ location }: LocationDetailsProps) => {
               <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
               <span>Key Highlights</span>
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-3 mb-6">
               {location.bullet_points.map((point, index) => (
                 <li key={index} className="flex items-start space-x-3">
                   <div className="w-2 h-2 bg-emerald-500 rounded-full mt-2 flex-shrink-0" />
@@ -143,6 +144,15 @@ const LocationDetails = ({ location }: LocationDetailsProps) => {
             </ul>
           </div>
         )}
+
+        {/* Plan Button */}
+        <div className="mt-auto">
+          <PlanButton 
+            locationId={location.id} 
+            locationName={location.name}
+            className="w-full"
+          />
+        </div>
       </div>
     </div>
   );

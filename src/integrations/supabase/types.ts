@@ -78,6 +78,38 @@ export type Database = {
         }
         Relationships: []
       }
+      planned_locations: {
+        Row: {
+          id: string
+          location_id: string
+          notes: string | null
+          planned_at: string
+          user_session: string
+        }
+        Insert: {
+          id?: string
+          location_id: string
+          notes?: string | null
+          planned_at?: string
+          user_session: string
+        }
+        Update: {
+          id?: string
+          location_id?: string
+          notes?: string | null
+          planned_at?: string
+          user_session?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "planned_locations_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

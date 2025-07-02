@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
-import { MapPin, Clock, Users, Star, ArrowRight } from 'lucide-react';
+import { MapPin, Clock, Users, Star, ArrowRight, Heart } from 'lucide-react';
+import PlanButton from './PlanButton';
 
 const PackageCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -113,6 +114,13 @@ const PackageCarousel = () => {
                     />
                     <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-md text-white px-3 py-1 rounded-full text-sm font-medium">
                       {pkg.price}
+                    </div>
+                    <div className="absolute top-4 left-4">
+                      <PlanButton 
+                        locationId={pkg.id.toString()} 
+                        locationName={pkg.title}
+                        variant="compact"
+                      />
                     </div>
                     <div className="absolute bottom-4 left-4 flex space-x-1">
                       {pkg.features.map((feature, index) => (

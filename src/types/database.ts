@@ -12,6 +12,14 @@ export interface Location {
   updated_at: string;
 }
 
+export interface PlannedLocation {
+  id: string;
+  location_id: string;
+  user_session: string;
+  planned_at: string;
+  notes?: string;
+}
+
 export interface MapSettings {
   id: string;
   initial_zoom: number;
@@ -34,6 +42,11 @@ export interface Database {
         Row: MapSettings;
         Insert: Omit<MapSettings, 'id' | 'updated_at'>;
         Update: Partial<Omit<MapSettings, 'id' | 'updated_at'>>;
+      };
+      planned_locations: {
+        Row: PlannedLocation;
+        Insert: Omit<PlannedLocation, 'id' | 'planned_at'>;
+        Update: Partial<Omit<PlannedLocation, 'id' | 'planned_at'>>;
       };
     };
   };
