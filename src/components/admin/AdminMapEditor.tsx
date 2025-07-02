@@ -69,7 +69,7 @@ const AdminMapEditor = () => {
   };
 
   const handleSubmitLocation = async (formData: LocationFormData) => {
-    // Ensure coordinates are safe integers
+    // Ensure coordinates are safe integers within bounds
     const safeCoordinates = {
       coordinates_x: Math.max(0, Math.min(2000, Math.round(formData.coordinates_x))),
       coordinates_y: Math.max(0, Math.min(1200, Math.round(formData.coordinates_y)))
@@ -89,7 +89,11 @@ const AdminMapEditor = () => {
     
     try {
       const locationData = {
-        ...formData,
+        name: formData.name.trim(),
+        description: formData.description?.trim() || '',
+        bullet_points: formData.bullet_points.filter(point => point.trim() !== ''),
+        images: formData.images.filter(img => img.trim() !== ''),
+        is_active: formData.is_active,
         ...safeCoordinates
       };
       
@@ -159,7 +163,7 @@ const AdminMapEditor = () => {
 
   const handleSaveViewport = async () => {
     try {
-      // Ensure all values are safe numbers for the database
+      // Ensure all values are safe integers for the database
       const safeViewport = {
         x: Math.max(0, Math.min(2000, Math.round(viewport.x))),
         y: Math.max(0, Math.min(1200, Math.round(viewport.y))),
@@ -170,7 +174,7 @@ const AdminMapEditor = () => {
       const settings = {
         center_x: Math.round(safeViewport.x + safeViewport.width / 2),
         center_y: Math.round(safeViewport.y + safeViewport.height / 2),
-        initial_zoom: Math.min(800 / safeViewport.width, 480 / safeViewport.height),
+        initial_zoom: Math.round((Math.min(800 / safeViewport.width, 480 / safeViewport.height)) * 1000) / 1000,
         min_zoom: mapSettings?.min_zoom || 0.5,
         max_zoom: mapSettings?.max_zoom || 3
       };
