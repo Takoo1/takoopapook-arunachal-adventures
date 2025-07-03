@@ -66,25 +66,10 @@ const StaticImageMap = ({
   }, [isAdminMode]);
 
   const handleWheel = (e: React.WheelEvent) => {
-    if (isViewportMode) return;
-    
-    // Don't use preventDefault here to avoid passive listener issues
-    const delta = e.deltaY > 0 ? -0.1 : 0.1;
-    const newZoom = Math.max(minZoom, Math.min(maxZoom, zoom + delta));
-    
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-      
-      const zoomFactor = newZoom / zoom;
-      setPan(prev => ({
-        x: mouseX - (mouseX - prev.x) * zoomFactor,
-        y: mouseY - (mouseY - prev.y) * zoomFactor
-      }));
-    }
-    
-    setZoom(newZoom);
+    // Disable mouse wheel zooming on desktop to prevent page scroll interference
+    // Only allow zooming via +/- buttons
+    e.preventDefault();
+    return;
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
