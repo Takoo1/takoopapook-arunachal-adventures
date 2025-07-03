@@ -31,10 +31,7 @@ const StaticImageMap = ({
   onViewportChange
 }: StaticImageMapProps) => {
   const [zoom, setZoom] = useState(isAdminMode ? 0.5 : (mapSettings?.initial_zoom || 1));
-  const [pan, setPan] = useState({ 
-    x: isAdminMode ? 0 : (-(mapSettings?.center_x || 1000) * (mapSettings?.initial_zoom || 1) + 400),
-    y: isAdminMode ? 0 : (-(mapSettings?.center_y || 600) * (mapSettings?.initial_zoom || 1) + 300)
-  });
+  const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [isViewportDragging, setIsViewportDragging] = useState(false);
@@ -43,13 +40,16 @@ const StaticImageMap = ({
   const minZoom = isAdminMode ? 0.3 : (mapSettings?.min_zoom || 0.5);
   const maxZoom = isAdminMode ? 2 : (mapSettings?.max_zoom || 3);
 
-  // Initialize admin mode to show full map
+  // Initialize viewport based on mode and settings
   useEffect(() => {
-    if (isAdminMode && containerRef.current) {
-      const containerRect = containerRef.current.getBoundingClientRect();
-      const imageAspectRatio = 2000 / 1200;
-      const containerAspectRatio = containerRect.width / containerRect.height;
-      
+    if (!containerRef.current) return;
+
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const imageAspectRatio = 2000 / 1200;
+    const containerAspectRatio = containerRect.width / containerRect.height;
+    
+    if (isAdminMode) {
+      // Admin mode: show full map to fit container
       let fitZoom;
       if (containerAspectRatio > imageAspectRatio) {
         fitZoom = containerRect.height / 1200;
@@ -62,8 +62,37 @@ const StaticImageMap = ({
         x: (containerRect.width - 2000 * fitZoom) / 2,
         y: (containerRect.height - 1200 * fitZoom) / 2
       });
+    } else if (mapSettings && mapSettings.center_x && mapSettings.center_y) {
+      // User mode: apply viewport settings responsively
+      const centerX = mapSettings.center_x;
+      const centerY = mapSettings.center_y;
+      const initialZoom = mapSettings.initial_zoom || 1;
+      
+      // Calculate responsive zoom based on container size
+      const baseWidth = 800; // Base width for responsive calculation
+      const responsiveZoom = initialZoom * (containerRect.width / baseWidth);
+      const finalZoom = Math.max(minZoom, Math.min(maxZoom, responsiveZoom));
+      
+      // Calculate pan to center the viewport
+      const panX = containerRect.width / 2 - (centerX * finalZoom);
+      const panY = containerRect.height / 2 - (centerY * finalZoom);
+      
+      setZoom(finalZoom);
+      setPan({ x: panX, y: panY });
+    } else {
+      // Default: center the map
+      const defaultZoom = Math.min(
+        containerRect.width / 2000,
+        containerRect.height / 1200
+      );
+      
+      setZoom(defaultZoom);
+      setPan({
+        x: (containerRect.width - 2000 * defaultZoom) / 2,
+        y: (containerRect.height - 1200 * defaultZoom) / 2
+      });
     }
-  }, [isAdminMode]);
+  }, [isAdminMode, mapSettings, minZoom, maxZoom]);
 
   const handleWheel = (e: React.WheelEvent) => {
     // Disable mouse wheel zooming on desktop to prevent page scroll interference

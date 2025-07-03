@@ -171,20 +171,37 @@ const AdminMapEditor = () => {
         height: Math.max(100, Math.min(1200, Math.round(viewport.height)))
       };
       
+      // Calculate center point of the viewport
+      const centerX = Math.round(safeViewport.x + safeViewport.width / 2);
+      const centerY = Math.round(safeViewport.y + safeViewport.height / 2);
+      
+      // Calculate initial zoom based on viewport size
+      // The zoom should fit the viewport area to a standard container size (800x600)
+      const standardWidth = 800;
+      const standardHeight = 600;
+      const zoomX = standardWidth / safeViewport.width;
+      const zoomY = standardHeight / safeViewport.height;
+      const initialZoom = Math.min(zoomX, zoomY);
+      
       const settings = {
-        center_x: Math.round(safeViewport.x + safeViewport.width / 2),
-        center_y: Math.round(safeViewport.y + safeViewport.height / 2),
-        initial_zoom: Math.round((Math.min(800 / safeViewport.width, 480 / safeViewport.height)) * 1000) / 1000,
-        min_zoom: mapSettings?.min_zoom || 0.5,
-        max_zoom: mapSettings?.max_zoom || 3
+        center_x: centerX,
+        center_y: centerY,
+        initial_zoom: Math.round(initialZoom * 1000) / 1000, // Round to 3 decimal places
+        min_zoom: mapSettings?.min_zoom || 0.3,
+        max_zoom: mapSettings?.max_zoom || 4
       };
       
-      console.log('Saving viewport settings:', settings);
+      console.log('Saving viewport settings:', {
+        viewport: safeViewport,
+        center: { x: centerX, y: centerY },
+        zoom: initialZoom,
+        settings
+      });
       
       await updateMapSettings.mutateAsync(settings);
       toast({ 
         title: 'Viewport settings saved!',
-        description: 'Users will now see this area by default.'
+        description: `Users will see this area centered at (${centerX}, ${centerY}) with ${Math.round(initialZoom * 100)}% zoom by default.`
       });
     } catch (error) {
       console.error('Error saving viewport:', error);
