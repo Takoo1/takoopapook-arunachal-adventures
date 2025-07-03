@@ -1,14 +1,25 @@
 
 import { useState } from 'react';
 import { useLocations, useMapSettings } from '@/hooks/useLocations';
-import ArunachalMap from './ArunachalMap';
-import LocationDetails from './LocationDetails';
+import StaticImageMap from './StaticImageMap';
+import OverlayLocationDetails from './OverlayLocationDetails';
 import { Location } from '@/types/database';
 
 const InteractiveMapSection = () => {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const { data: locations = [], isLoading: locationsLoading } = useLocations();
   const { data: mapSettings } = useMapSettings();
+
+  const handleLocationSelect = (location: Location) => {
+    setSelectedLocation(location);
+    setIsDetailsOpen(true);
+  };
+
+  const handleCloseDetails = () => {
+    setIsDetailsOpen(false);
+    setSelectedLocation(null);
+  };
 
   if (locationsLoading) {
     return (
@@ -34,22 +45,22 @@ const InteractiveMapSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
-          {/* Map Container - Top on mobile, Right on desktop */}
-          <div className="order-1 lg:order-2">
-            <div className="bg-white rounded-2xl shadow-xl p-6 h-[500px] lg:h-[600px]">
-              <ArunachalMap
-                locations={locations}
-                selectedLocation={selectedLocation}
-                onLocationSelect={setSelectedLocation}
-                mapSettings={mapSettings}
-              />
-            </div>
-          </div>
-
-          {/* Details Container - Bottom on mobile, Left on desktop */}
-          <div className="order-2 lg:order-1">
-            <LocationDetails location={selectedLocation} />
+        {/* Single Full-Width Map Container */}
+        <div className="max-w-7xl mx-auto">
+          <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden h-[600px] lg:h-[700px]">
+            <StaticImageMap
+              locations={locations}
+              selectedLocation={selectedLocation}
+              onLocationSelect={handleLocationSelect}
+              mapSettings={mapSettings}
+            />
+            
+            {/* Overlay Details */}
+            <OverlayLocationDetails
+              location={selectedLocation}
+              isOpen={isDetailsOpen}
+              onClose={handleCloseDetails}
+            />
           </div>
         </div>
       </div>

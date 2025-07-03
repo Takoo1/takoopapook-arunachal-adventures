@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Location } from '@/types/database';
 import { Plus, Save, X, Image, List, MapPin } from 'lucide-react';
+import FileUploadInput from '@/components/FileUploadInput';
 
 interface LocationFormProps {
   location?: Location | null;
@@ -216,39 +217,13 @@ const LocationForm = ({ location, isEditing, isCreating, coordinates, onSubmit, 
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <Label>Images/Videos (URLs)</Label>
-              <Button type="button" onClick={addImage} variant="outline" size="sm">
-                <Image className="h-4 w-4 mr-1" />
-                Add Media
-              </Button>
-            </div>
-            <div className="space-y-2">
-              {formData.images.map((img, index) => (
-                <div key={index} className="flex space-x-2">
-                  <Input
-                    value={img}
-                    onChange={(e) => {
-                      const newImages = [...formData.images];
-                      newImages[index] = e.target.value;
-                      setFormData(prev => ({ ...prev, images: newImages }));
-                    }}
-                    placeholder={`Media URL ${index + 1} (image or video link)`}
-                    type="url"
-                  />
-                  {formData.images.length > 1 && (
-                    <Button 
-                      type="button" 
-                      onClick={() => removeImage(index)} 
-                      variant="outline" 
-                      size="sm"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              ))}
-            </div>
+            <FileUploadInput
+              label="Images & Videos"
+              value={formData.images}
+              onChange={(urls) => setFormData(prev => ({ ...prev, images: urls }))}
+              accept="image/*,video/*"
+              maxFiles={10}
+            />
           </div>
 
           <div className="flex items-center space-x-2">
