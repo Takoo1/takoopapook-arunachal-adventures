@@ -1,7 +1,7 @@
 
 import HeroSection from '@/components/HeroSection';
 import PackageCarousel from '@/components/PackageCarousel';
-import InteractiveLeafletSection from '@/components/InteractiveLeafletSection';
+import InteractiveMapSection from '@/components/InteractiveMapSection';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -12,7 +12,7 @@ const Index = () => {
       <main>
         <HeroSection />
         <PackageCarousel />
-        <InteractiveLeafletSection />
+        <InteractiveMapSection />
       </main>
       <Footer />
     </div>

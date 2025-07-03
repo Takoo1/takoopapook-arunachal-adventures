@@ -2,7 +2,9 @@ import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Upload, X, Image, Video, Link } from 'lucide-react';
+import { Upload, X, Image, Video, Link, Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface FileUploadInputProps {
   label: string;
@@ -20,22 +22,48 @@ const FileUploadInput = ({
   maxFiles = 10 
 }: FileUploadInputProps) => {
   const [urlInput, setUrlInput] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
 
-    // Create temporary URLs for preview (in real app, upload to storage)
-    const newUrls = files.map(file => URL.createObjectURL(file));
+    setIsUploading(true);
     
-    // Add to existing URLs
-    const updatedUrls = [...value, ...newUrls].slice(0, maxFiles);
-    onChange(updatedUrls);
-    
-    // Reset file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+    try {
+      const uploadPromises = files.map(async (file) => {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+        
+        const { data, error } = await supabase.storage
+          .from('location-media')
+          .upload(fileName, file);
+          
+        if (error) throw error;
+        
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('location-media')
+          .getPublicUrl(fileName);
+          
+        return publicUrl;
+      });
+      
+      const uploadedUrls = await Promise.all(uploadPromises);
+      const updatedUrls = [...value, ...uploadedUrls].slice(0, maxFiles);
+      onChange(updatedUrls);
+      
+      toast.success(`Successfully uploaded ${files.length} file(s)`);
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Failed to upload files. Please try again.');
+    } finally {
+      setIsUploading(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -75,11 +103,15 @@ const FileUploadInput = ({
           type="button"
           variant="outline"
           onClick={() => fileInputRef.current?.click()}
-          disabled={value.length >= maxFiles}
+          disabled={value.length >= maxFiles || isUploading}
           className="flex items-center space-x-2"
         >
-          <Upload className="h-4 w-4" />
-          <span>Upload Files</span>
+          {isUploading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Upload className="h-4 w-4" />
+          )}
+          <span>{isUploading ? 'Uploading...' : 'Upload Files'}</span>
         </Button>
         <span className="text-sm text-muted-foreground">
           {value.length}/{maxFiles} files
