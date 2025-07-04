@@ -1,82 +1,51 @@
 
 import { useState, useEffect } from 'react';
-import { MapPin, Clock, Users, Star, ArrowRight, Heart } from 'lucide-react';
+import { MapPin, Clock, Users, Star, ArrowRight } from 'lucide-react';
 import PlanButton from './PlanButton';
+import { usePackages } from '@/hooks/usePackages';
 
 const PackageCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  const packages = [
-    {
-      id: 1,
-      title: 'Tawang Monastery Adventure',
-      location: 'Tawang, Arunachal Pradesh',
-      duration: '5 Days, 4 Nights',
-      groupSize: '2-8 People',
-      price: '₹25,000',
-      rating: 4.8,
-      reviews: 124,
-      image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-      features: ['Ancient Monastery', 'Mountain Views', 'Local Culture']
-    },
-    {
-      id: 2,
-      title: 'Ziro Valley Cultural Tour',
-      location: 'Ziro Valley, Arunachal Pradesh',
-      duration: '4 Days, 3 Nights',
-      groupSize: '2-6 People',
-      price: '₹18,000',
-      rating: 4.9,
-      reviews: 89,
-      image: 'https://images.unsplash.com/photo-1472396961693-142e6e269027?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-      features: ['Apatani Tribe', 'Rice Fields', 'Music Festival']
-    },
-    {
-      id: 3,
-      title: 'Sela Pass Expedition',
-      location: 'Sela Pass, Arunachal Pradesh',
-      duration: '3 Days, 2 Nights',
-      groupSize: '4-12 People',
-      price: '₹15,000',
-      rating: 4.7,
-      reviews: 156,
-      image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-      features: ['High Altitude', 'Snow Views', 'Adventure Trek']
-    },
-    {
-      id: 4,
-      title: 'Namdapha Wildlife Safari',
-      location: 'Namdapha National Park',
-      duration: '6 Days, 5 Nights',
-      groupSize: '3-10 People',
-      price: '₹32,000',
-      rating: 4.6,
-      reviews: 78,
-      image: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-      features: ['Wildlife Safari', 'Dense Forests', 'Rare Species']
-    },
-    {
-      id: 5,
-      title: 'Bomdila Heritage Walk',
-      location: 'Bomdila, Arunachal Pradesh',
-      duration: '3 Days, 2 Nights',
-      groupSize: '2-8 People',
-      price: '₹12,000',
-      rating: 4.5,
-      reviews: 92,
-      image: 'https://images.unsplash.com/photo-1482938289607-e9573fc25ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-      features: ['Buddhist Culture', 'Craft Center', 'Mountain Views']
-    }
-  ];
+  const { data: packages = [], isLoading } = usePackages();
 
   // Auto-scroll functionality
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % Math.max(1, packages.length - 2));
-    }, 4000);
+    if (packages.length > 2) {
+      const interval = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % Math.max(1, packages.length - 2));
+      }, 4000);
 
-    return () => clearInterval(interval);
+      return () => clearInterval(interval);
+    }
   }, [packages.length]);
+
+  if (isLoading) {
+    return (
+      <section className="py-20 bg-gradient-to-br from-slate-50 to-emerald-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <div className="text-lg">Loading packages...</div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (packages.length === 0) {
+    return (
+      <section className="py-20 bg-gradient-to-br from-slate-50 to-emerald-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+              Popular Tour
+              <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent"> Packages</span>
+            </h2>
+            <p className="text-xl text-gray-600">No packages available at the moment.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-20 bg-gradient-to-br from-slate-50 to-emerald-50">
@@ -108,7 +77,7 @@ const PackageCarousel = () => {
                   {/* Image */}
                   <div className="relative h-64 overflow-hidden">
                     <img 
-                      src={pkg.image} 
+                      src={pkg.image_url} 
                       alt={pkg.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
@@ -137,11 +106,11 @@ const PackageCarousel = () => {
                       <div className="flex items-center text-amber-500">
                         <Star className="h-4 w-4 fill-current" />
                         <span className="text-sm font-medium ml-1">{pkg.rating}</span>
-                        <span className="text-gray-500 text-sm ml-1">({pkg.reviews} reviews)</span>
+                        <span className="text-gray-500 text-sm ml-1">({pkg.reviews_count} reviews)</span>
                       </div>
                       <div className="flex items-center text-gray-500 text-sm">
                         <Users className="h-4 w-4 mr-1" />
-                        {pkg.groupSize}
+                        {pkg.group_size}
                       </div>
                     </div>
 

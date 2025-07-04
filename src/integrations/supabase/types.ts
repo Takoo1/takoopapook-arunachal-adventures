@@ -78,6 +78,63 @@ export type Database = {
         }
         Relationships: []
       }
+      packages: {
+        Row: {
+          created_at: string
+          duration: string
+          features: string[]
+          group_size: string
+          id: string
+          image_url: string
+          is_active: boolean
+          location: string
+          locations_included: string[]
+          package_code: string
+          price: string
+          rating: number
+          reviews: string[]
+          reviews_count: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          duration: string
+          features?: string[]
+          group_size: string
+          id?: string
+          image_url: string
+          is_active?: boolean
+          location: string
+          locations_included?: string[]
+          package_code: string
+          price: string
+          rating?: number
+          reviews?: string[]
+          reviews_count?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          duration?: string
+          features?: string[]
+          group_size?: string
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          location?: string
+          locations_included?: string[]
+          package_code?: string
+          price?: string
+          rating?: number
+          reviews?: string[]
+          reviews_count?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       planned_locations: {
         Row: {
           id: string
