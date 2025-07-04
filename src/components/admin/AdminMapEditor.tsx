@@ -93,6 +93,10 @@ const AdminMapEditor = () => {
         description: formData.description?.trim() || '',
         bullet_points: formData.bullet_points.filter(point => point.trim() !== ''),
         images: formData.images.filter(img => img.trim() !== ''),
+        rating: formData.rating || 0,
+        reviews_count: formData.reviews.filter(r => r.trim() !== '').length,
+        reviews: formData.reviews.filter(r => r.trim() !== ''),
+        packages_included: formData.packages_included || [],
         is_active: formData.is_active,
         ...safeCoordinates
       };
@@ -147,7 +151,10 @@ const AdminMapEditor = () => {
 
   const toggleLocationActive = async (id: string, isActive: boolean) => {
     try {
-      await updateLocation.mutateAsync({ id, is_active: isActive });
+      await updateLocation.mutateAsync({ 
+        id, 
+        is_active: isActive 
+      });
       toast({ 
         title: `Location ${isActive ? 'activated' : 'deactivated'}`,
         description: `The location is now ${isActive ? 'visible' : 'hidden'} to users.`

@@ -20,6 +20,10 @@ export type Database = {
           images: string[] | null
           is_active: boolean | null
           name: string
+          packages_included: string[]
+          rating: number
+          reviews: string[]
+          reviews_count: number
           updated_at: string | null
         }
         Insert: {
@@ -32,6 +36,10 @@ export type Database = {
           images?: string[] | null
           is_active?: boolean | null
           name: string
+          packages_included?: string[]
+          rating?: number
+          reviews?: string[]
+          reviews_count?: number
           updated_at?: string | null
         }
         Update: {
@@ -44,6 +52,10 @@ export type Database = {
           images?: string[] | null
           is_active?: boolean | null
           name?: string
+          packages_included?: string[]
+          rating?: number
+          reviews?: string[]
+          reviews_count?: number
           updated_at?: string | null
         }
         Relationships: []

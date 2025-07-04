@@ -6,8 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Location } from '@/types/database';
-import { Plus, Save, X, Image, List, MapPin } from 'lucide-react';
+import { Plus, Save, X, Image, List, MapPin, Star } from 'lucide-react';
 import FileUploadInput from '@/components/FileUploadInput';
+import { usePackages } from '@/hooks/usePackages';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface LocationFormProps {
   location?: Location | null;
@@ -25,10 +27,15 @@ export interface LocationFormData {
   description: string;
   bullet_points: string[];
   images: string[];
+  rating: number;
+  reviews_count: number;
+  reviews: string[];
+  packages_included: string[];
   is_active: boolean;
 }
 
 const LocationForm = ({ location, isEditing, isCreating, coordinates, onSubmit, onCancel }: LocationFormProps) => {
+  const { data: packages = [] } = usePackages();
   const [formData, setFormData] = useState<LocationFormData>(() => ({
     name: location?.name || '',
     coordinates_x: location?.coordinates_x || coordinates.x,
@@ -36,6 +43,10 @@ const LocationForm = ({ location, isEditing, isCreating, coordinates, onSubmit, 
     description: location?.description || '',
     bullet_points: location?.bullet_points?.length ? location.bullet_points : [''],
     images: location?.images?.length ? location.images : [''],
+    rating: location?.rating || 0,
+    reviews_count: location?.reviews_count || 0,
+    reviews: location?.reviews?.length ? location.reviews : [''],
+    packages_included: location?.packages_included || [],
     is_active: location?.is_active ?? true,
   }));
 
@@ -52,10 +63,13 @@ const LocationForm = ({ location, isEditing, isCreating, coordinates, onSubmit, 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const cleanReviews = formData.reviews.filter(review => review.trim() !== '');
     onSubmit({
       ...formData,
       bullet_points: formData.bullet_points.filter(point => point.trim() !== ''),
       images: formData.images.filter(img => img.trim() !== ''),
+      reviews: cleanReviews,
+      reviews_count: cleanReviews.length,
     });
   };
 
@@ -73,19 +87,6 @@ const LocationForm = ({ location, isEditing, isCreating, coordinates, onSubmit, 
     }));
   };
 
-  const addImage = () => {
-    setFormData(prev => ({
-      ...prev,
-      images: [...prev.images, ''],
-    }));
-  };
-
-  const removeImage = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index),
-    }));
-  };
 
   if (!isEditing && !isCreating) {
     return (
@@ -224,6 +225,103 @@ const LocationForm = ({ location, isEditing, isCreating, coordinates, onSubmit, 
               accept="image/*,video/*"
               maxFiles={10}
             />
+          </div>
+
+          <div>
+            <Label htmlFor="rating">Rating (0-5 stars)</Label>
+            <div className="flex items-center space-x-2">
+              <Star className="h-4 w-4 text-yellow-500" />
+              <Input
+                id="rating"
+                type="number"
+                min="0"
+                max="5"
+                step="0.1"
+                value={formData.rating}
+                onChange={(e) => setFormData(prev => ({ ...prev, rating: parseFloat(e.target.value) || 0 }))}
+                placeholder="4.5"
+              />
+            </div>
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <Label>Customer Reviews</Label>
+              <Button 
+                type="button" 
+                onClick={() => setFormData(prev => ({ ...prev, reviews: [...prev.reviews, ''] }))} 
+                variant="outline" 
+                size="sm"
+              >
+                <Plus className="h-4 w-4 mr-1" />
+                Add Review
+              </Button>
+            </div>
+            <div className="space-y-2">
+              {formData.reviews.map((review, index) => (
+                <div key={index} className="flex space-x-2">
+                  <Textarea
+                    value={review}
+                    onChange={(e) => {
+                      const newReviews = [...formData.reviews];
+                      newReviews[index] = e.target.value;
+                      setFormData(prev => ({ ...prev, reviews: newReviews }));
+                    }}
+                    placeholder={`Customer review ${index + 1}...`}
+                    rows={2}
+                  />
+                  {formData.reviews.length > 1 && (
+                    <Button 
+                      type="button" 
+                      onClick={() => setFormData(prev => ({ 
+                        ...prev, 
+                        reviews: prev.reviews.filter((_, i) => i !== index) 
+                      }))} 
+                      variant="outline" 
+                      size="sm"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <Label>Packages Included</Label>
+            <div className="space-y-2">
+              {packages.length > 0 ? (
+                packages.map((pkg) => (
+                  <div key={pkg.id} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id={`package-${pkg.id}`}
+                      checked={formData.packages_included.includes(pkg.id)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setFormData(prev => ({
+                            ...prev,
+                            packages_included: [...prev.packages_included, pkg.id]
+                          }));
+                        } else {
+                          setFormData(prev => ({
+                            ...prev,
+                            packages_included: prev.packages_included.filter(id => id !== pkg.id)
+                          }));
+                        }
+                      }}
+                      className="rounded border-gray-300"
+                    />
+                    <Label htmlFor={`package-${pkg.id}`} className="text-sm">
+                      {pkg.package_code} - {pkg.title}
+                    </Label>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500">No packages available. Create packages first.</p>
+              )}
+            </div>
           </div>
 
           <div className="flex items-center space-x-2">

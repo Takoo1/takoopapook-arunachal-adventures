@@ -7,6 +7,29 @@ export interface Location {
   description: string;
   bullet_points: string[];
   images: string[];
+  rating: number;
+  reviews_count: number;
+  reviews: string[];
+  packages_included: string[];
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Package {
+  id: string;
+  package_code: string;
+  title: string;
+  location: string;
+  duration: string;
+  group_size: string;
+  price: string;
+  rating: number;
+  reviews_count: number;
+  image_url: string;
+  features: string[];
+  locations_included: string[];
+  reviews: string[];
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -37,6 +60,11 @@ export interface Database {
         Row: Location;
         Insert: Omit<Location, 'id' | 'created_at' | 'updated_at'>;
         Update: Partial<Omit<Location, 'id' | 'created_at' | 'updated_at'>>;
+      };
+      packages: {
+        Row: Package;
+        Insert: Omit<Package, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<Package, 'id' | 'created_at' | 'updated_at'>>;
       };
       map_settings: {
         Row: MapSettings;

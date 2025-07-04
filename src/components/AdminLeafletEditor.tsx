@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminMapEditor from './admin/AdminMapEditor';
 import PackageManagement from './admin/PackageManagement';
+import DestinationManagement from './admin/DestinationManagement';
 
 const AdminLeafletEditor = () => {
   const [activeTab, setActiveTab] = useState('map');
@@ -16,9 +17,10 @@ const AdminLeafletEditor = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
+          <TabsList className="grid w-full grid-cols-3 lg:w-[600px]">
             <TabsTrigger value="map">Map Editor</TabsTrigger>
             <TabsTrigger value="packages">Package Management</TabsTrigger>
+            <TabsTrigger value="destinations">Destination Management</TabsTrigger>
           </TabsList>
 
           <TabsContent value="map" className="space-y-4">
@@ -28,6 +30,12 @@ const AdminLeafletEditor = () => {
           <TabsContent value="packages" className="space-y-4">
             <div className="bg-white rounded-lg p-6">
               <PackageManagement />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="destinations" className="space-y-4">
+            <div className="bg-white rounded-lg p-6">
+              <DestinationManagement />
             </div>
           </TabsContent>
         </Tabs>

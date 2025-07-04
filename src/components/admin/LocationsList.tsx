@@ -66,11 +66,19 @@ const LocationsList = ({
                       </p>
                     )}
                     <div className="flex items-center space-x-2 mt-2 text-xs text-gray-500">
+                      <div className="flex items-center space-x-1">
+                        <span>⭐ {location.rating || 0}</span>
+                        <span>•</span>
+                        <span>{location.reviews_count || 0} reviews</span>
+                      </div>
                       {location.bullet_points && location.bullet_points.length > 0 && (
-                        <span>{location.bullet_points.length} key points</span>
+                        <span>• {location.bullet_points.length} highlights</span>
                       )}
                       {location.images && location.images.length > 0 && (
-                        <span>{location.images.length} images</span>
+                        <span>• {location.images.length} media</span>
+                      )}
+                      {location.packages_included && location.packages_included.length > 0 && (
+                        <span>• {location.packages_included.length} packages</span>
                       )}
                     </div>
                   </div>
