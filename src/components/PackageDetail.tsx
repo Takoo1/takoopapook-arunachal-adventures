@@ -222,7 +222,7 @@ const PackageDetail = () => {
       {/* Interactive Map */}
       {includedLocations && includedLocations.length > 0 && (
         <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">Package Route Map</h2>
+          <p className="text-sm text-muted-foreground mb-4">Locations included in this package</p>
           <div className="h-96 rounded-lg overflow-hidden">
             <InteractiveLeafletSection filterLocations={includedLocations} />
           </div>
