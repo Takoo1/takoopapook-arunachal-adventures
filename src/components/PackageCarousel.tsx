@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MapPin, Clock, Users, Star, ArrowRight } from 'lucide-react';
+import { MapPin, Clock, Users, Star, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import PlanButton from './PlanButton';
 import { usePackages } from '@/hooks/usePackages';
@@ -9,19 +9,28 @@ const PackageCarousel = () => {
   const { data: allPackages = [], isLoading } = usePackages();
   const navigate = useNavigate();
 
-  // Use only first 4 packages for display
-  const packages = allPackages.slice(0, 4);
+  // Use all available packages
+  const packages = allPackages;
 
-  // Auto-scroll functionality - simple infinite loop
+  // Auto-scroll functionality - slide by one every 5 seconds
   useEffect(() => {
     if (packages.length > 0) {
       const interval = setInterval(() => {
         setCurrentIndex((prev) => (prev + 1) % packages.length);
-      }, 4000);
+      }, 5000);
 
       return () => clearInterval(interval);
     }
   }, [packages.length]);
+
+  // Manual navigation handlers
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev - 1 + packages.length) % packages.length);
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % packages.length);
+  };
 
   if (isLoading) {
     return (
@@ -68,15 +77,29 @@ const PackageCarousel = () => {
 
         {/* Carousel Container */}
         <div className="relative overflow-hidden">
+          {/* Navigation Arrows */}
+          <button
+            onClick={goToPrevious}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+          <button
+            onClick={goToNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+          >
+            <ArrowRight className="h-5 w-5" />
+          </button>
+
           <div 
             className="flex transition-transform duration-700 ease-in-out"
             style={{ 
-              transform: `translateX(-${currentIndex * 25}%)`,
-              width: '400%'
+              transform: `translateX(-${currentIndex * (100 / 3)}%)`,
+              width: `${(packages.length * 100) / 3}%`
             }}
           >
             {packages.map((pkg) => (
-              <div key={pkg.id} className="w-1/4 px-4">
+              <div key={pkg.id} className="w-1/3 px-4" style={{ width: `${100 / packages.length}%` }}>
                 <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group hover:-translate-y-2">
                   {/* Image */}
                   <div className="relative h-64 overflow-hidden">
@@ -143,20 +166,6 @@ const PackageCarousel = () => {
           </div>
         </div>
 
-        {/* Carousel Indicators */}
-        <div className="flex justify-center mt-8 space-x-2">
-          {packages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentIndex 
-                  ? 'bg-emerald-500 w-8' 
-                  : 'bg-gray-300 hover:bg-gray-400'
-              }`}
-            />
-          ))}
-        </div>
 
         {/* View All Button */}
         <div className="text-center mt-12">
