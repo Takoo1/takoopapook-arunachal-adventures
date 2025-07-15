@@ -62,7 +62,7 @@ const StaticImageMap = ({
         x: (containerRect.width - 2000 * fitZoom) / 2,
         y: (containerRect.height - 1200 * fitZoom) / 2
       });
-    } else if (mapSettings && mapSettings.center_x && mapSettings.center_y) {
+    } else if (mapSettings && mapSettings.center_x !== null && mapSettings.center_y !== null) {
       // User mode: apply viewport settings responsively
       const centerX = mapSettings.center_x;
       const centerY = mapSettings.center_y;
