@@ -82,7 +82,10 @@ const DestinationDetail = () => {
               
               {/* Image thumbnails */}
               {images.length > 1 && (
-                <div className="flex gap-3 mt-4 overflow-x-auto pb-2 scrollbar-hide">
+                <div 
+                  className="flex gap-3 mt-4 overflow-x-auto pb-2 scrollbar-hide"
+                  onClick={(e) => e.stopPropagation()} // Prevent parent lightbox trigger
+                >
                   {images.map((image, index) => (
                     <button
                       key={index}

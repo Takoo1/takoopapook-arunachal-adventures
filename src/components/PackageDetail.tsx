@@ -4,11 +4,10 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { usePackage } from '@/hooks/usePackages';
 import { Location } from '@/types/database';
-import { Star, MapPin, Clock, Users, Edit, CreditCard, ArrowLeft, Eye, X } from 'lucide-react';
+import { Star, MapPin, Clock, Users, Edit, CreditCard, ArrowLeft, Eye, X, Plus } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import DestinationCard from '@/components/DestinationCard';
 import InteractiveLeafletSection from '@/components/InteractiveLeafletSection';
 
@@ -84,8 +83,10 @@ const PackageDetail = () => {
     );
   }
 
-  // For now, we'll show single image (can be enhanced later for multiple images)
-  const images = [packageData.image_url];
+  // Enhanced images array - can include multiple images from package data
+  const images = packageData.image_url ? [packageData.image_url] : [];
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [showImageLightbox, setShowImageLightbox] = useState(false);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -160,27 +161,64 @@ const PackageDetail = () => {
         </div>
 
         {/* Right Column - Image Gallery */}
-        <div>
-          <Card>
-            <CardContent className="p-0">
-              <div className="relative">
-                <img
-                  src={images[currentImageIndex] || '/placeholder.svg'}
-                  alt={packageData.title}
-                  className="w-full h-80 object-cover rounded-lg cursor-pointer"
-                  onClick={() => setShowLightbox(true)}
-                />
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="absolute top-4 right-4"
-                  onClick={() => setShowLightbox(true)}
-                >
-                  <Eye className="h-4 w-4" />
-                </Button>
+        <div className="space-y-4">
+          <div className="relative">
+            <div 
+              className="aspect-[4/3] rounded-2xl overflow-hidden shadow-xl cursor-pointer group"
+              onClick={() => setShowImageLightbox(true)}
+            >
+              <img
+                src={images[selectedImageIndex] || '/placeholder.svg'}
+                alt={packageData.title}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                onError={(e) => {
+                  e.currentTarget.src = '/placeholder.svg';
+                }}
+              />
+              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <div className="bg-white/90 rounded-full p-3">
+                  <Plus className="h-6 w-6 text-gray-800" />
+                </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+            
+            {/* Image thumbnails - For future enhancement when multiple images are available */}
+            {images.length > 1 && (
+              <div 
+                className="flex gap-3 mt-4 overflow-x-auto pb-2 scrollbar-hide"
+                onClick={(e) => e.stopPropagation()} // Prevent parent lightbox trigger
+              >
+                {images.map((image, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setSelectedImageIndex(index);
+                    }}
+                    className={`flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all duration-300 hover:scale-105 ${
+                      index === selectedImageIndex 
+                        ? 'border-emerald-500 shadow-lg ring-2 ring-emerald-200' 
+                        : 'border-gray-200 hover:border-emerald-300 hover:shadow-md'
+                    }`}
+                  >
+                    <img
+                      src={image}
+                      alt={`${packageData.title} view ${index + 1}`}
+                      className={`w-full h-full object-cover transition-all duration-300 ${
+                        index === selectedImageIndex ? 'opacity-100' : 'opacity-70 hover:opacity-90'
+                      }`}
+                      onError={(e) => {
+                        e.currentTarget.src = '/placeholder.svg';
+                      }}
+                      draggable={false}
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -305,25 +343,31 @@ const PackageDetail = () => {
       )}
 
       {/* Image Lightbox */}
-      <Dialog open={showLightbox} onOpenChange={setShowLightbox}>
-        <DialogContent className="max-w-4xl w-full p-0">
-          <div className="relative">
+      {showImageLightbox && (
+        <div 
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          onClick={() => setShowImageLightbox(false)}
+        >
+          <div className="relative max-w-4xl max-h-full">
             <img
-              src={images[currentImageIndex] || '/placeholder.svg'}
+              src={images[selectedImageIndex] || '/placeholder.svg'}
               alt={packageData.title}
-              className="w-full h-auto max-h-[80vh] object-contain"
+              className="max-w-full max-h-full object-contain rounded-lg"
+              onError={(e) => {
+                e.currentTarget.src = '/placeholder.svg';
+              }}
             />
             <Button
-              variant="secondary"
+              variant="ghost"
               size="icon"
-              className="absolute top-4 right-4"
-              onClick={() => setShowLightbox(false)}
+              className="absolute top-4 right-4 text-white hover:bg-white/20"
+              onClick={() => setShowImageLightbox(false)}
             >
-              <X className="h-4 w-4" />
+              <Plus className="h-6 w-6 rotate-45" />
             </Button>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
     </div>
   );
 };
