@@ -5,10 +5,17 @@ import StaticImageMap from './StaticImageMap';
 import LocationDetails from './LocationDetails';
 import { Location } from '@/types/database';
 
-const InteractiveLeafletSection = () => {
+interface InteractiveLeafletSectionProps {
+  filterLocations?: Location[];
+}
+
+const InteractiveLeafletSection = ({ filterLocations }: InteractiveLeafletSectionProps) => {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
-  const { data: locations = [], isLoading: locationsLoading } = useLocations();
+  const { data: allLocations = [], isLoading: locationsLoading } = useLocations();
   const { data: mapSettings, isLoading: settingsLoading } = useMapSettings();
+  
+  // Use filtered locations if provided, otherwise use all locations
+  const locations = filterLocations || allLocations;
 
   if (locationsLoading || settingsLoading) {
     return (

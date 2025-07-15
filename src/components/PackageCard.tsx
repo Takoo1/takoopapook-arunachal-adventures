@@ -1,4 +1,5 @@
 import { Star, MapPin, Clock, Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -83,7 +84,9 @@ const PackageCard = ({ package: pkg }: PackageCardProps) => {
       </CardContent>
       
       <CardFooter className="p-4 pt-0">
-        <Button className="w-full">View Details</Button>
+        <Button className="w-full" asChild>
+          <Link to={`/my-tour/package/${pkg.id}`}>View Details</Link>
+        </Button>
       </CardFooter>
     </Card>
   );

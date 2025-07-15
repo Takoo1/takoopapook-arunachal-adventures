@@ -1,15 +1,31 @@
 
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import PackageDetail from '@/components/PackageDetail';
 import { usePlannedLocations, useRemoveFromPlanned } from '@/hooks/usePlannedLocations';
 import { MapPin, Calendar, Trash2, Plus, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const MyTour = () => {
+  const { id } = useParams<{ id: string }>();
   const { data: plannedLocations = [], isLoading } = usePlannedLocations();
   const removeFromPlanned = useRemoveFromPlanned();
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+
+  // If we have a package ID, show package detail view
+  if (id) {
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <main className="pt-20 min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50">
+          <PackageDetail />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   const handleRemoveLocation = (locationId: string) => {
     removeFromPlanned.mutate(locationId);

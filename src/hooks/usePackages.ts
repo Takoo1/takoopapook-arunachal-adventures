@@ -38,6 +38,23 @@ export const usePackages = () => {
   });
 };
 
+export const usePackage = (id: string) => {
+  return useQuery({
+    queryKey: ['package', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('packages')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error) throw error;
+      return data as Package;
+    },
+    enabled: !!id,
+  });
+};
+
 export const useAllPackages = () => {
   return useQuery({
     queryKey: ['all-packages'],
