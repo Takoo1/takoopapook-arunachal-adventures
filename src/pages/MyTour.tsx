@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PackageDetail from '@/components/PackageDetail';
+import DestinationDetail from '@/components/DestinationDetail';
 import { usePlannedLocations, useRemoveFromPlanned } from '@/hooks/usePlannedLocations';
 import { MapPin, Calendar, Trash2, Plus, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,18 +14,32 @@ const MyTour = () => {
   const { data: plannedLocations = [], isLoading } = usePlannedLocations();
   const removeFromPlanned = useRemoveFromPlanned();
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  
+  const currentPath = window.location.pathname;
 
-  // If we have a package ID, show package detail view
+  // If we have an ID, determine if it's a package or destination
   if (id) {
-    return (
-      <div className="min-h-screen">
-        <Header />
-        <main className="pt-20 min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50">
-          <PackageDetail />
-        </main>
-        <Footer />
-      </div>
-    );
+    if (currentPath.includes('/package/')) {
+      return (
+        <div className="min-h-screen">
+          <Header />
+          <main className="pt-20 min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50">
+            <PackageDetail />
+          </main>
+          <Footer />
+        </div>
+      );
+    } else if (currentPath.includes('/destination/')) {
+      return (
+        <div className="min-h-screen">
+          <Header />
+          <main className="pt-20 min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50">
+            <DestinationDetail />
+          </main>
+          <Footer />
+        </div>
+      );
+    }
   }
 
   const handleRemoveLocation = (locationId: string) => {

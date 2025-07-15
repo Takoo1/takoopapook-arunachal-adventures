@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Star } from 'lucide-react';
 import { Location } from '@/types/database';
 
@@ -9,6 +10,7 @@ interface DestinationCardProps {
 
 const DestinationCard = ({ location }: DestinationCardProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const navigate = useNavigate();
 
   // Auto-slide carousel
   useEffect(() => {
@@ -27,7 +29,10 @@ const DestinationCard = ({ location }: DestinationCardProps) => {
   const defaultImage = "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=250&fit=crop";
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 group hover:-translate-y-2 w-full max-w-sm h-[420px] flex flex-col">
+    <div 
+      className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 group hover:-translate-y-2 w-full max-w-sm h-[420px] flex flex-col cursor-pointer"
+      onClick={() => navigate(`/my-tour/destination/${location.id}`)}
+    >
       {/* Image/Video Carousel */}
       <div className="relative h-64 overflow-hidden flex-shrink-0">
         {hasMedia ? (
