@@ -13,8 +13,8 @@ import InteractiveLeafletSection from '@/components/InteractiveLeafletSection';
 
 const PackageDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [showLightbox, setShowLightbox] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [showImageLightbox, setShowImageLightbox] = useState(false);
 
   // Fetch package data
   const { data: packageData, isLoading: packageLoading } = usePackage(id || '');
@@ -47,14 +47,14 @@ const PackageDetail = () => {
   const handlePreviousImage = () => {
     const imageUrl = packageData?.image_url;
     if (imageUrl) {
-      setCurrentImageIndex(prev => prev === 0 ? 0 : prev - 1);
+      setSelectedImageIndex(prev => prev === 0 ? 0 : prev - 1);
     }
   };
 
   const handleNextImage = () => {
     const imageUrl = packageData?.image_url;
     if (imageUrl) {
-      setCurrentImageIndex(prev => prev === 0 ? 0 : prev + 1);
+      setSelectedImageIndex(prev => prev === 0 ? 0 : prev + 1);
     }
   };
 
@@ -84,9 +84,7 @@ const PackageDetail = () => {
   }
 
   // Enhanced images array - can include multiple images from package data
-  const images = packageData.image_url ? [packageData.image_url] : [];
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [showImageLightbox, setShowImageLightbox] = useState(false);
+  const images = packageData?.image_url ? [packageData.image_url] : [];
 
   return (
     <div className="container mx-auto px-4 py-8">
