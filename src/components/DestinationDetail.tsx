@@ -82,24 +82,32 @@ const DestinationDetail = () => {
               
               {/* Image thumbnails */}
               {images.length > 1 && (
-                <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
+                <div className="flex gap-3 mt-4 overflow-x-auto pb-2 scrollbar-hide">
                   {images.map((image, index) => (
                     <button
                       key={index}
-                      onClick={() => setSelectedImageIndex(index)}
-                      className={`flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSelectedImageIndex(index);
+                      }}
+                      className={`flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all duration-300 hover:scale-105 ${
                         index === selectedImageIndex 
-                          ? 'border-emerald-500 shadow-lg' 
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-emerald-500 shadow-lg ring-2 ring-emerald-200' 
+                          : 'border-gray-200 hover:border-emerald-300 hover:shadow-md'
                       }`}
                     >
                       <img
                         src={image}
-                        alt={`${destination.name} ${index + 1}`}
-                        className="w-full h-full object-cover"
+                        alt={`${destination.name} view ${index + 1}`}
+                        className={`w-full h-full object-cover transition-all duration-300 ${
+                          index === selectedImageIndex ? 'opacity-100' : 'opacity-70 hover:opacity-90'
+                        }`}
                         onError={(e) => {
                           e.currentTarget.src = defaultImage;
                         }}
+                        draggable={false}
                       />
                     </button>
                   ))}
