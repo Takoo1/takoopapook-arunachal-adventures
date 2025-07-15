@@ -1,9 +1,11 @@
 
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Play } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Compass } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const HeroSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const navigate = useNavigate();
 
   const slides = [
     {
@@ -82,13 +84,12 @@ const HeroSection = () => {
                     </p>
                     
                     <div className="flex flex-col sm:flex-row gap-4">
-                      <button className="group flex items-center justify-center space-x-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-2xl transition-all duration-300 hover:scale-105">
+                      <button 
+                        onClick={() => navigate('/explore')}
+                        className="group flex items-center justify-center space-x-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                      >
                         <span>Explore Now</span>
-                        <Play className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                      </button>
-                      
-                      <button className="flex items-center justify-center bg-white/20 backdrop-blur-md text-white px-8 py-4 rounded-xl font-semibold text-lg border border-white/30 hover:bg-white/30 transition-all duration-300">
-                        Watch Video
+                        <Compass className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                       </button>
                     </div>
                   </div>

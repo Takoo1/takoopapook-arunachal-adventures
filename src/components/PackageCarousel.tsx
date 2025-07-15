@@ -1,18 +1,20 @@
 
 import { useState, useEffect } from 'react';
 import { MapPin, Clock, Users, Star, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import PlanButton from './PlanButton';
 import { usePackages } from '@/hooks/usePackages';
 
 const PackageCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { data: packages = [], isLoading } = usePackages();
+  const navigate = useNavigate();
 
-  // Auto-scroll functionality
+  // Auto-scroll functionality - infinite loop
   useEffect(() => {
-    if (packages.length > 2) {
+    if (packages.length > 0) {
       const interval = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % Math.max(1, packages.length - 2));
+        setCurrentIndex((prev) => (prev + 1) % packages.length);
       }, 4000);
 
       return () => clearInterval(interval);
@@ -141,7 +143,7 @@ const PackageCarousel = () => {
 
         {/* Carousel Indicators */}
         <div className="flex justify-center mt-8 space-x-2">
-          {Array.from({ length: Math.max(1, packages.length - 2) }).map((_, index) => (
+          {packages.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
@@ -156,7 +158,10 @@ const PackageCarousel = () => {
 
         {/* View All Button */}
         <div className="text-center mt-12">
-          <button className="group bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center space-x-2 mx-auto">
+          <button 
+            onClick={() => navigate('/packages')}
+            className="group bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center space-x-2 mx-auto"
+          >
             <span>View All Packages</span>
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
           </button>
