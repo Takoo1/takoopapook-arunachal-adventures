@@ -235,7 +235,7 @@ const PackageDetail = () => {
         <div className="mb-12">
           <p className="text-sm text-muted-foreground mb-4">Locations included in this package ({includedLocations.length})</p>
           <div className="h-96 rounded-lg overflow-hidden border-2 border-gray-200" style={{ minHeight: '400px' }}>
-            <InteractiveLeafletSection filterLocations={includedLocations} />
+            <InteractiveLeafletSection filterLocations={includedLocations} useFullView={true} />
           </div>
         </div>
       ) : (

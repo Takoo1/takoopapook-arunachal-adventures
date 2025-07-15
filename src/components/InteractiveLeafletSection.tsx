@@ -7,9 +7,10 @@ import { Location } from '@/types/database';
 
 interface InteractiveLeafletSectionProps {
   filterLocations?: Location[];
+  useFullView?: boolean; // New prop to show full map view instead of admin viewport
 }
 
-const InteractiveLeafletSection = ({ filterLocations }: InteractiveLeafletSectionProps) => {
+const InteractiveLeafletSection = ({ filterLocations, useFullView = false }: InteractiveLeafletSectionProps) => {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const { data: allLocations = [], isLoading: locationsLoading } = useLocations();
   const { data: mapSettings, isLoading: settingsLoading } = useMapSettings();
@@ -73,7 +74,8 @@ const InteractiveLeafletSection = ({ filterLocations }: InteractiveLeafletSectio
                   locations={locations}
                   selectedLocation={selectedLocation}
                   onLocationSelect={setSelectedLocation}
-                  mapSettings={mapSettings || undefined}
+                  mapSettings={useFullView ? undefined : (mapSettings || undefined)}
+                  useFullView={useFullView}
                 />
               </div>
             </div>

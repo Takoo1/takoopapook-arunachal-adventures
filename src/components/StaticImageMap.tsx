@@ -16,6 +16,7 @@ interface StaticImageMapProps {
   isViewportMode?: boolean;
   viewport?: { x: number; y: number; width: number; height: number };
   onViewportChange?: (viewport: { x: number; y: number; width: number; height: number }) => void;
+  useFullView?: boolean; // New prop to show full map view
 }
 
 const StaticImageMap = ({ 
@@ -28,7 +29,8 @@ const StaticImageMap = ({
   mapSettings,
   isViewportMode = false,
   viewport,
-  onViewportChange
+  onViewportChange,
+  useFullView = false
 }: StaticImageMapProps) => {
   const [zoom, setZoom] = useState(isAdminMode ? 0.5 : (mapSettings?.initial_zoom || 1));
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -62,8 +64,8 @@ const StaticImageMap = ({
         x: (containerRect.width - 2000 * fitZoom) / 2,
         y: (containerRect.height - 1200 * fitZoom) / 2
       });
-    } else if (mapSettings && mapSettings.center_x !== null && mapSettings.center_y !== null) {
-      // User mode: apply viewport settings responsively
+    } else if (!useFullView && mapSettings && mapSettings.center_x !== null && mapSettings.center_y !== null) {
+      // User mode: apply viewport settings responsively (only if not using full view)
       const centerX = mapSettings.center_x;
       const centerY = mapSettings.center_y;
       const initialZoom = mapSettings.initial_zoom || 1;
@@ -80,7 +82,7 @@ const StaticImageMap = ({
       setZoom(finalZoom);
       setPan({ x: panX, y: panY });
     } else {
-      // Default: center the map
+      // Default OR useFullView: show full map centered and fitted to container
       const defaultZoom = Math.min(
         containerRect.width / 2000,
         containerRect.height / 1200
@@ -92,7 +94,7 @@ const StaticImageMap = ({
         y: (containerRect.height - 1200 * defaultZoom) / 2
       });
     }
-  }, [isAdminMode, mapSettings, minZoom, maxZoom]);
+  }, [isAdminMode, mapSettings, minZoom, maxZoom, useFullView]);
 
   const handleWheel = (e: React.WheelEvent) => {
     // Disable mouse wheel zooming on desktop to prevent page scroll interference
