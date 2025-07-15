@@ -136,7 +136,10 @@ const PackageCarousel = () => {
                   className="flex-shrink-0"
                   style={{ width: `${100 / packages.length}%` }}
                 >
-                  <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group hover:-translate-y-2 h-full">
+                  <div 
+                    className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group hover:-translate-y-2 h-full cursor-pointer"
+                    onClick={() => navigate(`/packages/${pkg.id}`)}
+                  >
                     {/* Image */}
                     <div className="relative h-64 overflow-hidden">
                       <img 
@@ -192,7 +195,10 @@ const PackageCarousel = () => {
                       </div>
 
                       <button 
-                        onClick={() => navigate(`/packages/${pkg.id}`)}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent card click when button is clicked
+                          navigate(`/packages/${pkg.id}`);
+                        }}
                         className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 group/btn flex items-center justify-center space-x-2"
                       >
                         <span>Book Now</span>
