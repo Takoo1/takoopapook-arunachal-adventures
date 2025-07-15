@@ -148,17 +148,6 @@ const PackageDetail = () => {
               </div>
               
               <div>
-                <h4 className="font-semibold mb-2">What's Included</h4>
-                <div className="flex flex-wrap gap-2">
-                  {packageData.features.map((feature, index) => (
-                    <Badge key={index} variant="outline" className="text-xs">
-                      {feature}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              <div>
                 <h4 className="font-semibold mb-2">Description</h4>
                 <p className="text-muted-foreground leading-relaxed">
                   Experience the beauty and culture of {packageData.location} with this carefully curated {packageData.duration} adventure. 
