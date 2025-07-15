@@ -21,10 +21,12 @@ const PackageDetail = () => {
   const { data: packageData, isLoading: packageLoading } = usePackage(id || '');
 
   // Fetch included locations
-  const { data: includedLocations } = useQuery({
+  const { data: includedLocations, isLoading: locationsLoading } = useQuery({
     queryKey: ['package-locations', packageData?.locations_included],
     queryFn: async () => {
       if (!packageData?.locations_included.length) return [];
+      
+      console.log('Fetching locations for package:', packageData.locations_included);
       
       const { data, error } = await supabase
         .from('locations')
@@ -32,7 +34,12 @@ const PackageDetail = () => {
         .in('name', packageData.locations_included)
         .eq('is_active', true);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching package locations:', error);
+        throw error;
+      }
+      
+      console.log('Fetched package locations:', data);
       return data as Location[];
     },
     enabled: !!packageData?.locations_included.length,
@@ -220,11 +227,25 @@ const PackageDetail = () => {
       )}
 
       {/* Interactive Map */}
-      {includedLocations && includedLocations.length > 0 && (
+      {(() => {
+        console.log('Rendering map section. includedLocations:', includedLocations, 'length:', includedLocations?.length);
+        return null;
+      })()}
+      {includedLocations && includedLocations.length > 0 ? (
         <div className="mb-12">
-          <p className="text-sm text-muted-foreground mb-4">Locations included in this package</p>
-          <div className="h-96 rounded-lg overflow-hidden">
+          <p className="text-sm text-muted-foreground mb-4">Locations included in this package ({includedLocations.length})</p>
+          <div className="h-96 rounded-lg overflow-hidden border-2 border-gray-200" style={{ minHeight: '400px' }}>
             <InteractiveLeafletSection filterLocations={includedLocations} />
+          </div>
+        </div>
+      ) : (
+        <div className="mb-12">
+          <p className="text-sm text-muted-foreground mb-4">Loading map...</p>
+          <div className="h-96 rounded-lg overflow-hidden border-2 border-gray-200 bg-gray-100 flex items-center justify-center">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600 mx-auto mb-2"></div>
+              <p className="text-gray-600">Loading locations...</p>
+            </div>
           </div>
         </div>
       )}

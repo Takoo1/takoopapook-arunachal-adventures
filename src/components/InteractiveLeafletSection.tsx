@@ -16,10 +16,16 @@ const InteractiveLeafletSection = ({ filterLocations }: InteractiveLeafletSectio
   
   // Use filtered locations if provided, otherwise use all locations
   const locations = filterLocations || allLocations;
+  
+  console.log('InteractiveLeafletSection render - filterLocations:', filterLocations, 'allLocations:', allLocations, 'final locations:', locations);
+  console.log('isLoading states - locationsLoading:', locationsLoading, 'settingsLoading:', settingsLoading);
 
-  if (locationsLoading || settingsLoading) {
+  // When filterLocations is provided, we don't need to wait for allLocations to load
+  // Only wait for map settings
+  if ((filterLocations ? false : locationsLoading) || settingsLoading) {
+    console.log('Loading state - locationsLoading:', locationsLoading, 'settingsLoading:', settingsLoading);
     return (
-      <div className="container mx-auto px-4 py-16">
+      <div className={`${filterLocations ? 'w-full h-full flex items-center justify-center' : 'container mx-auto px-4 py-16'}`}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-emerald-500 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading interactive map...</p>
@@ -53,7 +59,7 @@ const InteractiveLeafletSection = ({ filterLocations }: InteractiveLeafletSectio
         <div className={`grid grid-cols-1 lg:grid-cols-3 gap-8 ${filterLocations ? 'h-full' : 'max-w-7xl mx-auto'}`}>
           {/* Map Container - Takes 2 columns */}
           <div className={`${filterLocations ? 'lg:col-span-3' : 'lg:col-span-2'} order-1`}>
-            <div className={`bg-white rounded-2xl shadow-xl p-6 ${filterLocations ? 'h-full' : 'h-[600px]'}`}>
+            <div className={`bg-white rounded-2xl shadow-xl p-6 ${filterLocations ? 'h-full min-h-[350px]' : 'h-[600px]'}`}>
               {!filterLocations && (
                 <div className="mb-4">
                   <h3 className="text-xl font-semibold text-gray-800 mb-2">Interactive Tourism Map</h3>
@@ -62,7 +68,7 @@ const InteractiveLeafletSection = ({ filterLocations }: InteractiveLeafletSectio
                   </p>
                 </div>
               )}
-              <div className={`${filterLocations ? 'h-full' : 'h-[500px]'}`}>
+              <div className={`${filterLocations ? 'h-full' : 'h-[500px]'} w-full`}>
                 <StaticImageMap
                   locations={locations}
                   selectedLocation={selectedLocation}
