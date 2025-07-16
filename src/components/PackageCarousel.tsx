@@ -5,8 +5,6 @@ import PlanButton from './PlanButton';
 import { usePackages } from '@/hooks/usePackages';
 
 const PackageCarousel = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const { data: allPackages = [], isLoading } = usePackages();
   const navigate = useNavigate();
 
@@ -23,6 +21,17 @@ const PackageCarousel = () => {
   // Start from the first real card (after the duplicated last cards)
   const realStartIndex = itemsPerView;
   const realEndIndex = realStartIndex + packages.length - 1;
+
+  // Initialize currentIndex to realStartIndex when packages are loaded
+  const [currentIndex, setCurrentIndex] = useState(packages.length > 0 ? realStartIndex : 0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Update currentIndex when packages are first loaded
+  useEffect(() => {
+    if (packages.length > 0 && currentIndex === 0) {
+      setCurrentIndex(realStartIndex);
+    }
+  }, [packages.length, realStartIndex, currentIndex]);
 
   // Auto-scroll functionality
   useEffect(() => {
@@ -54,13 +63,6 @@ const PackageCarousel = () => {
     }
   }, [currentIndex, realStartIndex, realEndIndex]);
 
-  // Initialize to the first real card
-  useEffect(() => {
-    if (packages.length > 0 && currentIndex === 0) {
-      setCurrentIndex(realStartIndex);
-    }
-  }, [packages.length, realStartIndex, currentIndex]);
-
   const goToPrevious = useCallback(() => {
     if (isTransitioning) return;
     setCurrentIndex((prev) => prev - 1);
@@ -70,6 +72,7 @@ const PackageCarousel = () => {
     if (isTransitioning) return;
     setCurrentIndex((prev) => prev + 1);
   }, [isTransitioning]);
+
 
   if (isLoading) {
     return (
