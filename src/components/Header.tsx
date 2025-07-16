@@ -1,13 +1,35 @@
 
 import { useState } from 'react';
-import { Menu, X, User, MapPin, ChevronDown } from 'lucide-react';
+import { Menu, X, User, MapPin, ChevronDown, LogOut } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isExploreDropdownOpen, setIsExploreDropdownOpen] = useState(false);
   const [isPackagesDropdownOpen, setIsPackagesDropdownOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const location = useLocation();
+  const { user, signOut } = useAuth();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Signed Out",
+        description: "You have been successfully signed out.",
+      });
+    }
+    setIsUserDropdownOpen(false);
+  };
 
   const navItems = [
     { name: 'Home', path: '/' },
@@ -139,12 +161,45 @@ const Header = () => {
             </div>
           </nav>
 
-          {/* Login Button & Mobile Menu Toggle */}
+          {/* User Actions & Mobile Menu Toggle */}
           <div className="flex items-center space-x-4">
-            <button className="hidden md:flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105">
-              <User className="h-4 w-4" />
-              <span>Login</span>
-            </button>
+            {user ? (
+              /* User Dropdown */
+              <div className="hidden md:block relative">
+                <button
+                  onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+                  className="flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105"
+                >
+                  <User className="h-4 w-4" />
+                  <span>{user.email?.split('@')[0]}</span>
+                  <ChevronDown className={`h-4 w-4 transition-transform ${isUserDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {isUserDropdownOpen && (
+                  <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border z-50">
+                    <div className="px-4 py-3 border-b border-gray-200">
+                      <p className="text-sm font-medium text-gray-900">{user.email}</p>
+                    </div>
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-b-lg"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* Login Button */
+              <Link
+                to="/auth"
+                className="hidden md:flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105"
+              >
+                <User className="h-4 w-4" />
+                <span>Login</span>
+              </Link>
+            )}
 
             {/* Mobile menu button */}
             <button
@@ -209,10 +264,29 @@ const Header = () => {
                 ))}
               </div>
               
-              <button className="flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-3 rounded-lg mt-4">
-                <User className="h-4 w-4" />
-                <span>Login</span>
-              </button>
+              {user ? (
+                <div className="space-y-2 mt-4">
+                  <div className="px-4 py-2 bg-emerald-50 rounded-lg">
+                    <p className="text-sm font-medium text-emerald-800">{user.email}</p>
+                  </div>
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full flex items-center justify-center space-x-2 bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-lg transition-colors"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  to="/auth"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-3 rounded-lg mt-4"
+                >
+                  <User className="h-4 w-4" />
+                  <span>Login</span>
+                </Link>
+              )}
             </nav>
           </div>
         )}
