@@ -12,30 +12,98 @@ const PackageCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Auto-scroll functionality - simple infinite loop
+  // Responsive settings
+  const getCarouselSettings = () => {
+    if (typeof window !== 'undefined') {
+      const isMobile = window.innerWidth < 768;
+      return {
+        itemsPerView: isMobile ? 2 : 3,
+        slideBy: isMobile ? 2 : 3
+      };
+    }
+    return { itemsPerView: 3, slideBy: 3 };
+  };
+
+  const [carouselSettings, setCarouselSettings] = useState(getCarouselSettings());
+
+  // Handle resize
+  useEffect(() => {
+    const handleResize = () => {
+      setCarouselSettings(getCarouselSettings());
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Create infinite loop by duplicating cards
+  const createInfiniteLoop = () => {
+    if (packages.length === 0) return [];
+    
+    const { itemsPerView } = carouselSettings;
+    const duplicatesNeeded = Math.max(itemsPerView, 3);
+    
+    return [
+      ...packages.slice(-duplicatesNeeded),
+      ...packages,
+      ...packages.slice(0, duplicatesNeeded)
+    ];
+  };
+
+  const extendedPackages = createInfiniteLoop();
+  const duplicatesCount = packages.length > 0 ? Math.max(carouselSettings.itemsPerView, 3) : 0;
+
+  // Initialize to show real cards (skip initial duplicates)
+  useEffect(() => {
+    if (packages.length > 0 && currentIndex === 0) {
+      setCurrentIndex(duplicatesCount);
+    }
+  }, [packages.length, duplicatesCount]);
+
+  // Auto-scroll functionality
   useEffect(() => {
     if (packages.length === 0) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % packages.length);
-    }, 5000); // Slide every 5 seconds
+      setCurrentIndex((prev) => prev + carouselSettings.slideBy);
+    }, 5000);
 
     return () => clearInterval(interval);
-  }, [packages.length]);
+  }, [packages.length, carouselSettings.slideBy]);
+
+  // Handle infinite loop reset
+  useEffect(() => {
+    if (packages.length === 0) return;
+
+    const maxIndex = duplicatesCount + packages.length;
+    const minIndex = duplicatesCount;
+
+    if (currentIndex >= maxIndex) {
+      // Reset to beginning without animation
+      setTimeout(() => {
+        setIsTransitioning(true);
+        setCurrentIndex(minIndex);
+        setTimeout(() => setIsTransitioning(false), 50);
+      }, 500);
+    } else if (currentIndex < minIndex) {
+      // Reset to end without animation
+      setTimeout(() => {
+        setIsTransitioning(true);
+        setCurrentIndex(maxIndex - carouselSettings.slideBy);
+        setTimeout(() => setIsTransitioning(false), 50);
+      }, 500);
+    }
+  }, [currentIndex, duplicatesCount, packages.length, carouselSettings.slideBy]);
 
   const goToPrevious = useCallback(() => {
     if (isTransitioning || packages.length === 0) return;
-    setIsTransitioning(true);
-    setCurrentIndex((prev) => (prev - 1 + packages.length) % packages.length);
-    setTimeout(() => setIsTransitioning(false), 300);
-  }, [isTransitioning, packages.length]);
+    setCurrentIndex((prev) => prev - carouselSettings.slideBy);
+  }, [isTransitioning, packages.length, carouselSettings.slideBy]);
 
   const goToNext = useCallback(() => {
     if (isTransitioning || packages.length === 0) return;
-    setIsTransitioning(true);
-    setCurrentIndex((prev) => (prev + 1) % packages.length);
-    setTimeout(() => setIsTransitioning(false), 300);
-  }, [isTransitioning, packages.length]);
+    setCurrentIndex((prev) => prev + carouselSettings.slideBy);
+  }, [isTransitioning, packages.length, carouselSettings.slideBy]);
 
 
   if (isLoading) {
@@ -106,27 +174,26 @@ const PackageCarousel = () => {
           )}
 
           {/* Carousel Viewport */}
-          <div className="overflow-hidden mx-12">
+          <div className="overflow-hidden mx-4 md:mx-12">
             <div 
-              className="flex transition-transform duration-500 ease-in-out"
+              className={`flex gap-4 md:gap-6 ${!isTransitioning ? 'transition-transform duration-500 ease-in-out' : ''}`}
               style={{ 
-                transform: `translateX(-${currentIndex * 33.33}%)`,
-                width: `${Math.ceil(packages.length / 3) * 100}%`,
-                gap: '1.5rem'
+                transform: `translateX(-${(currentIndex * 100) / carouselSettings.itemsPerView}%)`,
+                width: `${(extendedPackages.length * 100) / carouselSettings.itemsPerView}%`
               }}
             >
-              {packages.map((pkg, index) => (
+              {extendedPackages.map((pkg, index) => (
                 <div 
-                  key={pkg.id} 
+                  key={`${pkg.id}-${index}`}
                   className="flex-shrink-0"
-                  style={{ width: `calc(33.33% - 1rem)` }}
+                  style={{ width: `calc(${100 / carouselSettings.itemsPerView}% - ${carouselSettings.itemsPerView === 2 ? '0.75rem' : '1rem'})` }}
                 >
                   <div 
                     className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group hover:-translate-y-2 h-full cursor-pointer"
                     onClick={() => navigate(`/my-tour/package/${pkg.id}`)}
                   >
                     {/* Image */}
-                    <div className="relative h-64 overflow-hidden">
+                    <div className="relative h-48 md:h-64 overflow-hidden">
                       <img 
                         src={pkg.image_url} 
                         alt={pkg.title}
@@ -143,8 +210,8 @@ const PackageCarousel = () => {
                         />
                       </div>
                       <div className="absolute bottom-4 left-4 flex flex-wrap gap-1">
-                        {pkg.features.slice(0, 2).map((feature, index) => (
-                          <span key={index} className="bg-emerald-500/90 text-white px-2 py-1 rounded-md text-xs font-medium">
+                        {pkg.features.slice(0, 2).map((feature, featureIndex) => (
+                          <span key={featureIndex} className="bg-emerald-500/90 text-white px-2 py-1 rounded-md text-xs font-medium">
                             {feature}
                           </span>
                         ))}
@@ -152,7 +219,7 @@ const PackageCarousel = () => {
                     </div>
 
                     {/* Content */}
-                    <div className="p-6">
+                    <div className="p-4 md:p-6">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center text-amber-500">
                           <Star className="h-4 w-4 fill-current" />
@@ -165,7 +232,7 @@ const PackageCarousel = () => {
                         </div>
                       </div>
 
-                      <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-emerald-600 transition-colors">
+                      <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-2 group-hover:text-emerald-600 transition-colors">
                         {pkg.title}
                       </h3>
 
@@ -184,7 +251,7 @@ const PackageCarousel = () => {
                           e.stopPropagation(); // Prevent card click when button is clicked
                           navigate(`/my-tour/package/${pkg.id}`);
                         }}
-                        className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 group/btn flex items-center justify-center space-x-2"
+                        className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-2 md:py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 group/btn flex items-center justify-center space-x-2"
                       >
                         <span>Book Now</span>
                         <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
