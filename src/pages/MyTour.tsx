@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PackageDetail from '@/components/PackageDetail';
@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const MyTour = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { data: plannedLocations = [], isLoading } = usePlannedLocations();
   const removeFromPlanned = useRemoveFromPlanned();
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
@@ -44,6 +45,11 @@ const MyTour = () => {
 
   const handleRemoveLocation = (locationId: string) => {
     removeFromPlanned.mutate(locationId);
+  };
+
+  const handleExploreDestinations = () => {
+    navigate('/explore');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   if (isLoading) {
@@ -85,13 +91,13 @@ const MyTour = () => {
                   <p className="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">
                     Start building your dream trip by exploring locations on our interactive map and adding them to your tour plan.
                   </p>
-                  <a 
-                    href="/" 
+                  <button 
+                    onClick={handleExploreDestinations}
                     className="inline-flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
                   >
                     <Plus className="h-5 w-5" />
                     <span>Explore Destinations</span>
-                  </a>
+                  </button>
                 </CardContent>
               </Card>
             </div>
@@ -196,13 +202,13 @@ const MyTour = () => {
               
               {/* Add More Button */}
               <div className="text-center mt-12">
-                <a 
-                  href="/" 
+                <button 
+                  onClick={handleExploreDestinations}
                   className="inline-flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                 >
                   <Plus className="h-5 w-5" />
                   <span>Add More Destinations</span>
-                </a>
+                </button>
               </div>
             </div>
           )}

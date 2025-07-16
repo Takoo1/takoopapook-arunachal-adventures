@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PackageCard from '@/components/PackageCard';
@@ -11,6 +11,7 @@ import { usePackageCategories } from '@/hooks/usePackageCategories';
 const Packages = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const categoryFilter = searchParams.get('category') || 'all';
   
   const { data: packages = [], isLoading } = usePackages();
@@ -34,6 +35,12 @@ const Packages = () => {
   const getCategoryTitle = () => {
     const category = categories.find(cat => cat.id === categoryFilter);
     return category ? category.name : 'All Packages';
+  };
+
+  const handleCategoryClick = (categoryId: string) => {
+    const url = categoryId === 'all' ? '/packages' : `/packages?category=${categoryId}`;
+    navigate(url);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -69,9 +76,9 @@ const Packages = () => {
           {categoryFilter === 'all' && (
             <div className="flex flex-wrap justify-center gap-4 mb-12">
               {categories.map((category) => (
-                <a
+                <button
                   key={category.id}
-                  href={category.id === 'all' ? '/packages' : `/packages?category=${category.id}`}
+                  onClick={() => handleCategoryClick(category.id)}
                   className="bg-white px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
                 >
                   <div className="text-lg font-semibold text-gray-800 group-hover:text-emerald-600">
@@ -80,7 +87,7 @@ const Packages = () => {
                   <div className="text-sm text-gray-500">
                     {category.count} packages
                   </div>
-                </a>
+                </button>
               ))}
             </div>
           )}

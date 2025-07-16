@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import DestinationCard from '@/components/DestinationCard';
@@ -9,6 +9,7 @@ import { Search, Filter } from 'lucide-react';
 
 const Explore = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const categoryFilter = searchParams.get('category');
   const { data: locations = [], isLoading } = useLocations();
@@ -30,6 +31,11 @@ const Explore = () => {
       return `${categoryFilter} Destinations`;
     }
     return 'All Destinations';
+  };
+
+  const handleCategoryClick = (category: string) => {
+    navigate(`/explore?category=${category}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -70,9 +76,9 @@ const Explore = () => {
                 ).length;
                 
                 return (
-                  <a
+                  <button
                     key={category}
-                    href={`/explore?category=${category}`}
+                    onClick={() => handleCategoryClick(category)}
                     className="bg-white px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
                   >
                     <div className="text-lg font-semibold text-gray-800 group-hover:text-emerald-600">
@@ -81,7 +87,7 @@ const Explore = () => {
                     <div className="text-sm text-gray-500">
                       {categoryCount} destinations
                     </div>
-                  </a>
+                  </button>
                 );
               })}
             </div>
