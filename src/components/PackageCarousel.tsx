@@ -176,7 +176,7 @@ const PackageCarousel = () => {
           {/* Carousel Viewport */}
           <div className="overflow-hidden mx-4 md:mx-12">
             <div 
-              className={`flex gap-4 md:gap-6 ${!isTransitioning ? 'transition-transform duration-500 ease-in-out' : ''}`}
+              className={`flex gap-3 md:gap-6 ${!isTransitioning ? 'transition-transform duration-500 ease-in-out' : ''}`}
               style={{ 
                 transform: `translateX(-${(currentIndex * 100) / carouselSettings.itemsPerView}%)`,
                 width: `${(extendedPackages.length * 100) / carouselSettings.itemsPerView}%`
@@ -186,7 +186,11 @@ const PackageCarousel = () => {
                 <div 
                   key={`${pkg.id}-${index}`}
                   className="flex-shrink-0"
-                  style={{ width: `calc(${100 / carouselSettings.itemsPerView}% - ${carouselSettings.itemsPerView === 2 ? '0.75rem' : '1rem'})` }}
+                  style={{ 
+                    width: carouselSettings.itemsPerView === 2 
+                      ? 'calc(50% - 0.375rem)' 
+                      : 'calc(33.333% - 1rem)'
+                  }}
                 >
                   <div 
                     className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group hover:-translate-y-2 h-full cursor-pointer"
