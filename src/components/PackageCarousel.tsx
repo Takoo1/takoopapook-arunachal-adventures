@@ -20,13 +20,11 @@ const PackageCarousel = () => {
 
   // Start from the first real card (after the duplicated last cards)
   const realStartIndex = itemsPerView;
-  const realEndIndex = realStartIndex + packages.length - 1;
-
-  // Initialize currentIndex to realStartIndex when packages are loaded
-  const [currentIndex, setCurrentIndex] = useState(packages.length > 0 ? realStartIndex : 0);
+  
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Update currentIndex when packages are first loaded
+  // Initialize currentIndex when packages are loaded
   useEffect(() => {
     if (packages.length > 0 && currentIndex === 0) {
       setCurrentIndex(realStartIndex);
@@ -46,7 +44,11 @@ const PackageCarousel = () => {
 
   // Handle infinite loop reset
   useEffect(() => {
-    if (currentIndex > realEndIndex) {
+    if (packages.length === 0) return;
+    
+    const maxIndex = realStartIndex + packages.length - 1;
+    
+    if (currentIndex > maxIndex) {
       // Reset to the start without animation
       setTimeout(() => {
         setIsTransitioning(true);
@@ -57,11 +59,11 @@ const PackageCarousel = () => {
       // Reset to the end without animation
       setTimeout(() => {
         setIsTransitioning(true);
-        setCurrentIndex(realEndIndex);
+        setCurrentIndex(maxIndex);
         setTimeout(() => setIsTransitioning(false), 50);
       }, 500);
     }
-  }, [currentIndex, realStartIndex, realEndIndex]);
+  }, [currentIndex, realStartIndex, packages.length]);
 
   const goToPrevious = useCallback(() => {
     if (isTransitioning) return;
@@ -146,8 +148,8 @@ const PackageCarousel = () => {
             <div 
               className={`flex gap-6 ${!isTransitioning ? 'transition-transform duration-500 ease-in-out' : ''}`}
               style={{ 
-                transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)`,
-                width: `${(duplicatedPackages.length / itemsPerView) * 100}%`
+                transform: `translateX(-${(currentIndex * 100) / itemsPerView}%)`,
+                width: `${(duplicatedPackages.length * 100) / itemsPerView}%`
               }}
             >
               {duplicatedPackages.map((pkg, index) => (
