@@ -12,47 +12,64 @@ const PackageCarousel = () => {
 
   const packages = allPackages;
   const itemsPerView = 3;
-  const maxIndex = Math.max(0, packages.length - itemsPerView);
+  
+  // Create infinite loop by duplicating cards
+  const duplicatedPackages = packages.length > 0 ? [
+    ...packages.slice(-itemsPerView), // Last few cards at the beginning
+    ...packages, // Original cards
+    ...packages.slice(0, itemsPerView) // First few cards at the end
+  ] : [];
+
+  // Start from the first real card (after the duplicated last cards)
+  const realStartIndex = itemsPerView;
+  const realEndIndex = realStartIndex + packages.length - 1;
 
   // Auto-scroll functionality
   useEffect(() => {
     if (packages.length <= itemsPerView) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => {
-        if (prev >= maxIndex) {
-          return 0; // Loop back to start
-        }
-        return prev + 1;
-      });
+      setCurrentIndex((prev) => prev + 1);
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [packages.length, maxIndex, itemsPerView]);
+  }, [packages.length, itemsPerView]);
+
+  // Handle infinite loop reset
+  useEffect(() => {
+    if (currentIndex > realEndIndex) {
+      // Reset to the start without animation
+      setTimeout(() => {
+        setIsTransitioning(true);
+        setCurrentIndex(realStartIndex);
+        setTimeout(() => setIsTransitioning(false), 50);
+      }, 500);
+    } else if (currentIndex < realStartIndex) {
+      // Reset to the end without animation
+      setTimeout(() => {
+        setIsTransitioning(true);
+        setCurrentIndex(realEndIndex);
+        setTimeout(() => setIsTransitioning(false), 50);
+      }, 500);
+    }
+  }, [currentIndex, realStartIndex, realEndIndex]);
+
+  // Initialize to the first real card
+  useEffect(() => {
+    if (packages.length > 0 && currentIndex === 0) {
+      setCurrentIndex(realStartIndex);
+    }
+  }, [packages.length, realStartIndex, currentIndex]);
 
   const goToPrevious = useCallback(() => {
     if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentIndex((prev) => {
-      if (prev <= 0) {
-        return maxIndex; // Loop to end
-      }
-      return prev - 1;
-    });
-    setTimeout(() => setIsTransitioning(false), 300);
-  }, [isTransitioning, maxIndex]);
+    setCurrentIndex((prev) => prev - 1);
+  }, [isTransitioning]);
 
   const goToNext = useCallback(() => {
     if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentIndex((prev) => {
-      if (prev >= maxIndex) {
-        return 0; // Loop to start
-      }
-      return prev + 1;
-    });
-    setTimeout(() => setIsTransitioning(false), 300);
-  }, [isTransitioning, maxIndex]);
+    setCurrentIndex((prev) => prev + 1);
+  }, [isTransitioning]);
 
   if (isLoading) {
     return (
@@ -124,17 +141,17 @@ const PackageCarousel = () => {
           {/* Carousel Viewport */}
           <div className="overflow-hidden mx-12">
             <div 
-              className="flex transition-transform duration-500 ease-in-out gap-6"
+              className={`flex gap-6 ${!isTransitioning ? 'transition-transform duration-500 ease-in-out' : ''}`}
               style={{ 
                 transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)`,
-                width: `${(packages.length / itemsPerView) * 100}%`
+                width: `${(duplicatedPackages.length / itemsPerView) * 100}%`
               }}
             >
-              {packages.map((pkg) => (
+              {duplicatedPackages.map((pkg, index) => (
                 <div 
-                  key={pkg.id} 
+                  key={`${pkg.id}-${index}`} 
                   className="flex-shrink-0"
-                  style={{ width: `${100 / packages.length}%` }}
+                  style={{ width: `${100 / duplicatedPackages.length}%` }}
                 >
                   <div 
                     className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group hover:-translate-y-2 h-full cursor-pointer"
@@ -211,23 +228,6 @@ const PackageCarousel = () => {
             </div>
           </div>
 
-          {/* Progress Indicators */}
-          {packages.length > itemsPerView && (
-            <div className="flex justify-center mt-8 space-x-2">
-              {Array.from({ length: maxIndex + 1 }).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentIndex(index)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    index === currentIndex 
-                      ? 'bg-emerald-500 w-8' 
-                      : 'bg-gray-300 hover:bg-gray-400 w-2'
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </div>
-          )}
         </div>
 
         {/* View All Button */}
