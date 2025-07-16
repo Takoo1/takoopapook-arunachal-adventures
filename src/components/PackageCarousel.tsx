@@ -16,6 +16,7 @@ const PackageCarousel = () => {
   const getCarouselSettings = () => {
     if (typeof window !== 'undefined') {
       const isMobile = window.innerWidth < 768;
+      console.log('Window width:', window.innerWidth, 'Is mobile:', isMobile);
       return {
         itemsPerView: isMobile ? 2 : 3,
         slideBy: isMobile ? 2 : 3
@@ -25,15 +26,26 @@ const PackageCarousel = () => {
   };
 
   const [carouselSettings, setCarouselSettings] = useState(getCarouselSettings());
+  
+  console.log('Current carousel settings:', carouselSettings);
 
   // Handle resize
   useEffect(() => {
     const handleResize = () => {
-      setCarouselSettings(getCarouselSettings());
+      const newSettings = getCarouselSettings();
+      console.log('Resize detected, new settings:', newSettings);
+      setCarouselSettings(newSettings);
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Force update on mount to ensure correct initial state
+  useEffect(() => {
+    const correctSettings = getCarouselSettings();
+    console.log('Force update on mount:', correctSettings);
+    setCarouselSettings(correctSettings);
   }, []);
 
   // Create infinite loop by duplicating cards
