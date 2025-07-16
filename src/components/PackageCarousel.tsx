@@ -67,21 +67,34 @@ const PackageCarousel = () => {
 
   // Initialize to show real cards (skip initial duplicates)
   useEffect(() => {
-    if (packages.length > 0 && currentIndex === 0) {
+    if (packages.length > 0) {
+      console.log('Initializing carousel, setting currentIndex to:', duplicatesCount);
       setCurrentIndex(duplicatesCount);
     }
   }, [packages.length, duplicatesCount]);
 
+  // Force correct initial state
+  useEffect(() => {
+    if (packages.length > 0 && currentIndex === 0) {
+      console.log('Force setting currentIndex to:', duplicatesCount);
+      setCurrentIndex(duplicatesCount);
+    }
+  }, [packages.length, duplicatesCount, currentIndex]);
+
   // Auto-scroll functionality
   useEffect(() => {
-    if (packages.length === 0) return;
+    if (packages.length === 0 || currentIndex === 0) return;
 
+    console.log('Starting auto-scroll with currentIndex:', currentIndex);
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => prev + carouselSettings.slideBy);
+      setCurrentIndex((prev) => {
+        console.log('Auto-scroll: changing from', prev, 'to', prev + carouselSettings.slideBy);
+        return prev + carouselSettings.slideBy;
+      });
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [packages.length, carouselSettings.slideBy]);
+  }, [packages.length, carouselSettings.slideBy, currentIndex]);
 
   // Handle infinite loop reset
   useEffect(() => {
