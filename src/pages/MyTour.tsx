@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -17,6 +17,11 @@ const MyTour = () => {
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   
   const currentPath = window.location.pathname;
+
+  // Scroll to top when component mounts or route changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [id, currentPath]);
 
   // If we have an ID, determine if it's a package or destination
   if (id) {
