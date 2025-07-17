@@ -294,9 +294,11 @@ const PackageDetail = () => {
                   </Link>
                 </Button>
               )}
-              <Button size="lg" className="px-8">
-                <CreditCard className="h-4 w-4 mr-2" />
-                Book Package
+              <Button size="lg" className="px-8" asChild>
+                <Link to={`/booking/${packageData.id}`}>
+                  <CreditCard className="h-4 w-4 mr-2" />
+                  Book Package
+                </Link>
               </Button>
             </div>
           </div>
