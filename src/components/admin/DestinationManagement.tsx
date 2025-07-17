@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAllLocations, useCreateLocation, useUpdateLocation, useDeleteLocation } from '@/hooks/useLocations';
+import { useUpdatePackage } from '@/hooks/usePackages';
 import { Location } from '@/types/database';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import StaticImageMap from '../StaticImageMap';
 import LocationForm, { LocationFormData } from './LocationForm';
 import { validateCoordinates } from '@/utils/coordinateValidation';
+import { supabase } from '@/integrations/supabase/client';
 
 const DestinationManagement = () => {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
@@ -18,6 +20,7 @@ const DestinationManagement = () => {
   const { data: locations = [] } = useAllLocations();
   const createLocation = useCreateLocation();
   const updateLocation = useUpdateLocation();
+  const updatePackage = useUpdatePackage();
   const deleteLocation = useDeleteLocation();
   const { toast } = useToast();
 
@@ -87,6 +90,9 @@ const DestinationManagement = () => {
         ...safeCoordinates
       };
       
+      // Sync packages with their locations_included arrays
+      await syncPackageLocations(formData.packages_included, formData.name.trim(), selectedLocation);
+      
       if (selectedLocation) {
         await updateLocation.mutateAsync({ id: selectedLocation.id, ...locationData });
         toast({ title: 'Destination updated successfully!' });
@@ -101,6 +107,61 @@ const DestinationManagement = () => {
         title: 'Error saving destination', 
         description: 'Please check all fields and try again.',
         variant: 'destructive' 
+      });
+    }
+  };
+
+  const syncPackageLocations = async (selectedPackageIds: string[], locationName: string, existingLocation?: Location | null) => {
+    try {
+      // Fetch all packages directly from Supabase
+      const { data: allPackages } = await supabase
+        .from('packages')
+        .select('*');
+      
+      if (!allPackages) return;
+      
+      for (const pkg of allPackages) {
+        const shouldIncludeLocation = selectedPackageIds.includes(pkg.id);
+        const currentlyIncluded = pkg.locations_included.includes(locationName);
+        
+        // If existing location name changed, remove old name from all packages
+        if (existingLocation && existingLocation.name !== locationName) {
+          const hasOldName = pkg.locations_included.includes(existingLocation.name);
+          if (hasOldName) {
+            const updatedLocations = pkg.locations_included.filter(loc => loc !== existingLocation.name);
+            if (shouldIncludeLocation) {
+              updatedLocations.push(locationName);
+            }
+            
+            await updatePackage.mutateAsync({
+              id: pkg.id,
+              locations_included: updatedLocations
+            });
+            continue;
+          }
+        }
+        
+        // Add location to package if selected but not currently included
+        if (shouldIncludeLocation && !currentlyIncluded) {
+          await updatePackage.mutateAsync({
+            id: pkg.id,
+            locations_included: [...pkg.locations_included, locationName]
+          });
+        }
+        // Remove location from package if not selected but currently included
+        else if (!shouldIncludeLocation && currentlyIncluded) {
+          await updatePackage.mutateAsync({
+            id: pkg.id,
+            locations_included: pkg.locations_included.filter(loc => loc !== locationName)
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error syncing package locations:', error);
+      toast({
+        title: 'Warning',
+        description: 'Destination saved but package sync failed. Please check package assignments.',
+        variant: 'destructive'
       });
     }
   };
