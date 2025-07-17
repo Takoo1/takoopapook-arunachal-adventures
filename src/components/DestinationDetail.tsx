@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Star, MapPin, Package, Plus, Heart } from 'lucide-react';
+import { ArrowLeft, Star, MapPin, Package as PackageIcon, Plus, Heart, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,6 +10,7 @@ import { usePackages } from '@/hooks/usePackages';
 import PackageCard from './PackageCard';
 import StaticImageMap from './StaticImageMap';
 import { useMapSettings } from '@/hooks/useMapSettings';
+import type { Package } from '@/hooks/usePackages';
 
 const DestinationDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +20,7 @@ const DestinationDetail = () => {
   const { data: mapSettings } = useMapSettings();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showImageLightbox, setShowImageLightbox] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
 
   const destination = locations.find(loc => loc.id === id);
   
@@ -36,9 +38,18 @@ const DestinationDetail = () => {
     );
   }
 
-  const destinationPackages = packages.filter(pkg => 
-    pkg.locations_included.includes(destination.name) || pkg.locations_included.includes(destination.id)
-  );
+  // Filter packages that include this destination (check both name and ID)
+  const destinationPackages = packages.filter(pkg => {
+    const includesName = pkg.locations_included.includes(destination.name);
+    const includesId = pkg.locations_included.includes(destination.id);
+    return includesName || includesId;
+  });
+
+  // Debug log to help troubleshoot
+  console.log('Destination:', destination.name, destination.id);
+  console.log('All packages:', packages.length);
+  console.log('Filtered packages:', destinationPackages.length);
+  console.log('Package locations:', packages.map(p => ({ title: p.title, locations: p.locations_included })));
 
   const defaultImage = "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&h=600&fit=crop";
   const images = destination.images && destination.images.length > 0 ? destination.images : [defaultImage];
@@ -194,15 +205,119 @@ const DestinationDetail = () => {
                 <p className="text-gray-600">Explore curated packages that include this destination</p>
               </div>
               <Badge variant="outline" className="flex items-center space-x-1">
-                <Package className="h-3 w-3" />
+                <PackageIcon className="h-3 w-3" />
                 <span>{destinationPackages.length} packages</span>
               </Badge>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {destinationPackages.map((pkg) => (
-                <PackageCard key={pkg.id} package={pkg} />
+                <div key={pkg.id} onClick={() => setSelectedPackage(pkg)} className="cursor-pointer">
+                  <PackageCard package={pkg} />
+                </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* Package Detail Modal */}
+        {selectedPackage && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center p-4">
+            <div className="bg-white rounded-t-2xl w-full max-w-4xl max-h-[80vh] overflow-y-auto">
+              <div className="sticky top-0 bg-white border-b p-4 flex items-center justify-between">
+                <h3 className="text-xl font-bold">Package Details</h3>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSelectedPackage(null)}
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+              
+              <div className="p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Package Image */}
+                  <div>
+                    <div className="aspect-[4/3] rounded-xl overflow-hidden">
+                      <img
+                        src={selectedPackage.image_url}
+                        alt={selectedPackage.title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&h=600&fit=crop";
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Package Details */}
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <Badge variant="secondary">{selectedPackage.package_code}</Badge>
+                        <div className="flex items-center space-x-1">
+                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <span className="font-medium">{selectedPackage.rating}</span>
+                          <span className="text-gray-500">({selectedPackage.reviews_count})</span>
+                        </div>
+                      </div>
+                      <h4 className="text-2xl font-bold mb-2">{selectedPackage.title}</h4>
+                      <p className="text-lg font-semibold text-emerald-600 mb-4">{selectedPackage.price}</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-gray-50 p-3 rounded-lg">
+                        <p className="text-sm text-gray-600">Duration</p>
+                        <p className="font-semibold">{selectedPackage.duration}</p>
+                      </div>
+                      <div className="bg-gray-50 p-3 rounded-lg">
+                        <p className="text-sm text-gray-600">Group Size</p>
+                        <p className="font-semibold">{selectedPackage.group_size}</p>
+                      </div>
+                    </div>
+
+                    {selectedPackage.features.length > 0 && (
+                      <div>
+                        <h5 className="font-semibold mb-2">Package Features</h5>
+                        <div className="space-y-1">
+                          {selectedPackage.features.map((feature, index) => (
+                            <div key={index} className="flex items-start space-x-2">
+                              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mt-2 flex-shrink-0" />
+                              <span className="text-sm text-gray-700">{feature}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedPackage.locations_included.length > 0 && (
+                      <div>
+                        <h5 className="font-semibold mb-2">Included Destinations</h5>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedPackage.locations_included.map((location, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {location}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="pt-4">
+                      <Button 
+                        className="w-full" 
+                        onClick={() => {
+                          setSelectedPackage(null);
+                          navigate(`/booking/${selectedPackage.id}`);
+                        }}
+                      >
+                        Book This Package
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
