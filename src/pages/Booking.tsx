@@ -237,7 +237,7 @@ const Booking = () => {
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div className="flex justify-between">
-                        <span>Package Price ({groupSizeNumber} people):</span>
+                        <span>Package Price:</span>
                         <span>₹{basePrice.toLocaleString()}</span>
                       </div>
                       

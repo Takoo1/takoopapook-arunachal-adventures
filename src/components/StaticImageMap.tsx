@@ -299,7 +299,7 @@ const StaticImageMap = ({
             return (
               <div
                 key={location.id}
-                className="absolute transform -translate-x-1/2 -translate-y-full pointer-events-auto cursor-pointer z-20"
+                className="absolute transform -translate-x-1/2 -translate-y-full pointer-events-auto cursor-pointer group z-20"
                 style={{
                   left: `${markerX}px`,
                   top: `${markerY}px`,
@@ -313,25 +313,30 @@ const StaticImageMap = ({
                   }
                 }}
               >
-                {/* Marker Pin - Fixed size regardless of zoom */}
+                {/* Hover Tooltip */}
+                <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-3 py-1 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-30 pointer-events-none">
+                  {location.name}
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45" />
+                </div>
+
+                {/* Enhanced Marker Design */}
                 <div className={`relative transition-all duration-300 ${isSelected ? 'scale-125' : 'hover:scale-110'}`}>
-                  <div className={`w-8 h-8 rounded-full border-3 border-white shadow-lg flex items-center justify-center ${
-                    isSelected ? 'bg-orange-500' : 'bg-emerald-500'
+                  {/* Outer Glow Ring */}
+                  <div className={`absolute inset-0 w-12 h-12 rounded-full opacity-30 ${
+                    isSelected ? 'bg-orange-400 animate-pulse' : 'bg-emerald-400 group-hover:bg-emerald-300'
+                  } transform -translate-x-1/6 -translate-y-1/6`} />
+                  
+                  {/* Main Marker Body */}
+                  <div className={`relative w-10 h-10 rounded-full border-3 border-white shadow-xl flex items-center justify-center transition-all duration-300 ${
+                    isSelected ? 'bg-gradient-to-br from-orange-400 to-orange-600' : 'bg-gradient-to-br from-emerald-400 to-emerald-600 group-hover:from-emerald-300 group-hover:to-emerald-500'
                   }`}>
-                    <MapPin className="h-4 w-4 text-white" />
+                    {/* Inner Icon */}
+                    <div className={`w-3 h-3 rounded-full bg-white ${isSelected ? 'animate-pulse' : ''}`} />
                   </div>
                   
-                  {/* Pulse Animation for selected marker */}
+                  {/* Pulse Animation Ring */}
                   {isSelected && (
-                    <div className="absolute inset-0 rounded-full animate-ping bg-orange-400 opacity-75" />
-                  )}
-                  
-                  {/* Location Label for selected marker */}
-                  {isSelected && (
-                    <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-3 py-1 rounded-lg text-sm font-medium whitespace-nowrap z-30">
-                      {location.name}
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45" />
-                    </div>
+                    <div className="absolute inset-0 w-10 h-10 rounded-full border-2 border-orange-400 animate-ping opacity-75" />
                   )}
                 </div>
               </div>
