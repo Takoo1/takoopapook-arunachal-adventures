@@ -1,8 +1,10 @@
 import { usePublishedReviews } from '@/hooks/useReviews';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star, Calendar, User, Image, Video } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Star, Calendar, User, Image, Video, PlusCircle } from 'lucide-react';
 import { Review } from '@/types/database';
+import { Link } from 'react-router-dom';
 
 interface ReviewSectionProps {
   itemType: 'package' | 'destination';
@@ -136,26 +138,34 @@ const ReviewSection = ({ itemType, itemId }: ReviewSectionProps) => {
           <span>Reviews</span>
           <Badge variant="secondary">{reviews.length}</Badge>
         </h3>
-        {reviews.length > 0 && (
-          <div className="flex items-center space-x-2">
-            <div className="flex items-center space-x-1">
-              {[...Array(5)].map((_, i) => {
-                const avgRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
-                return (
-                  <Star
-                    key={i}
-                    className={`h-4 w-4 ${
-                      i < Math.round(avgRating) ? 'text-yellow-500 fill-current' : 'text-gray-300'
-                    }`}
-                  />
-                );
-              })}
+        <div className="flex items-center space-x-4">
+          {reviews.length > 0 && (
+            <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1">
+                {[...Array(5)].map((_, i) => {
+                  const avgRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
+                  return (
+                    <Star
+                      key={i}
+                      className={`h-4 w-4 ${
+                        i < Math.round(avgRating) ? 'text-yellow-500 fill-current' : 'text-gray-300'
+                      }`}
+                    />
+                  );
+                })}
+              </div>
+              <span className="text-sm text-gray-600">
+                {(reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length).toFixed(1)} average
+              </span>
             </div>
-            <span className="text-sm text-gray-600">
-              {(reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length).toFixed(1)} average
-            </span>
-          </div>
-        )}
+          )}
+          <Button asChild variant="default" size="sm">
+            <Link to={`/add-review?itemType=${itemType}&itemId=${itemId}`}>
+              <PlusCircle className="h-4 w-4 mr-2" />
+              Share Your Experience
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {reviews.length === 0 ? (

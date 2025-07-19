@@ -306,42 +306,6 @@ const PackageDetail = () => {
         </CardContent>
       </Card>
 
-      {/* Reviews Section */}
-      {packageData.reviews.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span>Reviews ({packageData.reviews_count})</span>
-              <div className="flex items-center">
-                <Star className="h-5 w-5 fill-yellow-400 text-yellow-400 mr-1" />
-                <span className="font-bold text-lg">{packageData.rating.toFixed(1)}</span>
-              </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {packageData.reviews.map((review, index) => (
-                <div key={index} className="border-b border-border last:border-0 pb-4 last:pb-0">
-                  <div className="flex items-center mb-2">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-4 w-4 ${
-                            i < packageData.rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <span className="ml-2 text-sm text-muted-foreground">Anonymous</span>
-                  </div>
-                  <p className="text-muted-foreground">{review}</p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Image Lightbox */}
       {showImageLightbox && (
