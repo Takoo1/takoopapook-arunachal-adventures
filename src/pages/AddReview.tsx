@@ -14,10 +14,10 @@ import PackageCard from '@/components/PackageCard';
 import DestinationCard from '@/components/DestinationCard';
 
 const AddReview = () => {
-  const { id } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const type = searchParams.get('type') as 'package' | 'destination';
+  const itemId = searchParams.get('itemId');
+  const itemType = searchParams.get('itemType') as 'package' | 'destination';
   
   const { data: packages = [] } = useAllPackages();
   const { data: locations = [] } = useAllLocations();
@@ -33,9 +33,9 @@ const AddReview = () => {
   const [videos, setVideos] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
 
-  const item = type === 'package' 
-    ? packages.find(p => p.id === id)
-    : locations.find(l => l.id === id);
+  const item = itemType === 'package' 
+    ? packages.find(p => p.id === itemId)
+    : locations.find(l => l.id === itemId);
 
   const handleInputChange = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -78,8 +78,8 @@ const AddReview = () => {
       ]);
 
       await createReview.mutateAsync({
-        item_type: type,
-        item_id: id!,
+        item_type: itemType,
+        item_id: itemId!,
         experience_summary: formData.experience_summary,
         detailed_review: formData.detailed_review,
         reviewer_name: formData.reviewer_name,
@@ -130,7 +130,7 @@ const AddReview = () => {
           </Button>
           <h1 className="text-3xl font-bold text-center mb-2">Add Review</h1>
           <p className="text-muted-foreground text-center">
-            Share your experience with this {type}
+            Share your experience with this {itemType}
           </p>
         </div>
 
@@ -139,10 +139,10 @@ const AddReview = () => {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="capitalize">{type} Details</CardTitle>
+                <CardTitle className="capitalize">{itemType} Details</CardTitle>
               </CardHeader>
               <CardContent>
-                {type === 'package' ? (
+                {itemType === 'package' ? (
                   <PackageCard 
                     package={item as any} 
                   />
