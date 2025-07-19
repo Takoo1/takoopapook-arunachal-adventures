@@ -158,6 +158,12 @@ const PackageManagement = () => {
                     <Star className="h-3 w-3 mr-1 fill-current" />
                     {pkg.rating} ({pkg.reviews_count})
                   </div>
+                  <button
+                    onClick={() => window.open(`/add-review/${pkg.id}?type=package`, '_blank')}
+                    className="text-blue-600 hover:text-blue-800 font-medium text-xs"
+                  >
+                    + Add Review
+                  </button>
                 </div>
               </div>
 

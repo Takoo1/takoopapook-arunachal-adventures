@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import DestinationCard from '@/components/DestinationCard';
 import InteractiveLeafletSection from '@/components/InteractiveLeafletSection';
+import ReviewSection from '@/components/ReviewSection';
 
 const PackageDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -368,6 +369,11 @@ const PackageDetail = () => {
           </div>
         </div>
       )}
+
+      {/* Reviews Section */}
+      <div className="mb-12">
+        <ReviewSection itemType="package" itemId={packageData.id} />
+      </div>
     </div>
   );
 };

@@ -190,6 +190,51 @@ export type Database = {
           },
         ]
       }
+      reviews: {
+        Row: {
+          created_at: string
+          detailed_review: string
+          experience_summary: string
+          id: string
+          images: string[] | null
+          is_published: boolean | null
+          item_id: string
+          item_type: string
+          rating: number | null
+          reviewer_name: string
+          updated_at: string
+          videos: string[] | null
+        }
+        Insert: {
+          created_at?: string
+          detailed_review: string
+          experience_summary: string
+          id?: string
+          images?: string[] | null
+          is_published?: boolean | null
+          item_id: string
+          item_type: string
+          rating?: number | null
+          reviewer_name: string
+          updated_at?: string
+          videos?: string[] | null
+        }
+        Update: {
+          created_at?: string
+          detailed_review?: string
+          experience_summary?: string
+          id?: string
+          images?: string[] | null
+          is_published?: boolean | null
+          item_id?: string
+          item_type?: string
+          rating?: number | null
+          reviewer_name?: string
+          updated_at?: string
+          videos?: string[] | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

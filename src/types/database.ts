@@ -1,4 +1,3 @@
-
 export interface Location {
   id: string;
   name: string;
@@ -37,6 +36,21 @@ export interface Package {
   updated_at: string;
 }
 
+export interface Review {
+  id: string;
+  item_type: 'package' | 'destination';
+  item_id: string;
+  experience_summary: string;
+  detailed_review: string;
+  reviewer_name: string;
+  images: string[];
+  videos: string[];
+  rating: number;
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface PlannedLocation {
   id: string;
   location_id: string;
@@ -67,6 +81,11 @@ export interface Database {
         Row: Package;
         Insert: Omit<Package, 'id' | 'created_at' | 'updated_at'>;
         Update: Partial<Omit<Package, 'id' | 'created_at' | 'updated_at'>>;
+      };
+      reviews: {
+        Row: Review;
+        Insert: Omit<Review, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<Review, 'id' | 'created_at' | 'updated_at'>>;
       };
       map_settings: {
         Row: MapSettings;

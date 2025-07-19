@@ -315,6 +315,12 @@ const DestinationManagement = () => {
                               <span>⭐ {location.rating || 0}</span>
                               <span>•</span>
                               <span>{location.reviews_count || 0} reviews</span>
+                              <button
+                                onClick={() => window.open(`/add-review/${location.id}?type=destination`, '_blank')}
+                                className="text-blue-600 hover:text-blue-800 font-medium"
+                              >
+                                + Add Review
+                              </button>
                               {location.packages_included && location.packages_included.length > 0 && (
                                 <>
                                   <span>•</span>

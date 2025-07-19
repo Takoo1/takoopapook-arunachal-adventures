@@ -68,7 +68,20 @@ const AdminMapEditorPage = () => {
     );
   }
 
-  return <AdminLeafletEditor />;
+  return (
+    <div>
+      <div className="mb-6 text-center p-4 bg-white border-b">
+        <Button
+          onClick={() => window.open('/admin/reviews', '_blank')}
+          variant="outline"
+          className="mr-4"
+        >
+          Manage Reviews
+        </Button>
+      </div>
+      <AdminLeafletEditor />
+    </div>
+  );
 };
 
 export default AdminMapEditorPage;

@@ -10,6 +10,7 @@ import { usePackages } from '@/hooks/usePackages';
 import PackageCard from './PackageCard';
 import StaticImageMap from './StaticImageMap';
 import { useMapSettings } from '@/hooks/useMapSettings';
+import ReviewSection from './ReviewSection';
 import type { Package } from '@/hooks/usePackages';
 
 const DestinationDetail = () => {
@@ -513,6 +514,11 @@ const DestinationDetail = () => {
             </div>
           </div>
         )}
+
+        {/* Reviews Section */}
+        <div className="mb-12">
+          <ReviewSection itemType="destination" itemId={destination.id} />
+        </div>
       </div>
     </div>
   );
