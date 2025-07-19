@@ -159,7 +159,7 @@ const PackageManagement = () => {
                     {pkg.rating} ({pkg.reviews_count})
                   </div>
                   <button
-                    onClick={() => window.open(`/add-review/${pkg.id}?type=package`, '_blank')}
+                    onClick={() => window.open(`/add-review?itemType=package&itemId=${pkg.id}`, '_blank')}
                     className="text-blue-600 hover:text-blue-800 font-medium text-xs"
                   >
                     + Add Review

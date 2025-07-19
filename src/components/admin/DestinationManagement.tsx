@@ -316,7 +316,7 @@ const DestinationManagement = () => {
                               <span>•</span>
                               <span>{location.reviews_count || 0} reviews</span>
                               <button
-                                onClick={() => window.open(`/add-review/${location.id}?type=destination`, '_blank')}
+                                onClick={() => window.open(`/add-review?itemType=destination&itemId=${location.id}`, '_blank')}
                                 className="text-blue-600 hover:text-blue-800 font-medium"
                               >
                                 + Add Review
