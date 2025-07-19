@@ -38,7 +38,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin/map-editor" element={<AdminMapEditorPage />} />
-            <Route path="/add-review/:id" element={<AddReview />} />
+            <Route path="/add-review" element={<AddReview />} />
             <Route path="/admin/reviews" element={<ReviewsManagement />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
