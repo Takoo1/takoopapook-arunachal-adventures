@@ -7,24 +7,6 @@ const About = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      {/* Hero Section */}
-      <section className="pt-20 pb-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5" />
-        <div className="container mx-auto px-4 relative">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="animate-fade-in">
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
-                About{' '}
-                <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
-                  TAKOO-PAPOOK
-                </span>
-              </h1>
-              <div className="w-24 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto mb-8 rounded-full" />
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Company Description */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
@@ -33,7 +15,7 @@ const About = () => {
               <div className="space-y-8 animate-fade-in">
                 <div>
                   <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-                    Our Mission
+                    About TAKOO-PAPOOK
                   </h2>
                   <p className="text-lg text-muted-foreground leading-relaxed">
                     TAKOO - PAPOOK Eco-Tourist seeks to revolutionize eco-tourism in Arunachal Pradesh by providing tourists with memorable experiences that reflect the region's rich culture, natural beauty, and ecological diversity. Our focus on sustainability, local employment, and customer satisfaction will ensure that we not only grow as a business but also contribute to the well-being of the local community and environment.
@@ -124,6 +106,63 @@ const About = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Vision & Mission Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16 animate-fade-in">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                Vision & Mission
+              </h2>
+              <div className="w-20 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto rounded-full" />
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-16">
+              {/* Vision */}
+              <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in">
+                <div className="text-center mb-6">
+                  <div className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <span className="text-3xl text-white">🌟</span>
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-emerald-800">Our Vision</h3>
+                </div>
+                <p className="text-emerald-700 leading-relaxed text-center">
+                  To become the leading eco-tourism service provider in the region, offering sustainable, culturally enriching travel experiences that contribute to the conservation of nature and the upliftment of local communities.
+                </p>
+              </div>
+
+              {/* Mission */}
+              <div className="bg-gradient-to-br from-teal-50 to-teal-100 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in">
+                <div className="text-center mb-6">
+                  <div className="w-20 h-20 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <span className="text-3xl text-white">🎯</span>
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-teal-800">Our Mission</h3>
+                </div>
+                <ul className="space-y-3 text-teal-700">
+                  <li className="flex items-start">
+                    <span className="text-teal-500 mr-2 mt-1">•</span>
+                    <span>To promote the unique and diverse culture of Arunachal Pradesh and its natural beauty to a global audience.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-teal-500 mr-2 mt-1">•</span>
+                    <span>To provide affordable and genuine eco-tourism packages with a focus on environmental conservation and sustainable travel.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-teal-500 mr-2 mt-1">•</span>
+                    <span>To offer tourists a seamless travel experience via our digital platforms, providing detailed, curated tour plans, transportation, accommodation, and guided experiences.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-teal-500 mr-2 mt-1">•</span>
+                    <span>To hire and empower local youth, offering them meaningful employment and an opportunity to preserve and promote their heritage.</span>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
