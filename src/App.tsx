@@ -16,6 +16,7 @@ import NotFound from "./pages/NotFound";
 import AdminMapEditorPage from "./pages/AdminMapEditor";
 import AddReview from "./pages/AddReview";
 import ReviewsManagement from "./pages/ReviewsManagement";
+import FounderProfile from "./pages/FounderProfile";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/admin/map-editor" element={<AdminMapEditorPage />} />
             <Route path="/add-review" element={<AddReview />} />
             <Route path="/admin/reviews" element={<ReviewsManagement />} />
+            <Route path="/founder-profile" element={<FounderProfile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

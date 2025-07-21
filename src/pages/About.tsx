@@ -96,7 +96,10 @@ const About = () => {
 
                   {/* Read More Button */}
                   <div className="mt-8 text-center">
-                    <button className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-8 py-3 rounded-full font-semibold hover:from-emerald-600 hover:to-teal-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                    <button 
+                      onClick={() => window.location.href = '/founder-profile'}
+                      className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-8 py-3 rounded-full font-semibold hover:from-emerald-600 hover:to-teal-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                    >
                       Read More About Him
                     </button>
                   </div>
