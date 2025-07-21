@@ -94,16 +94,11 @@ const About = () => {
                     </p>
                   </div>
 
-                  {/* Highlights */}
-                  <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-emerald-50 rounded-lg p-4 border border-emerald-100">
-                      <h4 className="font-semibold text-emerald-800 mb-2">Education</h4>
-                      <p className="text-sm text-emerald-700">Diploma in Tourism Studies</p>
-                    </div>
-                    <div className="bg-teal-50 rounded-lg p-4 border border-teal-100">
-                      <h4 className="font-semibold text-teal-800 mb-2">Origin</h4>
-                      <p className="text-sm text-teal-700">Llikabali, Arunachal Pradesh</p>
-                    </div>
+                  {/* Read More Button */}
+                  <div className="mt-8 text-center">
+                    <button className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-8 py-3 rounded-full font-semibold hover:from-emerald-600 hover:to-teal-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                      Read More About Him
+                    </button>
                   </div>
                 </div>
               </div>
