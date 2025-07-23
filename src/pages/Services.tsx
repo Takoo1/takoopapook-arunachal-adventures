@@ -5,60 +5,70 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
   MapPin, 
-  Globe, 
-  Mountain, 
-  Leaf, 
-  Camera, 
-  Users, 
-  Shield, 
-  Calendar,
-  Home,
-  Plane,
-  CreditCard,
   Phone,
-  TreePine,
-  Fish,
-  Flower2,
-  Clock,
-  Star,
-  Award,
-  Heart,
-  Compass,
-  Route,
-  Utensils,
-  Wifi,
-  CheckCircle
+  Globe,
+  Camera,
+  Leaf
 } from 'lucide-react';
+
+// Import AI-generated service icons
+import transportationIcon from '@/assets/services/transportation-icon.png';
+import accommodationIcon from '@/assets/services/accommodation-icon.png';
+import guidanceIcon from '@/assets/services/guidance-icon.png';
+import culturalIcon from '@/assets/services/cultural-icon.png';
+import natureIcon from '@/assets/services/nature-icon.png';
+import cuisineIcon from '@/assets/services/cuisine-icon.png';
+import smartPackagesIcon from '@/assets/services/smart-packages-icon.png';
+import intelligenceIcon from '@/assets/services/intelligence-icon.png';
+import destinationsIcon from '@/assets/services/destinations-icon.png';
+import securityIcon from '@/assets/services/security-icon.png';
+import supportIcon from '@/assets/services/support-icon.png';
+import offlineIcon from '@/assets/services/offline-icon.png';
+import sacredSitesIcon from '@/assets/services/sacred-sites-icon.png';
+import trekkingIcon from '@/assets/services/trekking-icon.png';
+import wildernessIcon from '@/assets/services/wilderness-icon.png';
+import festivalsIcon from '@/assets/services/festivals-icon.png';
+import communityIcon from '@/assets/services/community-icon.png';
+import adventureIcon from '@/assets/services/adventure-icon.png';
+import photographyIcon from '@/assets/services/photography-icon.png';
+import wellnessIcon from '@/assets/services/wellness-icon.png';
+import zeroWasteIcon from '@/assets/services/zero-waste-icon.png';
+import empowermentIcon from '@/assets/services/empowerment-icon.png';
+import conservationIcon from '@/assets/services/conservation-icon.png';
+import certifiedIcon from '@/assets/services/certified-icon.png';
+import expertiseIcon from '@/assets/services/expertise-icon.png';
+import safetyIcon from '@/assets/services/safety-icon.png';
+import flexibleIcon from '@/assets/services/flexible-icon.png';
 
 const Services = () => {
   const tourPackageFeatures = [
     { 
-      icon: Plane, 
+      icon: transportationIcon, 
       title: "Complete Transportation", 
       desc: "All modes covered - flights to Guwahati, road transfers via Bhalukpong/Tenga, helicopter services to remote areas, and local vehicle arrangements with experienced drivers familiar with mountain terrain"
     },
     { 
-      icon: Home, 
+      icon: accommodationIcon, 
       title: "Authentic Accommodation", 
       desc: "Eco-friendly homestays with local families, heritage hotels showcasing regional architecture, luxury resorts with mountain views, and camping sites in pristine wilderness areas with proper facilities"
     },
     { 
-      icon: Users, 
+      icon: guidanceIcon, 
       title: "Expert Local Guidance", 
       desc: "Certified local guides fluent in multiple languages, wildlife experts for nature tours, cultural interpreters for festival participation, and safety specialists for adventure activities"
     },
     { 
-      icon: Calendar, 
+      icon: culturalIcon, 
       title: "Immersive Cultural Programs", 
       desc: "Participation in Mopin, Solung, and Losar festivals, traditional craft workshops, tribal cooking classes, meditation sessions at monasteries, and authentic village ceremonies"
     },
     { 
-      icon: TreePine, 
+      icon: natureIcon, 
       title: "Nature & Wildlife Expeditions", 
       desc: "Guided treks through Namdapha National Park, bird watching tours with over 500 species, orchid trails during blooming season, and responsible wildlife photography experiences"
     },
     { 
-      icon: Utensils, 
+      icon: cuisineIcon, 
       title: "Authentic Cuisine Experience", 
       desc: "Traditional Arunachali dishes including thukpa, momos, and bamboo shoot delicacies, cooking demonstrations by local chefs, organic farm-to-table meals, and special dietary accommodations"
     }
@@ -66,32 +76,32 @@ const Services = () => {
 
   const platformFeatures = [
     { 
-      icon: CreditCard, 
+      icon: smartPackagesIcon, 
       title: "Smart Custom Packages", 
       desc: "AI-powered itinerary planning based on your interests, travel dates, budget, and group size. Real-time pricing with transparent cost breakdown and flexible payment options"
     },
     { 
-      icon: Globe, 
+      icon: intelligenceIcon, 
       title: "Live Travel Intelligence", 
       desc: "Real-time weather updates, road conditions, permit status, festival schedules, and location-based recommendations. Interactive map with GPS coordinates for all destinations"
     },
     { 
-      icon: MapPin, 
+      icon: destinationsIcon, 
       title: "Verified Destinations", 
       desc: "Hand-curated locations verified by our local team, detailed accessibility information, crowd density indicators, best visiting times, and insider tips from experienced travelers"
     },
     { 
-      icon: Shield, 
+      icon: securityIcon, 
       title: "Military-Grade Security", 
       desc: "256-bit SSL encryption, PCI DSS compliant payment processing, secure document storage for permits, and comprehensive travel insurance options with emergency evacuation coverage"
     },
     { 
-      icon: Phone, 
+      icon: supportIcon, 
       title: "24/7 Concierge Support", 
       desc: "Multi-language support team, emergency assistance hotline, real-time trip monitoring, instant rebooking for weather delays, and local emergency contacts in every destination"
     },
     { 
-      icon: Wifi, 
+      icon: offlineIcon, 
       title: "Offline-First Technology", 
       desc: "Downloadable maps and guides for areas with limited connectivity, offline translation tools, emergency contact information, and pre-loaded local tips and cultural etiquette guides"
     }
@@ -99,42 +109,42 @@ const Services = () => {
 
   const localExperiences = [
     { 
-      icon: Mountain, 
+      icon: sacredSitesIcon, 
       title: "Sacred Ancient Sites", 
       desc: "Explore Tawang Monastery (largest in India), Urgelling Monastery (birthplace of 6th Dalai Lama), Malithan Temple with its mystical caves, and Akashi Ganga's sacred waters with spiritual significance"
     },
     { 
-      icon: TreePine, 
+      icon: trekkingIcon, 
       title: "Epic Trekking Adventures", 
       desc: "Multi-day treks through Sela Pass (13,700 ft), Bumla Pass border crossing, Mechuka Valley's hidden trails, Ziro Valley's rice fields, and virgin forests with rare flora and fauna"
     },
     { 
-      icon: Fish, 
+      icon: wildernessIcon, 
       title: "Pristine Wilderness Areas", 
       desc: "Kane Wildlife Sanctuary with golden langurs, Magi Lake's crystal waters, Namdapha's four big cats, Dibru-Saikhowa's river dolphins, and Eaglenest's endemic bird species"
     },
     { 
-      icon: Calendar, 
+      icon: festivalsIcon, 
       title: "Vibrant Cultural Festivals", 
       desc: "BASCON celebration with traditional competitions, Yomgo River Festival's community gatherings, Mopin harvest celebrations, Solung agricultural festivals, and Losar Tibetan New Year ceremonies"
     },
     { 
-      icon: Home, 
+      icon: communityIcon, 
       title: "Authentic Community Living", 
       desc: "Stay with Monpa families in Tawang, experience Apatani culture in Ziro, live with Mishmi tribes in remote villages, participate in daily routines, and learn traditional crafts and farming"
     },
     { 
-      icon: Compass, 
+      icon: adventureIcon, 
       title: "Adventure Sports & Activities", 
       desc: "White water rafting on Brahmaputra tributaries, paragliding over Ziro Valley, rock climbing in Sela Pass, fishing in pristine mountain streams, and camping under star-filled skies"
     },
     { 
-      icon: Camera, 
+      icon: photographyIcon, 
       title: "Photography Expeditions", 
       desc: "Specialized tours for wildlife photography, landscape captures of dramatic mountain vistas, cultural documentation of tribal life, and exclusive access to remote photogenic locations"
     },
     { 
-      icon: Heart, 
+      icon: wellnessIcon, 
       title: "Wellness & Spiritual Retreats", 
       desc: "Meditation programs at ancient monasteries, yoga sessions amid Himalayan peaks, traditional healing therapies, spiritual guidance from Buddhist monks, and digital detox experiences"
     }
@@ -175,12 +185,16 @@ const Services = () => {
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {tourPackageFeatures.map((feature, index) => (
-                <Card key={index} className="group hover-scale border-0 bg-card/50 backdrop-blur-sm h-full">
+                <Card key={index} className="group hover-scale border-0 bg-card/50 backdrop-blur-sm h-full overflow-hidden">
                   <CardHeader className="text-center pb-3 sm:pb-4">
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                      <feature.icon className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
+                      <img 
+                        src={feature.icon} 
+                        alt={feature.title}
+                        className="w-10 h-10 sm:w-12 sm:h-12 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                      />
                     </div>
-                    <CardTitle className="text-lg sm:text-xl">{feature.title}</CardTitle>
+                    <CardTitle className="text-lg sm:text-xl group-hover:text-primary transition-colors duration-300">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="text-center flex-1">
                     <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{feature.desc}</p>
@@ -206,12 +220,16 @@ const Services = () => {
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {platformFeatures.map((feature, index) => (
-                <Card key={index} className="group hover-scale border-0 bg-background/80 backdrop-blur-sm h-full">
+                <Card key={index} className="group hover-scale border-0 bg-background/80 backdrop-blur-sm h-full overflow-hidden">
                   <CardHeader className="text-center pb-4">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-secondary/10 flex items-center justify-center group-hover:bg-secondary/20 transition-colors">
-                      <feature.icon className="h-8 w-8 text-secondary" />
+                    <div className="w-18 h-18 sm:w-20 sm:h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-secondary/10 to-accent/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-xl">
+                      <img 
+                        src={feature.icon} 
+                        alt={feature.title}
+                        className="w-12 h-12 sm:w-14 sm:h-14 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                      />
                     </div>
-                    <CardTitle className="text-xl">{feature.title}</CardTitle>
+                    <CardTitle className="text-xl group-hover:text-secondary transition-colors duration-300">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="text-center flex-1">
                     <p className="text-muted-foreground leading-relaxed">{feature.desc}</p>
@@ -237,12 +255,16 @@ const Services = () => {
             
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               {localExperiences.map((experience, index) => (
-                <Card key={index} className="group hover-scale border-0 bg-card/50 backdrop-blur-sm h-full">
+                <Card key={index} className="group hover-scale border-0 bg-card/50 backdrop-blur-sm h-full overflow-hidden">
                   <CardHeader className="text-center pb-4">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
-                      <experience.icon className="h-8 w-8 text-accent-foreground" />
+                    <div className="w-18 h-18 sm:w-20 sm:h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-accent/10 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg group-hover:rotate-3">
+                      <img 
+                        src={experience.icon} 
+                        alt={experience.title}
+                        className="w-12 h-12 sm:w-14 sm:h-14 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                      />
                     </div>
-                    <CardTitle className="text-xl">{experience.title}</CardTitle>
+                    <CardTitle className="text-xl group-hover:text-accent-foreground transition-colors duration-300">{experience.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="text-center flex-1">
                     <p className="text-muted-foreground leading-relaxed">{experience.desc}</p>
@@ -268,12 +290,16 @@ const Services = () => {
             </div>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-              <Card className="border-0 bg-background/80 backdrop-blur-sm h-full">
+              <Card className="border-0 bg-background/80 backdrop-blur-sm h-full group hover-scale overflow-hidden">
                 <CardHeader className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Leaf className="h-8 w-8 text-primary" />
+                  <div className="w-18 h-18 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
+                    <img 
+                      src={zeroWasteIcon} 
+                      alt="Zero-Waste Tourism"
+                      className="w-12 h-12 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                    />
                   </div>
-                  <CardTitle className="text-xl">Zero-Waste Tourism</CardTitle>
+                  <CardTitle className="text-xl group-hover:text-primary transition-colors duration-300">Zero-Waste Tourism</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
                   <p className="text-muted-foreground">
@@ -282,12 +308,16 @@ const Services = () => {
                 </CardContent>
               </Card>
               
-              <Card className="border-0 bg-background/80 backdrop-blur-sm h-full">
+              <Card className="border-0 bg-background/80 backdrop-blur-sm h-full group hover-scale overflow-hidden">
                 <CardHeader className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-secondary/10 flex items-center justify-center">
-                    <Users className="h-8 w-8 text-secondary" />
+                  <div className="w-18 h-18 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-secondary/10 to-accent/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
+                    <img 
+                      src={empowermentIcon} 
+                      alt="Community Empowerment"
+                      className="w-12 h-12 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                    />
                   </div>
-                  <CardTitle className="text-xl">Community Empowerment</CardTitle>
+                  <CardTitle className="text-xl group-hover:text-secondary transition-colors duration-300">Community Empowerment</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
                   <p className="text-muted-foreground">
@@ -296,12 +326,16 @@ const Services = () => {
                 </CardContent>
               </Card>
               
-              <Card className="border-0 bg-background/80 backdrop-blur-sm h-full">
+              <Card className="border-0 bg-background/80 backdrop-blur-sm h-full group hover-scale overflow-hidden">
                 <CardHeader className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-accent/10 flex items-center justify-center">
-                    <TreePine className="h-8 w-8 text-accent-foreground" />
+                  <div className="w-18 h-18 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-accent/10 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
+                    <img 
+                      src={conservationIcon} 
+                      alt="Forest Conservation"
+                      className="w-12 h-12 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                    />
                   </div>
-                  <CardTitle className="text-xl">Forest Conservation</CardTitle>
+                  <CardTitle className="text-xl group-hover:text-accent-foreground transition-colors duration-300">Forest Conservation</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
                   <p className="text-muted-foreground">
@@ -310,12 +344,16 @@ const Services = () => {
                 </CardContent>
               </Card>
               
-              <Card className="border-0 bg-background/80 backdrop-blur-sm h-full">
+              <Card className="border-0 bg-background/80 backdrop-blur-sm h-full group hover-scale overflow-hidden">
                 <CardHeader className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Award className="h-8 w-8 text-primary" />
+                  <div className="w-18 h-18 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
+                    <img 
+                      src={certifiedIcon} 
+                      alt="Certified Standards"
+                      className="w-12 h-12 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                    />
                   </div>
-                  <CardTitle className="text-xl">Certified Standards</CardTitle>
+                  <CardTitle className="text-xl group-hover:text-primary transition-colors duration-300">Certified Standards</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
                   <p className="text-muted-foreground">
@@ -358,36 +396,48 @@ const Services = () => {
             </div>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <Card className="border-0 bg-background/80 backdrop-blur-sm text-center">
+              <Card className="border-0 bg-background/80 backdrop-blur-sm text-center group hover-scale overflow-hidden">
                 <CardHeader>
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Star className="h-8 w-8 text-primary" />
+                  <div className="w-18 h-18 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
+                    <img 
+                      src={expertiseIcon} 
+                      alt="Expert Local Knowledge"
+                      className="w-12 h-12 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                    />
                   </div>
-                  <CardTitle className="text-xl">Expert Local Knowledge</CardTitle>
+                  <CardTitle className="text-xl group-hover:text-primary transition-colors duration-300">Expert Local Knowledge</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">15+ years of experience with deep local connections, insider access to remote locations, and relationships with tribal communities</p>
                 </CardContent>
               </Card>
               
-              <Card className="border-0 bg-background/80 backdrop-blur-sm text-center">
+              <Card className="border-0 bg-background/80 backdrop-blur-sm text-center group hover-scale overflow-hidden">
                 <CardHeader>
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-secondary/10 flex items-center justify-center">
-                    <Shield className="h-8 w-8 text-secondary" />
+                  <div className="w-18 h-18 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-secondary/10 to-accent/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
+                    <img 
+                      src={safetyIcon} 
+                      alt="Safety & Permits"
+                      className="w-12 h-12 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                    />
                   </div>
-                  <CardTitle className="text-xl">Safety & Permits</CardTitle>
+                  <CardTitle className="text-xl group-hover:text-secondary transition-colors duration-300">Safety & Permits</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">Complete permit assistance for Inner Line Permits, Protected Area Permits, and border area access with full legal compliance</p>
                 </CardContent>
               </Card>
               
-              <Card className="border-0 bg-background/80 backdrop-blur-sm text-center">
+              <Card className="border-0 bg-background/80 backdrop-blur-sm text-center group hover-scale overflow-hidden">
                 <CardHeader>
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-accent/10 flex items-center justify-center">
-                    <Clock className="h-8 w-8 text-accent-foreground" />
+                  <div className="w-18 h-18 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-accent/10 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
+                    <img 
+                      src={flexibleIcon} 
+                      alt="Flexible Scheduling"
+                      className="w-12 h-12 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                    />
                   </div>
-                  <CardTitle className="text-xl">Flexible Scheduling</CardTitle>
+                  <CardTitle className="text-xl group-hover:text-accent-foreground transition-colors duration-300">Flexible Scheduling</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">Weather-adaptive itineraries, alternative route planning, and flexible booking policies to ensure your trip succeeds regardless of conditions</p>
