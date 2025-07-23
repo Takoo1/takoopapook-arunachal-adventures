@@ -413,6 +413,11 @@ const DestinationDetail = () => {
           </Card>
         </div>
 
+        {/* Reviews Section */}
+        <div className="mb-12">
+          <ReviewSection itemType="destination" itemId={destination.id} />
+        </div>
+
         {/* Image Lightbox */}
         {showImageLightbox && (
           <div 
