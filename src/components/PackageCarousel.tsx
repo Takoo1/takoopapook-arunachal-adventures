@@ -13,6 +13,7 @@ const PackageCarousel = () => {
   const packages = allPackages;
   const itemsPerView = 3;
   const maxIndex = Math.max(0, packages.length - itemsPerView);
+  const totalPages = Math.ceil(packages.length / itemsPerView);
 
   // Note: Auto-scroll functionality removed per user request
 
@@ -202,10 +203,10 @@ const PackageCarousel = () => {
           {/* Progress Indicators */}
           {packages.length > itemsPerView && (
             <div className="flex justify-center mt-8 space-x-2">
-              {Array.from({ length: maxIndex + 1 }).map((_, index) => (
+              {Array.from({ length: totalPages }).map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => setCurrentIndex(index)}
+                  onClick={() => setCurrentIndex(Math.min(index, maxIndex))}
                   className={`h-2 rounded-full transition-all duration-300 ${
                     index === currentIndex 
                       ? 'bg-primary w-8' 
