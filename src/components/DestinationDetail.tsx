@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Star, MapPin, Package as PackageIcon, Plus, Heart, X } from 'lucide-react';
+import { ArrowLeft, Star, MapPin, Package as PackageIcon, Eye, Heart, X, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -87,7 +87,7 @@ const DestinationDetail = () => {
                 />
                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                   <div className="bg-white/90 rounded-full p-3">
-                    <Plus className="h-6 w-6 text-gray-800" />
+                    <Eye className="h-6 w-6 text-gray-800" />
                   </div>
                 </div>
               </div>
@@ -413,81 +413,6 @@ const DestinationDetail = () => {
           </Card>
         </div>
 
-        {/* Reviews Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Star className="h-5 w-5 text-yellow-500" />
-              <span>Reviews & Ratings</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {/* Rating Summary */}
-              <div className="flex items-center space-x-6 p-6 bg-gray-50 rounded-lg">
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-gray-800">{destination.rating}</div>
-                  <div className="flex items-center justify-center mt-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star 
-                        key={i} 
-                        className={`h-4 w-4 ${i < Math.floor(destination.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} 
-                      />
-                    ))}
-                  </div>
-                  <div className="text-sm text-gray-600 mt-1">{destination.reviews_count} reviews</div>
-                </div>
-                <Separator orientation="vertical" className="h-16" />
-                <div className="flex-1">
-                  <div className="space-y-2">
-                    {[5, 4, 3, 2, 1].map((rating) => (
-                      <div key={rating} className="flex items-center space-x-2">
-                        <span className="text-sm w-2">{rating}</span>
-                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                        <div className="flex-1 bg-gray-200 rounded-full h-2">
-                          <div 
-                            className="bg-yellow-400 h-2 rounded-full" 
-                            style={{ width: `${Math.random() * 80 + 10}%` }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Reviews List */}
-              <div className="space-y-4">
-                {destination.reviews && destination.reviews.length > 0 ? (
-                  destination.reviews.slice(0, 3).map((review, index) => (
-                    <Card key={index} className="border-l-4 border-l-emerald-500">
-                      <CardContent className="p-4">
-                        <div className="flex items-start justify-between mb-2">
-                          <div className="flex items-center space-x-1">
-                            {[...Array(5)].map((_, i) => (
-                              <Star 
-                                key={i} 
-                                className={`h-3 w-3 ${i < 4 ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} 
-                              />
-                            ))}
-                          </div>
-                          <span className="text-sm text-gray-500">Anonymous Traveler</span>
-                        </div>
-                        <p className="text-gray-700 text-sm leading-relaxed">{review}</p>
-                      </CardContent>
-                    </Card>
-                  ))
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    <Heart className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                    <p>No reviews yet. Be the first to share your experience!</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Image Lightbox */}
         {showImageLightbox && (
           <div 
@@ -509,16 +434,11 @@ const DestinationDetail = () => {
                 className="absolute top-4 right-4 text-white hover:bg-white/20"
                 onClick={() => setShowImageLightbox(false)}
               >
-                <Plus className="h-6 w-6 rotate-45" />
+                <X className="h-6 w-6" />
               </Button>
             </div>
           </div>
         )}
-
-        {/* Reviews Section */}
-        <div className="mb-12">
-          <ReviewSection itemType="destination" itemId={destination.id} />
-        </div>
       </div>
     </div>
   );
