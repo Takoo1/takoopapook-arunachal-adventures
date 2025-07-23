@@ -58,28 +58,28 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-lg">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 md:h-20">
+      <div className="container mx-auto container-padding">
+        <div className="flex items-center justify-between h-14 sm:h-16 md:h-18">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-2 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-              <MapPin className="h-6 w-6 text-white" />
+            <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-1.5 sm:p-2 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+              <MapPin className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+              <h1 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                 Takoopapook
               </h1>
-              <p className="text-xs text-gray-500 hidden md:block">Arunachal Pradesh Tourism</p>
+              <p className="text-xs text-gray-500 hidden sm:block">Arunachal Pradesh Tourism</p>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
+          <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 to={item.path}
-                className={`relative px-3 py-2 text-sm font-medium transition-all duration-300 hover:text-emerald-600 ${
+                className={`relative px-2 py-2 text-sm font-medium transition-all duration-300 hover:text-emerald-600 ${
                   isActive(item.path)
                     ? 'text-emerald-600'
                     : 'text-gray-700 hover:text-emerald-600'
@@ -96,7 +96,7 @@ const Header = () => {
             <div className="relative">
               <button
                 onClick={() => setIsExploreDropdownOpen(!isExploreDropdownOpen)}
-                className={`flex items-center space-x-1 px-3 py-2 text-sm font-medium transition-all duration-300 hover:text-emerald-600 ${
+                className={`flex items-center space-x-1 px-2 py-2 text-sm font-medium transition-all duration-300 hover:text-emerald-600 ${
                   location.pathname.startsWith('/explore')
                     ? 'text-emerald-600'
                     : 'text-gray-700 hover:text-emerald-600'
@@ -130,7 +130,7 @@ const Header = () => {
             <div className="relative">
               <button
                 onClick={() => setIsPackagesDropdownOpen(!isPackagesDropdownOpen)}
-                className={`flex items-center space-x-1 px-3 py-2 text-sm font-medium transition-all duration-300 hover:text-emerald-600 ${
+                className={`flex items-center space-x-1 px-2 py-2 text-sm font-medium transition-all duration-300 hover:text-emerald-600 ${
                   location.pathname.startsWith('/packages')
                     ? 'text-emerald-600'
                     : 'text-gray-700 hover:text-emerald-600'
@@ -162,16 +162,16 @@ const Header = () => {
           </nav>
 
           {/* User Actions & Mobile Menu Toggle */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {user ? (
               /* User Dropdown */
               <div className="hidden md:block relative">
                 <button
                   onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-                  className="flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105"
+                  className="flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-sm"
                 >
                   <User className="h-4 w-4" />
-                  <span>{user.email?.split('@')[0]}</span>
+                  <span className="hidden sm:inline">{user.email?.split('@')[0]}</span>
                   <ChevronDown className={`h-4 w-4 transition-transform ${isUserDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
                 
@@ -194,10 +194,10 @@ const Header = () => {
               /* Login Button */
               <Link
                 to="/auth"
-                className="hidden md:flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105"
+                className="hidden md:flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-sm"
               >
                 <User className="h-4 w-4" />
-                <span>Login</span>
+                <span className="hidden sm:inline">Login</span>
               </Link>
             )}
 

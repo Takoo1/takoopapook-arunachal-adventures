@@ -83,15 +83,15 @@ const PackageCarousel = () => {
   }
 
   return (
-    <section className="py-20 bg-gradient-to-br from-slate-50 to-emerald-50">
-      <div className="container mx-auto px-4">
+    <section className="section-padding-lg bg-gradient-to-br from-slate-50 to-emerald-50">
+      <div className="container mx-auto container-padding">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16">
+          <h2 className="mb-4 sm:mb-6">
             Popular Tour
             <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent"> Packages</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Discover handcrafted journeys that showcase the best of Arunachal Pradesh's natural beauty, 
             rich culture, and adventurous spirit.
           </p>
@@ -122,9 +122,9 @@ const PackageCarousel = () => {
           )}
 
           {/* Carousel Viewport */}
-          <div className="overflow-hidden mx-12">
+          <div className="overflow-hidden mx-6 sm:mx-8 lg:mx-12">
             <div 
-              className="flex transition-transform duration-500 ease-in-out gap-6"
+              className="flex transition-transform duration-500 ease-in-out gap-3 sm:gap-4 lg:gap-6"
               style={{ 
                 transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)`,
                 width: `${(packages.length / itemsPerView) * 100}%`
@@ -141,25 +141,25 @@ const PackageCarousel = () => {
                     onClick={() => navigate(`/my-tour/package/${pkg.id}`)}
                   >
                     {/* Image */}
-                    <div className="relative h-64 overflow-hidden">
+                    <div className="relative h-48 sm:h-56 lg:h-64 overflow-hidden">
                       <img 
                         src={pkg.image_url} 
                         alt={pkg.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
-                      <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-md text-white px-3 py-1 rounded-full text-sm font-medium">
+                      <div className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-white/20 backdrop-blur-md text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
                         {pkg.price}
                       </div>
-                      <div className="absolute top-4 left-4">
+                      <div className="absolute top-2 sm:top-4 left-2 sm:left-4">
                         <PlanButton 
                           locationId={pkg.id.toString()} 
                           locationName={pkg.title}
                           variant="compact"
                         />
                       </div>
-                      <div className="absolute bottom-4 left-4 flex flex-wrap gap-1">
+                      <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 flex flex-wrap gap-1">
                         {pkg.features.slice(0, 2).map((feature, index) => (
-                          <span key={index} className="bg-emerald-500/90 text-white px-2 py-1 rounded-md text-xs font-medium">
+                          <span key={index} className="bg-emerald-500/90 text-white px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md text-xs font-medium">
                             {feature}
                           </span>
                         ))}
@@ -167,31 +167,31 @@ const PackageCarousel = () => {
                     </div>
 
                     {/* Content */}
-                    <div className="p-6">
-                      <div className="flex items-center justify-between mb-3">
+                    <div className="p-4 sm:p-6">
+                      <div className="flex items-center justify-between mb-2 sm:mb-3">
                         <div className="flex items-center text-amber-500">
-                          <Star className="h-4 w-4 fill-current" />
-                          <span className="text-sm font-medium ml-1">{pkg.rating}</span>
-                          <span className="text-gray-500 text-sm ml-1">({pkg.reviews_count})</span>
+                          <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-current" />
+                          <span className="text-xs sm:text-sm font-medium ml-1">{pkg.rating}</span>
+                          <span className="text-gray-500 text-xs sm:text-sm ml-1">({pkg.reviews_count})</span>
                         </div>
-                        <div className="flex items-center text-gray-500 text-sm">
-                          <Users className="h-4 w-4 mr-1" />
+                        <div className="flex items-center text-gray-500 text-xs sm:text-sm">
+                          <Users className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                           {pkg.group_size}
                         </div>
                       </div>
 
-                      <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-emerald-600 transition-colors">
+                      <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-800 mb-1 sm:mb-2 group-hover:text-emerald-600 transition-colors line-clamp-2">
                         {pkg.title}
                       </h3>
 
-                      <div className="flex items-center text-gray-600 mb-2">
-                        <MapPin className="h-4 w-4 mr-1 text-emerald-500" />
-                        <span className="text-sm">{pkg.location}</span>
+                      <div className="flex items-center text-gray-600 mb-1 sm:mb-2">
+                        <MapPin className="h-3 w-3 sm:h-4 sm:w-4 mr-1 text-emerald-500" />
+                        <span className="text-xs sm:text-sm line-clamp-1">{pkg.location}</span>
                       </div>
 
-                      <div className="flex items-center text-gray-600 mb-4">
-                        <Clock className="h-4 w-4 mr-1 text-emerald-500" />
-                        <span className="text-sm">{pkg.duration}</span>
+                      <div className="flex items-center text-gray-600 mb-3 sm:mb-4">
+                        <Clock className="h-3 w-3 sm:h-4 sm:w-4 mr-1 text-emerald-500" />
+                        <span className="text-xs sm:text-sm">{pkg.duration}</span>
                       </div>
 
                       <button 
@@ -199,10 +199,10 @@ const PackageCarousel = () => {
                           e.stopPropagation(); // Prevent card click when button is clicked
                           navigate(`/my-tour/package/${pkg.id}`);
                         }}
-                        className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 group/btn flex items-center justify-center space-x-2"
+                        className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-2 sm:py-3 rounded-xl text-sm sm:text-base font-semibold hover:shadow-lg transition-all duration-300 group/btn flex items-center justify-center space-x-1 sm:space-x-2"
                       >
                         <span>Book Now</span>
-                        <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                        <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 group-hover/btn:translate-x-1 transition-transform" />
                       </button>
                     </div>
                   </div>

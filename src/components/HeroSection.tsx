@@ -46,7 +46,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative h-screen overflow-hidden">
+    <section className="relative h-[70vh] sm:h-[80vh] lg:h-screen overflow-hidden">
       {/* Slides */}
       <div className="relative h-full">
         {slides.map((slide, index) => (
@@ -66,30 +66,30 @@ const HeroSection = () => {
             
             {/* Content */}
             <div className="relative h-full flex items-center">
-              <div className="container mx-auto px-4">
-                <div className="max-w-2xl">
+              <div className="container mx-auto container-padding">
+                <div className="max-w-xl lg:max-w-2xl">
                   <div className={`transform transition-all duration-1000 delay-300 ${
                     index === currentSlide 
                       ? 'translate-y-0 opacity-100' 
                       : 'translate-y-8 opacity-0'
                   }`}>
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4 leading-tight">
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-3 sm:mb-4 leading-tight">
                       {slide.title}
                     </h1>
-                    <p className="text-xl md:text-2xl text-emerald-200 mb-6 font-light">
+                    <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-emerald-200 mb-4 sm:mb-6 font-light">
                       {slide.subtitle}
                     </p>
-                    <p className="text-lg text-gray-200 mb-8 leading-relaxed">
+                    <p className="text-sm sm:text-base lg:text-lg text-gray-200 mb-6 sm:mb-8 leading-relaxed">
                       {slide.description}
                     </p>
                     
-                    <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                       <button 
                         onClick={() => navigate('/explore')}
-                        className="group flex items-center justify-center space-x-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                        className="group flex items-center justify-center space-x-2 sm:space-x-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-sm sm:text-base lg:text-lg hover:shadow-2xl transition-all duration-300 hover:scale-105"
                       >
                         <span>Explore Now</span>
-                        <Compass className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                        <Compass className="h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
                       </button>
                     </div>
                   </div>
@@ -103,25 +103,25 @@ const HeroSection = () => {
       {/* Navigation Arrows */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md text-white p-3 rounded-full hover:bg-white/30 transition-all duration-300 group"
+        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md text-white p-2 sm:p-3 rounded-full hover:bg-white/30 transition-all duration-300 group"
       >
-        <ChevronLeft className="h-6 w-6 group-hover:-translate-x-1 transition-transform" />
+        <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6 group-hover:-translate-x-1 transition-transform" />
       </button>
       
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md text-white p-3 rounded-full hover:bg-white/30 transition-all duration-300 group"
+        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md text-white p-2 sm:p-3 rounded-full hover:bg-white/30 transition-all duration-300 group"
       >
-        <ChevronRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
+        <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6 group-hover:translate-x-1 transition-transform" />
       </button>
 
       {/* Slide Indicators */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-3">
+      <div className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 flex space-x-2 sm:space-x-3">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`w-12 h-2 rounded-full transition-all duration-300 ${
+            className={`w-8 sm:w-12 h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
               index === currentSlide 
                 ? 'bg-white shadow-lg' 
                 : 'bg-white/50 hover:bg-white/70'
@@ -131,9 +131,9 @@ const HeroSection = () => {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 right-8 animate-bounce">
-        <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-white/70 rounded-full mt-2 animate-pulse"></div>
+      <div className="absolute bottom-4 sm:bottom-8 right-4 sm:right-8 animate-bounce hidden sm:block">
+        <div className="w-5 h-8 sm:w-6 sm:h-10 border-2 border-white/50 rounded-full flex justify-center">
+          <div className="w-1 h-2 sm:h-3 bg-white/70 rounded-full mt-1.5 sm:mt-2 animate-pulse"></div>
         </div>
       </div>
     </section>
