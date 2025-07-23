@@ -18,11 +18,11 @@ const Index = () => {
         <HeroSection />
         
         {/* About TAKOO-PAPOOK Section */}
-        <section className="section-padding-lg bg-gradient-to-br from-background via-muted/30 to-background relative overflow-hidden">
+        <section className="section-padding bg-gradient-to-br from-background via-muted/30 to-background relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5" />
           <div className="container mx-auto container-padding relative">
             <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-8 sm:mb-12 lg:mb-16 animate-fade-in">
+              <div className="text-center mb-6 sm:mb-8 lg:mb-10 animate-fade-in">
                 <h2 className="mb-4 sm:mb-6">
                   About{' '}
                   <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
@@ -77,10 +77,10 @@ const Index = () => {
         </section>
 
         {/* Founder Section */}
-        <section className="section-padding-lg bg-gradient-to-br from-muted/30 to-accent/20">
+        <section className="section-padding bg-gradient-to-br from-muted/30 to-accent/20">
           <div className="container mx-auto container-padding">
             <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-8 sm:mb-12 lg:mb-16 animate-fade-in">
+              <div className="text-center mb-6 sm:mb-8 lg:mb-10 animate-fade-in">
                 <h2 className="mb-3 sm:mb-4">
                   Meet Our Founder
                 </h2>
@@ -142,10 +142,10 @@ const Index = () => {
         </section>
 
         {/* Vision & Mission Section */}
-        <section className="section-padding-lg bg-background">
+        <section className="section-padding bg-background">
           <div className="container mx-auto container-padding">
             <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-8 sm:mb-12 lg:mb-16 animate-fade-in">
+              <div className="text-center mb-6 sm:mb-8 lg:mb-10 animate-fade-in">
                 <h2 className="mb-3 sm:mb-4">
                   Vision & Mission
                 </h2>

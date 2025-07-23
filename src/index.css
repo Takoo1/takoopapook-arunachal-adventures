@@ -117,20 +117,20 @@
   }
 
   /* International typography standards */
-  h1 { @apply text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight; }
-  h2 { @apply text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight; }
-  h3 { @apply text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight; }
-  h4 { @apply text-lg sm:text-xl font-semibold; }
-  h5 { @apply text-base sm:text-lg font-medium; }
-  h6 { @apply text-sm sm:text-base font-medium; }
+  h1 { @apply text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight; }
+  h2 { @apply text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight; }
+  h3 { @apply text-lg sm:text-xl lg:text-2xl font-semibold tracking-tight; }
+  h4 { @apply text-base sm:text-lg font-semibold; }
+  h5 { @apply text-sm sm:text-base font-medium; }
+  h6 { @apply text-xs sm:text-sm font-medium; }
 
-  /* Responsive spacing utilities */
-  .section-padding { @apply py-8 sm:py-12 lg:py-16; }
-  .section-padding-lg { @apply py-12 sm:py-16 lg:py-24; }
+  /* Reduced spacing utilities */
+  .section-padding { @apply py-6 sm:py-8 lg:py-12; }
+  .section-padding-lg { @apply py-8 sm:py-12 lg:py-16; }
   .container-padding { @apply px-4 sm:px-6 lg:px-8; }
   
   /* Content spacing */
-  .content-spacing > * + * { @apply mt-4 sm:mt-6; }
-  .content-spacing-sm > * + * { @apply mt-2 sm:mt-4; }
-  .content-spacing-lg > * + * { @apply mt-6 sm:mt-8; }
+  .content-spacing > * + * { @apply mt-3 sm:mt-4; }
+  .content-spacing-sm > * + * { @apply mt-2 sm:mt-3; }
+  .content-spacing-lg > * + * { @apply mt-4 sm:mt-6; }
 }
