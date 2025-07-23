@@ -10,10 +10,27 @@ const PackageCarousel = () => {
   const { data: allPackages = [], isLoading } = usePackages();
   const navigate = useNavigate();
 
-  const packages = allPackages;
-  const itemsPerView = 3;
-  const maxIndex = Math.max(0, packages.length - itemsPerView);
-  const totalPages = Math.ceil(packages.length / itemsPerView);
+  // Limit to 9 packages and responsive items per view
+  const packages = allPackages.slice(0, 9);
+  const getItemsPerView = () => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 768 ? 1 : 3; // mobile: 1, desktop: 3
+    }
+    return 3;
+  };
+  
+  const [itemsPerView, setItemsPerView] = useState(getItemsPerView());
+  const totalSlides = Math.ceil(packages.length / itemsPerView);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setItemsPerView(getItemsPerView());
+      setCurrentIndex(0); // Reset to first slide on resize
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Note: Auto-scroll functionality removed per user request
 
@@ -21,25 +38,19 @@ const PackageCarousel = () => {
     if (isTransitioning) return;
     setIsTransitioning(true);
     setCurrentIndex((prev) => {
-      if (prev <= 0) {
-        return maxIndex; // Loop to end
-      }
-      return prev - 1;
+      return prev <= 0 ? totalSlides - 1 : prev - 1; // Loop from first to last
     });
     setTimeout(() => setIsTransitioning(false), 300);
-  }, [isTransitioning, maxIndex]);
+  }, [isTransitioning, totalSlides]);
 
   const goToNext = useCallback(() => {
     if (isTransitioning) return;
     setIsTransitioning(true);
     setCurrentIndex((prev) => {
-      if (prev >= maxIndex) {
-        return 0; // Loop to start
-      }
-      return prev + 1;
+      return prev >= totalSlides - 1 ? 0 : prev + 1; // Loop from last to first
     });
     setTimeout(() => setIsTransitioning(false), 300);
-  }, [isTransitioning, maxIndex]);
+  }, [isTransitioning, totalSlides]);
 
   if (isLoading) {
     return (
@@ -88,7 +99,7 @@ const PackageCarousel = () => {
         {/* Carousel Container */}
         <div className="relative">
           {/* Navigation Arrows */}
-          {packages.length > itemsPerView && (
+          {totalSlides > 1 && (
             <>
               <button
                 onClick={goToPrevious}
@@ -114,16 +125,22 @@ const PackageCarousel = () => {
             <div 
               className="flex transition-transform duration-500 ease-in-out gap-3 sm:gap-4 lg:gap-6"
               style={{ 
-                transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)`,
-                width: `${(packages.length / itemsPerView) * 100}%`
+                transform: `translateX(-${currentIndex * 100}%)`,
+                width: `${totalSlides * 100}%`
               }}
             >
-              {packages.map((pkg) => (
+              {Array.from({ length: totalSlides }).map((_, slideIndex) => (
                 <div 
-                  key={pkg.id} 
-                  className="flex-shrink-0"
-                  style={{ width: `${100 / packages.length}%` }}
+                  key={slideIndex}
+                  className="flex gap-3 sm:gap-4 lg:gap-6"
+                  style={{ width: `${100 / totalSlides}%` }}
                 >
+                  {packages.slice(slideIndex * itemsPerView, (slideIndex + 1) * itemsPerView).map((pkg) => (
+                    <div 
+                      key={pkg.id} 
+                      className="flex-shrink-0"
+                      style={{ width: `${100 / itemsPerView}%` }}
+                    >
                   <div 
                     className="bg-card border border-border rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group hover:-translate-y-2 h-full cursor-pointer backdrop-blur-sm"
                     onClick={() => navigate(`/my-tour/package/${pkg.id}`)}
@@ -194,6 +211,8 @@ const PackageCarousel = () => {
                       </button>
                     </div>
                   </div>
+                    </div>
+                  ))}
                 </div>
               ))}
             </div>
