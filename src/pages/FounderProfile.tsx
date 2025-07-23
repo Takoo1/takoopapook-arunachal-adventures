@@ -7,22 +7,21 @@ const FounderProfile = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background pt-20">
+    <div className="min-h-screen bg-background">
       <Header />
       
-      {/* Back Button */}
-      <div className="container mx-auto px-4 py-6">
-        <button
-          onClick={() => navigate('/about')}
-          className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          Back to About Us
-        </button>
-      </div>
-
       {/* Hero Section */}
-      <section className="py-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 relative overflow-hidden">
+      <section className="pt-24 pb-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-emerald-950/30 dark:via-teal-950/20 dark:to-cyan-950/30 relative overflow-hidden">
+        {/* Back Button */}
+        <div className="absolute top-24 left-4 z-10">
+          <button
+            onClick={() => navigate('/about')}
+            className="flex items-center gap-2 bg-white/80 backdrop-blur-sm text-emerald-600 hover:text-emerald-700 px-4 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Back to About Us
+          </button>
+        </div>
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5" />
         <div className="container mx-auto px-4 relative">
           <div className="max-w-4xl mx-auto text-center">

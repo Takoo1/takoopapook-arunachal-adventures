@@ -41,35 +41,37 @@ const Explore = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="pt-20 bg-gradient-to-br from-emerald-50 to-teal-50">
+      <main className="pt-24 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-emerald-950/30 dark:via-teal-950/20 dark:to-cyan-950/30 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5" />
         {/* Hero Section */}
-        <div className="container mx-auto px-4 py-16">
+        <div className="container mx-auto px-4 py-16 relative">
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
               {getCategoryTitle()}
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Discover the breathtaking beauty and rich culture of Arunachal Pradesh
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+              Discover the breathtaking beauty and rich culture of Arunachal Pradesh through our curated destinations
             </p>
+            <div className="w-24 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto mt-8 rounded-full" />
           </div>
 
           {/* Search Bar */}
           <div className="max-w-2xl mx-auto mb-12">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-6 w-6" />
               <input
                 type="text"
                 placeholder="Search destinations..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-lg"
+                className="w-full pl-14 pr-4 py-4 rounded-2xl border-2 border-transparent bg-white/90 backdrop-blur-sm dark:bg-gray-900/90 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-xl text-lg placeholder:text-muted-foreground transition-all duration-300"
               />
             </div>
           </div>
 
           {/* Category Filters */}
           {!categoryFilter && (
-            <div className="flex flex-wrap justify-center gap-4 mb-12">
+            <div className="flex flex-wrap justify-center gap-6 mb-16">
               {categories.map((category) => {
                 const categoryCount = locations.filter(loc => 
                   loc.categories?.includes(category) && loc.is_active
@@ -79,12 +81,12 @@ const Explore = () => {
                   <button
                     key={category}
                     onClick={() => handleCategoryClick(category)}
-                    className="bg-white px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+                    className="bg-white/90 backdrop-blur-sm dark:bg-gray-900/90 px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-105 group border border-white/20"
                   >
-                    <div className="text-lg font-semibold text-gray-800 group-hover:text-emerald-600">
+                    <div className="text-lg font-bold text-foreground group-hover:text-emerald-600 transition-colors duration-300">
                       {category}
                     </div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-muted-foreground mt-1">
                       {categoryCount} destinations
                     </div>
                   </button>
