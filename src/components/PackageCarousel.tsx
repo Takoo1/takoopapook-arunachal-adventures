@@ -43,7 +43,7 @@ const PackageCarousel = () => {
 
   if (isLoading) {
     return (
-      <section className="section-padding-lg bg-gradient-to-br from-background via-muted/30 to-background">
+      <section className="section-padding-lg bg-background">
         <div className="container mx-auto container-padding">
           <div className="text-center">
             <div className="text-lg text-muted-foreground">Loading packages...</div>
@@ -55,12 +55,12 @@ const PackageCarousel = () => {
 
   if (packages.length === 0) {
     return (
-      <section className="section-padding-lg bg-gradient-to-br from-background via-muted/30 to-background">
+      <section className="section-padding-lg bg-background">
         <div className="container mx-auto container-padding">
           <div className="text-center">
             <h2 className="mb-4 sm:mb-6">
               Popular Tour
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"> Packages</span>
+              <span className="text-primary"> Packages</span>
             </h2>
             <p className="text-xl text-muted-foreground">No packages available at the moment.</p>
           </div>
@@ -70,16 +70,15 @@ const PackageCarousel = () => {
   }
 
   return (
-    <section className="section-padding-lg bg-gradient-to-br from-background via-muted/30 to-background relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5" />
-      <div className="container mx-auto container-padding relative">
+    <section className="section-padding-lg bg-background">
+      <div className="container mx-auto container-padding">
         {/* Section Header */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16 animate-fade-in">
           <h2 className="mb-4 sm:mb-6">
             Popular Tour
-            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"> Packages</span>
+            <span className="text-primary"> Packages</span>
           </h2>
-          <div className="w-16 sm:w-20 lg:w-24 h-1 bg-gradient-to-r from-primary to-secondary mx-auto rounded-full mb-4 sm:mb-6" />
+          <div className="w-16 sm:w-20 lg:w-24 h-1 bg-primary mx-auto rounded-full mb-4 sm:mb-6" />
           <p className="text-sm sm:text-base lg:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Discover handcrafted journeys that showcase the best of Arunachal Pradesh's natural beauty, 
             rich culture, and adventurous spirit.
@@ -136,7 +135,7 @@ const PackageCarousel = () => {
                         alt={pkg.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
-                      <div className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-primary/20 backdrop-blur-md text-primary-foreground px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium border border-primary/30">
+                      <div className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-primary/90 text-primary-foreground px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
                         {pkg.price}
                       </div>
                       <div className="absolute top-2 sm:top-4 left-2 sm:left-4">
@@ -188,7 +187,7 @@ const PackageCarousel = () => {
                           e.stopPropagation(); // Prevent card click when button is clicked
                           navigate(`/my-tour/package/${pkg.id}`);
                         }}
-                        className="w-full bg-gradient-to-r from-primary to-secondary text-primary-foreground py-2 sm:py-3 rounded-xl text-sm sm:text-base font-semibold hover:shadow-lg transition-all duration-300 group/btn flex items-center justify-center space-x-1 sm:space-x-2 hover:scale-105"
+                        className="w-full bg-primary text-primary-foreground py-2 sm:py-3 rounded-xl text-sm sm:text-base font-semibold hover:shadow-lg transition-all duration-300 group/btn flex items-center justify-center space-x-1 sm:space-x-2 hover:scale-105"
                       >
                         <span>Book Now</span>
                         <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -200,30 +199,13 @@ const PackageCarousel = () => {
             </div>
           </div>
 
-          {/* Progress Indicators */}
-          {packages.length > itemsPerView && (
-            <div className="flex justify-center mt-8 space-x-2">
-              {Array.from({ length: totalPages }).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentIndex(Math.min(index, maxIndex))}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    index === currentIndex 
-                      ? 'bg-primary w-8' 
-                      : 'bg-muted-foreground/30 hover:bg-muted-foreground/50 w-2'
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </div>
-          )}
         </div>
 
         {/* View All Button */}
         <div className="text-center mt-12 animate-fade-in">
           <button 
             onClick={() => navigate('/packages')}
-            className="group bg-gradient-to-r from-primary to-secondary text-primary-foreground px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center space-x-2 mx-auto border border-primary/20"
+            className="group bg-primary text-primary-foreground px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center space-x-2 mx-auto"
           >
             <span>View All Packages</span>
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
