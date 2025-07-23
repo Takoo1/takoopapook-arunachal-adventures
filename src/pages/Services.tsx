@@ -187,11 +187,11 @@ const Services = () => {
               {tourPackageFeatures.map((feature, index) => (
                 <Card key={index} className="group hover-scale border-0 bg-card/50 backdrop-blur-sm h-full overflow-hidden">
                   <CardHeader className="text-center pb-3 sm:pb-4">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
+                    <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto mb-3 sm:mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
                       <img 
                         src={feature.icon} 
                         alt={feature.title}
-                        className="w-10 h-10 sm:w-12 sm:h-12 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                        className="w-14 h-14 sm:w-20 sm:h-20 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
                       />
                     </div>
                     <CardTitle className="text-lg sm:text-xl group-hover:text-primary transition-colors duration-300">{feature.title}</CardTitle>
@@ -222,11 +222,11 @@ const Services = () => {
               {platformFeatures.map((feature, index) => (
                 <Card key={index} className="group hover-scale border-0 bg-background/80 backdrop-blur-sm h-full overflow-hidden">
                   <CardHeader className="text-center pb-4">
-                    <div className="w-18 h-18 sm:w-20 sm:h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-secondary/10 to-accent/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-xl">
+                    <div className="w-22 h-22 sm:w-28 sm:h-28 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-secondary/10 to-accent/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-xl">
                       <img 
                         src={feature.icon} 
                         alt={feature.title}
-                        className="w-12 h-12 sm:w-14 sm:h-14 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                        className="w-16 h-16 sm:w-20 sm:h-20 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
                       />
                     </div>
                     <CardTitle className="text-xl group-hover:text-secondary transition-colors duration-300">{feature.title}</CardTitle>
@@ -257,11 +257,11 @@ const Services = () => {
               {localExperiences.map((experience, index) => (
                 <Card key={index} className="group hover-scale border-0 bg-card/50 backdrop-blur-sm h-full overflow-hidden">
                   <CardHeader className="text-center pb-4">
-                    <div className="w-18 h-18 sm:w-20 sm:h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-accent/10 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg group-hover:rotate-3">
+                    <div className="w-22 h-22 sm:w-28 sm:h-28 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-accent/10 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg group-hover:rotate-3">
                       <img 
                         src={experience.icon} 
                         alt={experience.title}
-                        className="w-12 h-12 sm:w-14 sm:h-14 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                        className="w-16 h-16 sm:w-20 sm:h-20 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
                       />
                     </div>
                     <CardTitle className="text-xl group-hover:text-accent-foreground transition-colors duration-300">{experience.title}</CardTitle>
@@ -292,11 +292,11 @@ const Services = () => {
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
               <Card className="border-0 bg-background/80 backdrop-blur-sm h-full group hover-scale overflow-hidden">
                 <CardHeader className="text-center">
-                  <div className="w-18 h-18 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
+                  <div className="w-22 h-22 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
                     <img 
                       src={zeroWasteIcon} 
                       alt="Zero-Waste Tourism"
-                      className="w-12 h-12 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                      className="w-16 h-16 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
                     />
                   </div>
                   <CardTitle className="text-xl group-hover:text-primary transition-colors duration-300">Zero-Waste Tourism</CardTitle>
@@ -310,11 +310,11 @@ const Services = () => {
               
               <Card className="border-0 bg-background/80 backdrop-blur-sm h-full group hover-scale overflow-hidden">
                 <CardHeader className="text-center">
-                  <div className="w-18 h-18 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-secondary/10 to-accent/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
+                  <div className="w-22 h-22 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-secondary/10 to-accent/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
                     <img 
                       src={empowermentIcon} 
                       alt="Community Empowerment"
-                      className="w-12 h-12 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                      className="w-16 h-16 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
                     />
                   </div>
                   <CardTitle className="text-xl group-hover:text-secondary transition-colors duration-300">Community Empowerment</CardTitle>
@@ -328,11 +328,11 @@ const Services = () => {
               
               <Card className="border-0 bg-background/80 backdrop-blur-sm h-full group hover-scale overflow-hidden">
                 <CardHeader className="text-center">
-                  <div className="w-18 h-18 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-accent/10 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
+                  <div className="w-22 h-22 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-accent/10 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
                     <img 
                       src={conservationIcon} 
                       alt="Forest Conservation"
-                      className="w-12 h-12 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                      className="w-16 h-16 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
                     />
                   </div>
                   <CardTitle className="text-xl group-hover:text-accent-foreground transition-colors duration-300">Forest Conservation</CardTitle>
@@ -346,11 +346,11 @@ const Services = () => {
               
               <Card className="border-0 bg-background/80 backdrop-blur-sm h-full group hover-scale overflow-hidden">
                 <CardHeader className="text-center">
-                  <div className="w-18 h-18 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
+                  <div className="w-22 h-22 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
                     <img 
                       src={certifiedIcon} 
                       alt="Certified Standards"
-                      className="w-12 h-12 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                      className="w-16 h-16 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
                     />
                   </div>
                   <CardTitle className="text-xl group-hover:text-primary transition-colors duration-300">Certified Standards</CardTitle>
@@ -398,11 +398,11 @@ const Services = () => {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               <Card className="border-0 bg-background/80 backdrop-blur-sm text-center group hover-scale overflow-hidden">
                 <CardHeader>
-                  <div className="w-18 h-18 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
+                  <div className="w-22 h-22 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
                     <img 
                       src={expertiseIcon} 
                       alt="Expert Local Knowledge"
-                      className="w-12 h-12 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                      className="w-16 h-16 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
                     />
                   </div>
                   <CardTitle className="text-xl group-hover:text-primary transition-colors duration-300">Expert Local Knowledge</CardTitle>
@@ -414,11 +414,11 @@ const Services = () => {
               
               <Card className="border-0 bg-background/80 backdrop-blur-sm text-center group hover-scale overflow-hidden">
                 <CardHeader>
-                  <div className="w-18 h-18 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-secondary/10 to-accent/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
+                  <div className="w-22 h-22 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-secondary/10 to-accent/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
                     <img 
                       src={safetyIcon} 
                       alt="Safety & Permits"
-                      className="w-12 h-12 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                      className="w-16 h-16 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
                     />
                   </div>
                   <CardTitle className="text-xl group-hover:text-secondary transition-colors duration-300">Safety & Permits</CardTitle>
@@ -430,11 +430,11 @@ const Services = () => {
               
               <Card className="border-0 bg-background/80 backdrop-blur-sm text-center group hover-scale overflow-hidden">
                 <CardHeader>
-                  <div className="w-18 h-18 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-accent/10 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
+                  <div className="w-22 h-22 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-accent/10 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-lg">
                     <img 
                       src={flexibleIcon} 
                       alt="Flexible Scheduling"
-                      className="w-12 h-12 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
+                      className="w-16 h-16 object-contain group-hover:scale-105 transition-transform duration-300 animate-fade-in" 
                     />
                   </div>
                   <CardTitle className="text-xl group-hover:text-accent-foreground transition-colors duration-300">Flexible Scheduling</CardTitle>
