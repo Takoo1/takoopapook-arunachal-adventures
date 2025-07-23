@@ -46,14 +46,14 @@ const Packages = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="pt-20 bg-gradient-to-br from-emerald-50 to-teal-50">
+      <main className="pt-16 sm:pt-20 bg-gradient-to-br from-emerald-50 to-teal-50">
         {/* Hero Section */}
-        <div className="container mx-auto px-4 py-16">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+        <div className="container mx-auto container-padding section-padding">
+          <div className="text-center mb-8 sm:mb-12">
+            <h1 className="mb-4 sm:mb-6">
               {getCategoryTitle()}
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto">
               Discover curated travel experiences crafted for unforgettable journeys
             </p>
           </div>

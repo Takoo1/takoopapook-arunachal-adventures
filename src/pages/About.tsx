@@ -8,34 +8,34 @@ const About = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="pt-24 pb-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-emerald-950/30 dark:via-teal-950/20 dark:to-cyan-950/30 relative overflow-hidden">
+      <section className="pt-20 pb-12 sm:pb-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-emerald-950/30 dark:via-teal-950/20 dark:to-cyan-950/30 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5" />
-        <div className="container mx-auto px-4 relative">
+        <div className="container mx-auto container-padding relative">
           <div className="max-w-4xl mx-auto text-center">
             <div className="animate-fade-in">
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
+              <h1 className="mb-4 sm:mb-6 leading-tight">
                 About{' '}
                 <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
                   TAKOO-PAPOOK
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl text-muted-foreground mb-8">
+              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-6 sm:mb-8">
                 Revolutionizing eco-tourism in Arunachal Pradesh through sustainable and culturally enriching experiences
               </p>
-              <div className="w-24 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto rounded-full" />
+              <div className="w-16 sm:w-20 lg:w-24 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto rounded-full" />
             </div>
           </div>
         </div>
       </section>
 
       {/* Company Description */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
+      <section className="section-padding bg-background">
+        <div className="container mx-auto container-padding">
           <div className="max-w-6xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-              <div className="space-y-8 animate-fade-in">
+            <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
+              <div className="content-spacing animate-fade-in">
                 <div>
-                  <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+                  <h2 className="mb-4 sm:mb-6">
                     Our Story
                   </h2>
                   <div className="space-y-4 text-lg text-muted-foreground leading-relaxed">

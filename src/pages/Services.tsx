@@ -51,14 +51,14 @@ const Services = () => {
       <Header />
       
       {/* Hero Section */}
-      <main className="pt-20">
-        <section className="py-20 px-4">
+      <main className="pt-16 sm:pt-20">
+        <section className="section-padding container-padding">
           <div className="max-w-7xl mx-auto text-center">
             <div className="animate-fade-in">
-              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent mb-6">
+              <h1 className="mb-4 sm:mb-6">
                 Our Services
               </h1>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-12">
+              <p className="text-sm sm:text-base lg:text-lg text-muted-foreground max-w-3xl mx-auto mb-8 sm:mb-12">
                 Discover Arunachal Pradesh through our comprehensive travel solutions, 
                 designed to create unforgettable experiences while preserving local culture and nature.
               </p>
@@ -67,29 +67,29 @@ const Services = () => {
         </section>
 
         {/* Comprehensive Tour Packages */}
-        <section className="py-16 px-4">
+        <section className="section-padding container-padding">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16 animate-fade-in">
-              <div className="inline-flex items-center gap-3 mb-4">
-                <MapPin className="h-8 w-8 text-primary" />
-                <h2 className="text-4xl font-bold">Comprehensive Tour Packages</h2>
+            <div className="text-center mb-8 sm:mb-12 animate-fade-in">
+              <div className="inline-flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                <MapPin className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+                <h2>Comprehensive Tour Packages</h2>
               </div>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
                 Catering to nature enthusiasts, adventure seekers, cultural tourists, and pilgrims
               </p>
             </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {tourPackageFeatures.map((feature, index) => (
                 <Card key={index} className="group hover-scale border-0 bg-card/50 backdrop-blur-sm">
-                  <CardHeader className="text-center pb-4">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                      <feature.icon className="h-8 w-8 text-primary" />
+                  <CardHeader className="text-center pb-3 sm:pb-4">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                      <feature.icon className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
                     </div>
-                    <CardTitle className="text-xl">{feature.title}</CardTitle>
+                    <CardTitle className="text-lg sm:text-xl">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="text-center">
-                    <p className="text-muted-foreground">{feature.desc}</p>
+                    <p className="text-sm sm:text-base text-muted-foreground">{feature.desc}</p>
                   </CardContent>
                 </Card>
               ))}
