@@ -6,8 +6,11 @@ import Footer from '@/components/Footer';
 import PackageDetail from '@/components/PackageDetail';
 import DestinationDetail from '@/components/DestinationDetail';
 import { usePlannedLocations, useRemoveFromPlanned } from '@/hooks/usePlannedLocations';
-import { MapPin, Calendar, Trash2, Plus, Clock } from 'lucide-react';
+import { MapPin, Calendar, Trash2, Plus, Clock, CreditCard, Users, CheckCircle, FileText } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 
 const MyTour = () => {
   const { id } = useParams<{ id: string }>();
@@ -65,6 +68,243 @@ const MyTour = () => {
           <div className="text-center">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-emerald-500 mx-auto mb-4"></div>
             <p className="text-gray-600">Loading your tour plans...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Check for booking data from localStorage
+  const [bookingData, setBookingData] = useState<any>(null);
+
+  useEffect(() => {
+    const storedBooking = localStorage.getItem('currentBooking');
+    if (storedBooking) {
+      setBookingData(JSON.parse(storedBooking));
+    }
+  }, []);
+
+  // If we have booking data, show the booking details
+  if (bookingData) {
+    const { packageData, tourists, totalPrice, bookingDate } = bookingData;
+    
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <main className="pt-20 min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50">
+          <div className="container mx-auto px-4 py-8">
+            {/* Header Section */}
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center mb-4">
+                <CheckCircle className="h-8 w-8 text-green-500 mr-3" />
+                <h1 className="text-4xl font-bold text-gray-800">
+                  Booking <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Confirmed</span>
+                </h1>
+              </div>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Your package has been booked successfully. Here are your tour details and payment information.
+              </p>
+            </div>
+
+            <div className="max-w-4xl mx-auto space-y-8">
+              {/* Package Details */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MapPin className="h-5 w-5 text-emerald-500" />
+                    Package Details
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="aspect-video rounded-lg overflow-hidden">
+                      <img
+                        src={packageData.image_url}
+                        alt={packageData.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold mb-2">{packageData.title}</h3>
+                      <div className="space-y-2 text-muted-foreground mb-4">
+                        <p className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4" />
+                          {packageData.location}
+                        </p>
+                        <p className="flex items-center gap-2">
+                          <Clock className="h-4 w-4" />
+                          {packageData.duration}
+                        </p>
+                        <p className="flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          {packageData.group_size}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {packageData.features.slice(0, 3).map((feature: string, index: number) => (
+                          <Badge key={index} variant="secondary">
+                            {feature}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Tourist Information */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5 text-emerald-500" />
+                    Tourist Information
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-4">
+                    {tourists.map((tourist: any, index: number) => (
+                      <div key={tourist.id} className="p-4 border rounded-lg">
+                        <h4 className="font-semibold mb-2">Tourist {index + 1}</h4>
+                        <div className="grid md:grid-cols-3 gap-4 text-sm">
+                          <div>
+                            <span className="font-medium">Name:</span> {tourist.name}
+                          </div>
+                          <div>
+                            <span className="font-medium">ID Type:</span> {tourist.idType}
+                          </div>
+                          <div>
+                            <span className="font-medium">ID Number:</span> {tourist.idNumber}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Payment Invoice */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CreditCard className="h-5 w-5 text-emerald-500" />
+                    Payment Invoice
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex justify-between text-sm">
+                    <span>Package Price:</span>
+                    <span>{packageData.price}</span>
+                  </div>
+                  {tourists.length > parseInt(packageData.group_size.replace(/[^\d]/g, '')) && (
+                    <div className="flex justify-between text-sm text-orange-600">
+                      <span>Extra Charges ({tourists.length - parseInt(packageData.group_size.replace(/[^\d]/g, ''))} × ₹2,000):</span>
+                      <span>₹{((tourists.length - parseInt(packageData.group_size.replace(/[^\d]/g, ''))) * 2000).toLocaleString()}</span>
+                    </div>
+                  )}
+                  <Separator />
+                  <div className="flex justify-between text-lg font-semibold">
+                    <span>Total Amount:</span>
+                    <span>₹{totalPrice.toLocaleString()}</span>
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    <p>Booking Date: {new Date(bookingDate).toLocaleDateString()}</p>
+                    <p>Payment Status: <span className="text-green-600 font-medium">Confirmed</span></p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Terms and Conditions */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-emerald-500" />
+                    Terms & Conditions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4 text-sm text-muted-foreground">
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-2">Booking Terms:</h4>
+                    <ul className="space-y-1 ml-4">
+                      <li>• All bookings are subject to availability and confirmation</li>
+                      <li>• Cancellation policy: 48 hours before departure for full refund</li>
+                      <li>• Valid government-issued ID required for all participants</li>
+                      <li>• Package prices include all mentioned services and accommodations</li>
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-2">Payment Terms:</h4>
+                    <ul className="space-y-1 ml-4">
+                      <li>• Payment confirmation required within 24 hours of booking</li>
+                      <li>• Additional charges for extra participants beyond group size</li>
+                      <li>• All prices are inclusive of applicable taxes</li>
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Tour Guidelines */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-emerald-500" />
+                    Tour Guidelines
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4 text-sm text-muted-foreground">
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-2">Before You Travel:</h4>
+                    <ul className="space-y-1 ml-4">
+                      <li>• Carry valid photo identification for all participants</li>
+                      <li>• Inform us of any medical conditions or dietary restrictions</li>
+                      <li>• Pack appropriate clothing for the season and activities</li>
+                      <li>• Arrive at meeting point 30 minutes before departure</li>
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-2">During the Tour:</h4>
+                    <ul className="space-y-1 ml-4">
+                      <li>• Follow instructions from your tour guide at all times</li>
+                      <li>• Respect local customs, culture, and environmental guidelines</li>
+                      <li>• Do not litter or damage natural surroundings</li>
+                      <li>• Stay with the group and inform guide if you need assistance</li>
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-2">Safety Guidelines:</h4>
+                    <ul className="space-y-1 ml-4">
+                      <li>• Travel insurance is recommended for all participants</li>
+                      <li>• Emergency contact numbers will be provided</li>
+                      <li>• First aid facilities available with trained guides</li>
+                      <li>• Weather conditions may affect itinerary - flexibility required</li>
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  onClick={() => {
+                    localStorage.removeItem('currentBooking');
+                    setBookingData(null);
+                  }}
+                  variant="outline"
+                  size="lg"
+                >
+                  Plan Another Trip
+                </Button>
+                <Button 
+                  onClick={() => navigate('/packages')}
+                  size="lg"
+                >
+                  Explore More Packages
+                </Button>
+              </div>
+            </div>
           </div>
         </main>
         <Footer />

@@ -116,9 +116,18 @@ const Booking = () => {
       return;
     }
 
-    // Here you would typically submit to backend
-    toast.success('Booking request submitted successfully!');
-    console.log('Booking data:', { packageId, tourists, totalPrice });
+    // Store booking data in localStorage and navigate to My Tour
+    const bookingData = {
+      packageId,
+      packageData: packageData,
+      tourists,
+      totalPrice,
+      bookingDate: new Date().toISOString()
+    };
+    
+    localStorage.setItem('currentBooking', JSON.stringify(bookingData));
+    toast.success('Booking confirmed! Redirecting to My Tour...');
+    navigate('/my-tour');
   };
 
   return (
@@ -262,7 +271,7 @@ const Booking = () => {
                   </Card>
 
                   <Button type="submit" className="w-full mt-6" size="lg">
-                    Submit Booking Request
+                    Book Now
                   </Button>
                 </form>
               </CardContent>
