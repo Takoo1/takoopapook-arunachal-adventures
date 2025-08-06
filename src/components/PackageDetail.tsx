@@ -242,7 +242,7 @@ const PackageDetail = () => {
       {/* Locations Included */}
       {includedLocations && includedLocations.length > 0 && (
         <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">Destinations Included</h2>
+          <h2 className="text-2xl font-bold mb-6">Destinations Included in this Package</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {includedLocations.map((location) => (
               <DestinationCard 
