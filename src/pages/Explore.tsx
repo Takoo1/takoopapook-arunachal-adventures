@@ -55,58 +55,89 @@ const Explore = () => {
             <div className="w-16 sm:w-20 lg:w-24 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto mt-6 sm:mt-8 rounded-full" />
           </div>
 
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto mb-12">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-6 w-6" />
-              <input
-                type="text"
-                placeholder="Search destinations..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-14 pr-4 py-4 rounded-2xl border-2 border-transparent bg-white/90 backdrop-blur-sm dark:bg-gray-900/90 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-xl text-lg placeholder:text-muted-foreground transition-all duration-300"
-              />
-            </div>
-          </div>
+          {/* Top Row: Search/Filter + First Two Cards */}
+          {!isLoading && filteredLocations.length > 0 && (
+            <div className="mb-12">
+              <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
+                {/* Left Side - Search and Category Filters */}
+                <div className="xl:col-span-1 space-y-6">
+                  {/* Search Bar */}
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                    <input
+                      type="text"
+                      placeholder="Search destinations..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-transparent bg-white/90 backdrop-blur-sm dark:bg-gray-900/90 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-lg text-base placeholder:text-muted-foreground transition-all duration-300"
+                    />
+                  </div>
 
-          {/* Category Filters */}
-          {!categoryFilter && (
-            <div className="flex flex-wrap justify-center gap-6 mb-16">
-              {categories.map((category) => {
-                const categoryCount = locations.filter(loc => 
-                  loc.categories?.includes(category) && loc.is_active
-                ).length;
-                
-                return (
-                  <button
-                    key={category}
-                    onClick={() => handleCategoryClick(category)}
-                    className="bg-white/90 backdrop-blur-sm dark:bg-gray-900/90 px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-105 group border border-white/20"
-                  >
-                    <div className="text-lg font-bold text-foreground group-hover:text-emerald-600 transition-colors duration-300">
-                      {category}
+                  {/* Category Filters */}
+                  {!categoryFilter && (
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold text-foreground">Categories</h3>
+                      <div className="space-y-2">
+                        {categories.map((category) => {
+                          const categoryCount = locations.filter(loc => 
+                            loc.categories?.includes(category) && loc.is_active
+                          ).length;
+                          
+                          return (
+                            <button
+                              key={category}
+                              onClick={() => handleCategoryClick(category)}
+                              className="w-full bg-white/90 backdrop-blur-sm dark:bg-gray-900/90 px-4 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group text-left border border-white/20"
+                            >
+                              <div className="flex justify-between items-center">
+                                <span className="text-base font-medium text-foreground group-hover:text-emerald-600 transition-colors duration-300">
+                                  {category}
+                                </span>
+                                <span className="text-sm text-muted-foreground">
+                                  {categoryCount}
+                                </span>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
-                    <div className="text-sm text-muted-foreground mt-1">
-                      {categoryCount} destinations
-                    </div>
-                  </button>
-                );
-              })}
+                  )}
+                </div>
+
+                {/* Right Side - First Two Cards */}
+                <div className="xl:col-span-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {filteredLocations.slice(0, 2).map((location) => (
+                      <DestinationCard key={location.id} location={location} />
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
-          {/* Results */}
-          {isLoading ? (
+          {/* Loading State */}
+          {isLoading && (
             <div className="text-center py-12">
               <div className="text-lg text-gray-600">Loading destinations...</div>
             </div>
-          ) : filteredLocations.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredLocations.map((location) => (
-                <DestinationCard key={location.id} location={location} />
-              ))}
+          )}
+
+          {/* Remaining Cards */}
+          {!isLoading && filteredLocations.length > 2 && (
+            <div className="mb-8">
+              <h3 className="text-xl font-semibold text-foreground mb-6">More Destinations</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredLocations.slice(2).map((location) => (
+                  <DestinationCard key={location.id} location={location} />
+                ))}
+              </div>
             </div>
-          ) : (
+          )}
+
+          {/* No Results */}
+          {!isLoading && filteredLocations.length === 0 && (
             <div className="text-center py-12">
               <div className="text-lg text-gray-600">
                 {searchTerm || categoryFilter 

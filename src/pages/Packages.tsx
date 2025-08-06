@@ -58,55 +58,86 @@ const Packages = () => {
             </p>
           </div>
 
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto mb-12">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <input
-                type="text"
-                placeholder="Search packages..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-lg"
-              />
-            </div>
-          </div>
+          {/* Top Row: Search/Filter + First Two Cards */}
+          {!isLoading && filteredPackages.length > 0 && (
+            <div className="mb-12">
+              <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
+                {/* Left Side - Search and Category Filters */}
+                <div className="xl:col-span-1 space-y-6">
+                  {/* Search Bar */}
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                    <input
+                      type="text"
+                      placeholder="Search packages..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-lg"
+                    />
+                  </div>
 
-          {/* Category Filters */}
-          {categoryFilter === 'all' && (
-            <div className="flex flex-wrap justify-center gap-4 mb-12">
-              {categories.map((category) => (
-                <button
-                  key={category.id}
-                  onClick={() => handleCategoryClick(category.id)}
-                  className="bg-white px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
-                >
-                  <div className="text-lg font-semibold text-gray-800 group-hover:text-emerald-600">
-                    {category.name}
+                  {/* Category Filters */}
+                  {categoryFilter === 'all' && (
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold text-gray-800">Categories</h3>
+                      <div className="space-y-2">
+                        {categories.slice(1).map((category) => (
+                          <button
+                            key={category.id}
+                            onClick={() => handleCategoryClick(category.id)}
+                            className="w-full bg-white px-4 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group text-left border border-gray-100"
+                          >
+                            <div className="flex justify-between items-center">
+                              <span className="text-base font-medium text-gray-800 group-hover:text-emerald-600 transition-colors duration-300">
+                                {category.name}
+                              </span>
+                              <span className="text-sm text-gray-500">
+                                {category.count}
+                              </span>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Right Side - First Two Cards */}
+                <div className="xl:col-span-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {filteredPackages.slice(0, 2).map((pkg) => (
+                      <PackageCard key={pkg.id} package={pkg} />
+                    ))}
                   </div>
-                  <div className="text-sm text-gray-500">
-                    {category.count} packages
-                  </div>
-                </button>
-              ))}
+                </div>
+              </div>
             </div>
           )}
 
-          {/* Results */}
-          {isLoading ? (
+          {/* Loading State */}
+          {isLoading && (
             <div className="text-center py-12">
               <div className="text-lg text-gray-600">Loading packages...</div>
             </div>
-          ) : filteredPackages.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredPackages.map((pkg) => (
-                <PackageCard key={pkg.id} package={pkg} />
-              ))}
+          )}
+
+          {/* Remaining Cards */}
+          {!isLoading && filteredPackages.length > 2 && (
+            <div className="mb-8">
+              <h3 className="text-xl font-semibold text-gray-800 mb-6">More Packages</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filteredPackages.slice(2).map((pkg) => (
+                  <PackageCard key={pkg.id} package={pkg} />
+                ))}
+              </div>
             </div>
-          ) : (
+          )}
+
+          {/* No Results */}
+          {!isLoading && filteredPackages.length === 0 && (
             <div className="text-center py-12">
               <div className="text-lg text-gray-600">
-                {searchTerm || categoryFilter 
+                {searchTerm || categoryFilter !== 'all'
                   ? 'No packages found matching your criteria.'
                   : 'No packages available at the moment.'
                 }
