@@ -66,7 +66,7 @@ const Header = () => {
             <img 
               src={logo} 
               alt="Logo" 
-              className="h-14 w-14 sm:h-16 sm:w-16 object-contain group-hover:scale-105 transition-all duration-300"
+              className="h-15w-15 sm:h-18 sm:w-18 object-contain group-hover:scale-105 transition-all duration-300"
             />
           </Link>
 
