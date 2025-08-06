@@ -48,6 +48,8 @@ const Index = () => {
           </div>
         </section>
 
+        <PackageCarousel />
+
         {/* Founder Section */}
         <section className="section-padding bg-gradient-to-br from-muted/30 to-accent/20">
           <div className="container mx-auto container-padding">
@@ -168,7 +170,6 @@ const Index = () => {
           </div>
         </section>
 
-        <PackageCarousel />
         <DestinationCarousel />
         <InteractiveMapSection />
       </main>
