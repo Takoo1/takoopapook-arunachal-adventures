@@ -146,7 +146,7 @@ const PackageCarousel = () => {
                           e.stopPropagation();
                           navigate(`/my-tour/package/${pkg.id}`);
                         }}
-                        className="w-full bg-primary text-primary-foreground py-2 sm:py-3 rounded-xl text-sm sm:text-base font-semibold hover:shadow-lg transition-all duration-300 group/btn flex items-center justify-center space-x-1 sm:space-x-2 hover:scale-105"
+                        className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white py-1.5 sm:py-2 rounded-xl text-sm sm:text-base font-semibold hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 group/btn flex items-center justify-center space-x-1 sm:space-x-2 hover:scale-105 shadow-lg hover:shadow-xl"
                       >
                         <span>Book Now</span>
                         <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 group-hover/btn:translate-x-1 transition-transform" />
