@@ -9,13 +9,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import DestinationCard from '@/components/DestinationCard';
-
+import DestinationDetailPopup from '@/components/DestinationDetailPopup';
 import ReviewSection from '@/components/ReviewSection';
 
 const PackageDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showImageLightbox, setShowImageLightbox] = useState(false);
+  const [selectedDestination, setSelectedDestination] = useState<Location | null>(null);
 
   // Fetch package data
   const { data: packageData, isLoading: packageLoading } = usePackage(id || '');
@@ -246,7 +247,11 @@ const PackageDetail = () => {
           <h2 className="text-2xl font-bold mb-6">Destinations Included</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {includedLocations.map((location) => (
-              <DestinationCard key={location.id} location={location} />
+              <DestinationCard 
+                key={location.id} 
+                location={location}
+                onClick={() => setSelectedDestination(location)}
+              />
             ))}
           </div>
         </div>
@@ -312,6 +317,14 @@ const PackageDetail = () => {
       <div className="mb-12">
         <ReviewSection itemType="package" itemId={packageData.id} />
       </div>
+
+      {/* Destination Detail Popup */}
+      {selectedDestination && (
+        <DestinationDetailPopup 
+          destination={selectedDestination}
+          onClose={() => setSelectedDestination(null)}
+        />
+      )}
     </div>
   );
 };

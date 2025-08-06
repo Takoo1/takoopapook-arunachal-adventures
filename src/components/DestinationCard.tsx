@@ -6,9 +6,10 @@ import { Location } from '@/types/database';
 
 interface DestinationCardProps {
   location: Location;
+  onClick?: () => void; // Optional click handler to override default navigation
 }
 
-const DestinationCard = ({ location }: DestinationCardProps) => {
+const DestinationCard = ({ location, onClick }: DestinationCardProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const navigate = useNavigate();
 
@@ -28,10 +29,18 @@ const DestinationCard = ({ location }: DestinationCardProps) => {
   const hasMedia = location.images && location.images.length > 0;
   const defaultImage = "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=250&fit=crop";
 
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      navigate(`/my-tour/destination/${location.id}`);
+    }
+  };
+
   return (
     <div 
       className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 group hover:-translate-y-2 w-full max-w-sm h-[420px] flex flex-col cursor-pointer"
-      onClick={() => navigate(`/my-tour/destination/${location.id}`)}
+      onClick={handleClick}
     >
       {/* Image/Video Carousel */}
       <div className="relative h-64 overflow-hidden flex-shrink-0">
