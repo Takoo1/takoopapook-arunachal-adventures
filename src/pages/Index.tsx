@@ -61,7 +61,7 @@ const Index = () => {
                 <div className="w-16 sm:w-20 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto rounded-full" />
               </div>
 
-              <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-16">
+              <div className="grid md:grid-cols-2 gap-6 sm:gap-8 lg:gap-16">
                 <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950/20 dark:to-emerald-900/30 rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in">
                   <div className="text-center mb-4 sm:mb-6">
                     <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full mx-auto mb-3 sm:mb-4 flex items-center justify-center">
