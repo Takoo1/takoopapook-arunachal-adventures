@@ -1,5 +1,6 @@
 import { MapPin, Phone, Mail, Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import logo from '@/assets/logo.png';
 
 const Footer = () => {
   return (
@@ -9,14 +10,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Brand Section */}
           <div className="lg:col-span-1">
-            <div className="flex items-center space-x-2 mb-6">
-              <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-2 rounded-xl">
-                <MapPin className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold">Takoopapook</h3>
-                <p className="text-emerald-200 text-sm">Arunachal Pradesh Tourism</p>
-              </div>
+            <div className="flex items-center space-x-3 mb-6">
+              <img 
+                src={logo} 
+                alt="Logo" 
+                className="h-12 w-12 object-contain"
+              />
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed">
               Discover the pristine beauty of Arunachal Pradesh with our carefully curated travel experiences. 
@@ -87,7 +86,7 @@ const Footer = () => {
               
               <div className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-emerald-400 flex-shrink-0" />
-                <p className="text-gray-300">info@takoopapook.com</p>
+                <p className="text-gray-300">info@tourismap.com</p>
               </div>
             </div>
           </div>
@@ -115,7 +114,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm mb-4 md:mb-0">
-            © 2024 Takoopapook. All rights reserved. | Designed with ❤️ for Arunachal Pradesh
+            © 2024 All rights reserved. | Designed with ❤️ for Arunachal Pradesh
           </p>
           <div className="flex space-x-6 text-sm">
             <Link to="#" className="text-gray-400 hover:text-emerald-200 transition-colors">Privacy Policy</Link>

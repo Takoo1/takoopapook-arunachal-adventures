@@ -4,6 +4,7 @@ import { Menu, X, User, MapPin, ChevronDown, LogOut } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import logo from '@/assets/logo.png';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -62,15 +63,11 @@ const Header = () => {
         <div className="flex items-center justify-between h-14 sm:h-16 md:h-18">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-1.5 sm:p-2 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-              <MapPin className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                Takoopapook
-              </h1>
-              <p className="text-xs text-gray-500 hidden sm:block">Arunachal Pradesh Tourism</p>
-            </div>
+            <img 
+              src={logo} 
+              alt="Logo" 
+              className="h-10 w-10 sm:h-12 sm:w-12 object-contain group-hover:scale-105 transition-all duration-300"
+            />
           </Link>
 
           {/* Desktop Navigation */}
