@@ -156,6 +156,21 @@ const PackageDetail = () => {
                   {packageData.features.join(', ').toLowerCase()} to make your journey unforgettable.
                 </p>
               </div>
+
+              {/* Key Highlights */}
+              {packageData.features.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-3">Key Highlights</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {packageData.features.map((feature, index) => (
+                      <div key={index} className="flex items-center p-3 bg-muted/50 rounded-lg">
+                        <div className="w-2 h-2 bg-primary rounded-full mr-3 flex-shrink-0"></div>
+                        <span className="text-sm">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -177,7 +192,7 @@ const PackageDetail = () => {
               />
               <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                 <div className="bg-white/90 rounded-full p-3">
-                  <Plus className="h-6 w-6 text-gray-800" />
+                  <Eye className="h-6 w-6 text-gray-800" />
                 </div>
               </div>
             </div>
@@ -222,24 +237,6 @@ const PackageDetail = () => {
         </div>
       </div>
 
-      {/* Key Points */}
-      {packageData.features.length > 0 && (
-        <Card className="mb-12">
-          <CardHeader>
-            <CardTitle>Key Highlights</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {packageData.features.map((feature, index) => (
-                <div key={index} className="flex items-center p-3 bg-muted/50 rounded-lg">
-                  <div className="w-2 h-2 bg-primary rounded-full mr-3 flex-shrink-0"></div>
-                  <span className="text-sm">{feature}</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Locations Included */}
       {includedLocations && includedLocations.length > 0 && (
