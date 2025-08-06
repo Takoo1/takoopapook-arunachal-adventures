@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, User, MapPin } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,7 @@ const Auth = () => {
   const { signIn, signUp, signInWithGoogle, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -44,7 +45,9 @@ const Auth = () => {
             title: "Welcome back!",
             description: "You have successfully logged in.",
           });
-          navigate('/');
+          // Check for return URL from location state
+          const returnUrl = location.state?.returnUrl || '/';
+          navigate(returnUrl);
         }
       } else {
         if (password !== confirmPassword) {

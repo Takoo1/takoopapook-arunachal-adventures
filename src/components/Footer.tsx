@@ -121,7 +121,7 @@ const Footer = () => {
             <Link to="#" className="text-gray-400 hover:text-emerald-200 transition-colors">Privacy Policy</Link>
             <Link to="#" className="text-gray-400 hover:text-emerald-200 transition-colors">Terms of Service</Link>
             <Link to="#" className="text-gray-400 hover:text-emerald-200 transition-colors">Cookie Policy</Link>
-            <Link to="/admin/map-editor" className="text-gray-400 hover:text-emerald-200 transition-colors">Admin Panel</Link>
+            <Link to="/admin/bookings" className="text-gray-400 hover:text-emerald-200 transition-colors">Admin Panel</Link>
           </div>
         </div>
       </div>

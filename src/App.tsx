@@ -16,6 +16,7 @@ import NotFound from "./pages/NotFound";
 
 import AddReview from "./pages/AddReview";
 import ReviewsManagement from "./pages/ReviewsManagement";
+import BookingsManagement from "./components/admin/BookingsManagement";
 import FounderProfile from "./pages/FounderProfile";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const App = () => (
             
             <Route path="/add-review" element={<AddReview />} />
             <Route path="/admin/reviews" element={<ReviewsManagement />} />
+            <Route path="/admin/bookings" element={<BookingsManagement />} />
             <Route path="/founder-profile" element={<FounderProfile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

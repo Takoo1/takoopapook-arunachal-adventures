@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { usePackage } from '@/hooks/usePackages';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCreateBooking } from '@/hooks/useBookings';
 import { toast } from 'sonner';
 
 interface Tourist {
@@ -30,16 +32,30 @@ const idTypes = [
 const Booking = () => {
   const { packageId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { data: packageData, isLoading } = usePackage(packageId || '');
+  const createBooking = useCreateBooking();
   
   const [tourists, setTourists] = useState<Tourist[]>([
     { id: '1', name: '', idType: '', idNumber: '' }
   ]);
 
+  // Check authentication and redirect if needed
+  useEffect(() => {
+    if (!user) {
+      navigate('/auth', { state: { returnUrl: `/booking/${packageId}` } });
+    }
+  }, [user, navigate, packageId]);
+
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
+
+  // Don't render anything if user is not authenticated (redirect will handle it)
+  if (!user) {
+    return null;
+  }
 
   if (!packageId) {
     navigate('/packages');
@@ -103,7 +119,7 @@ const Booking = () => {
     ));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate all tourists have required information
@@ -116,18 +132,43 @@ const Booking = () => {
       return;
     }
 
-    // Store booking data in localStorage and navigate to My Tour
-    const bookingData = {
-      packageId,
-      packageData: packageData,
-      tourists,
-      totalPrice,
-      bookingDate: new Date().toISOString()
-    };
-    
-    localStorage.setItem('currentBooking', JSON.stringify(bookingData));
-    toast.success('Booking confirmed! Redirecting to My Tour...');
-    navigate('/my-tour');
+    if (!packageData) {
+      toast.error('Package data not available');
+      return;
+    }
+
+    try {
+      // Create booking in database
+      const bookingData = {
+        package_id: packageData.id,
+        package_title: packageData.title,
+        package_location: packageData.location,
+        package_duration: packageData.duration,
+        package_price: packageData.price,
+        package_image_url: packageData.image_url,
+        tourists,
+        total_price: totalPrice,
+        status: 'confirmed' as const,
+      };
+
+      await createBooking.mutateAsync(bookingData);
+
+      // Also store in localStorage for immediate display
+      const displayData = {
+        packageId,
+        packageData: packageData,
+        tourists,
+        totalPrice,
+        bookingDate: new Date().toISOString()
+      };
+      
+      localStorage.setItem('currentBooking', JSON.stringify(displayData));
+      toast.success('Booking confirmed! Redirecting to My Tour...');
+      navigate('/my-tour');
+    } catch (error) {
+      console.error('Booking failed:', error);
+      toast.error('Failed to create booking. Please try again.');
+    }
   };
 
   return (

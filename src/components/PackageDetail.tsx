@@ -4,13 +4,14 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { usePackage } from '@/hooks/usePackages';
 import { Location } from '@/types/database';
-import { Star, MapPin, Clock, Users, Edit, CreditCard, ArrowLeft, Eye, X, Plus } from 'lucide-react';
+import { Star, MapPin, Clock, Users, Edit, ArrowLeft, Eye, X, Plus } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import DestinationCard from '@/components/DestinationCard';
 import DestinationDetailPopup from '@/components/DestinationDetailPopup';
 import ReviewSection from '@/components/ReviewSection';
+import BookingButton from '@/components/BookingButton';
 
 const PackageDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -271,12 +272,7 @@ const PackageDetail = () => {
                   </Link>
                 </Button>
               )}
-              <Button size="lg" className="px-8" asChild>
-                <Link to={`/booking/${packageData.id}`}>
-                  <CreditCard className="h-4 w-4 mr-2" />
-                  Book Package
-                </Link>
-              </Button>
+              <BookingButton packageId={packageData.id} />
             </div>
           </div>
         </CardContent>
