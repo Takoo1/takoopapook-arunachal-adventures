@@ -1,54 +1,21 @@
-
-import { useState, useEffect, useCallback } from 'react';
 import { useAllLocations } from '@/hooks/useLocations';
 import DestinationCard from './DestinationCard';
-import { MapPin, Compass, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin } from 'lucide-react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const DestinationCarousel = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const { data: locations = [], isLoading, error } = useAllLocations();
+  const isMobile = useIsMobile();
 
   // Filter only active locations and limit to 9
   const activeLocations = locations.filter(location => location.is_active).slice(0, 9);
-  
-  const getItemsPerView = () => {
-    if (typeof window !== 'undefined') {
-      return window.innerWidth < 768 ? 1 : 3; // mobile: 1, desktop: 3
-    }
-    return 3;
-  };
-  
-  const [itemsPerView, setItemsPerView] = useState(getItemsPerView());
-  const totalSlides = Math.ceil(activeLocations.length / itemsPerView);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setItemsPerView(getItemsPerView());
-      setCurrentIndex(0); // Reset to first slide on resize
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const goToPrevious = useCallback(() => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentIndex((prev) => {
-      return prev <= 0 ? totalSlides - 1 : prev - 1; // Loop from first to last
-    });
-    setTimeout(() => setIsTransitioning(false), 300);
-  }, [isTransitioning, totalSlides]);
-
-  const goToNext = useCallback(() => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setCurrentIndex((prev) => {
-      return prev >= totalSlides - 1 ? 0 : prev + 1; // Loop from last to first
-    });
-    setTimeout(() => setIsTransitioning(false), 300);
-  }, [isTransitioning, totalSlides]);
 
   if (isLoading) {
     return (
@@ -119,58 +86,33 @@ const DestinationCarousel = () => {
             </p>
           </div>
         ) : (
-          /* Carousel Container */
-          <div className="relative">
-            {/* Navigation Arrows */}
-            {totalSlides > 1 && (
-              <>
-                <button
-                  onClick={goToPrevious}
-                  disabled={isTransitioning}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-background/95 hover:bg-background border border-border text-foreground p-3 rounded-full shadow-xl transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed group hover:border-primary/50"
-                  aria-label="Previous destinations"
-                >
-                  <ChevronLeft className="h-6 w-6 group-hover:scale-110 transition-transform group-hover:text-primary" />
-                </button>
-                <button
-                  onClick={goToNext}
-                  disabled={isTransitioning}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-background/95 hover:bg-background border border-border text-foreground p-3 rounded-full shadow-xl transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed group hover:border-primary/50"
-                  aria-label="Next destinations"
-                >
-                  <ChevronRight className="h-6 w-6 group-hover:scale-110 transition-transform group-hover:text-primary" />
-                </button>
-              </>
-            )}
-
-            {/* Carousel Viewport */}
-            <div className="overflow-hidden mx-6 sm:mx-8 lg:mx-12">
-              <div 
-                className="flex transition-transform duration-500 ease-in-out gap-3 sm:gap-4 lg:gap-6"
-                style={{ 
-                  transform: `translateX(-${currentIndex * 100}%)`,
-                  width: `${totalSlides * 100}%`
-                }}
-              >
-                {Array.from({ length: totalSlides }).map((_, slideIndex) => (
-                  <div 
-                    key={slideIndex}
-                    className="flex gap-3 sm:gap-4 lg:gap-6"
-                    style={{ width: `${100 / totalSlides}%` }}
+          /* Carousel */
+          <div className="relative px-4 md:px-12">
+            <Carousel
+              opts={{
+                align: "start",
+                slidesToScroll: 1,
+                skipSnaps: false,
+                dragFree: false,
+                loop: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-2 md:-ml-4">
+                {activeLocations.map((location) => (
+                  <CarouselItem 
+                    key={location.id} 
+                    className={`pl-2 md:pl-4 ${isMobile ? 'basis-full' : 'basis-1/3'}`}
                   >
-                    {activeLocations.slice(slideIndex * itemsPerView, (slideIndex + 1) * itemsPerView).map((location) => (
-                      <div 
-                        key={location.id} 
-                        className="flex-shrink-0"
-                        style={{ width: `${100 / itemsPerView}%` }}
-                      >
-                        <DestinationCard location={location} />
-                      </div>
-                    ))}
-                  </div>
+                    <DestinationCard location={location} />
+                  </CarouselItem>
                 ))}
-              </div>
-            </div>
+              </CarouselContent>
+              
+              {/* Navigation Buttons */}
+              <CarouselPrevious className={`-left-6 md:-left-12 ${isMobile ? 'h-6 w-6' : 'h-8 w-8'} bg-background/95 hover:bg-background border border-border hover:border-primary/50 shadow-xl`} />
+              <CarouselNext className={`-right-6 md:-right-12 ${isMobile ? 'h-6 w-6' : 'h-8 w-8'} bg-background/95 hover:bg-background border border-border hover:border-primary/50 shadow-xl`} />
+            </Carousel>
           </div>
         )}
       </div>
