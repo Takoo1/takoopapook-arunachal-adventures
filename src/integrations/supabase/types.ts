@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          booking_date: string
+          created_at: string
+          id: string
+          package_duration: string
+          package_id: string
+          package_image_url: string
+          package_location: string
+          package_price: string
+          package_title: string
+          status: string
+          total_price: number
+          tourists: Json
+          updated_at: string
+        }
+        Insert: {
+          booking_date?: string
+          created_at?: string
+          id?: string
+          package_duration: string
+          package_id: string
+          package_image_url: string
+          package_location: string
+          package_price: string
+          package_title: string
+          status?: string
+          total_price: number
+          tourists: Json
+          updated_at?: string
+        }
+        Update: {
+          booking_date?: string
+          created_at?: string
+          id?: string
+          package_duration?: string
+          package_id?: string
+          package_image_url?: string
+          package_location?: string
+          package_price?: string
+          package_title?: string
+          status?: string
+          total_price?: number
+          tourists?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       locations: {
         Row: {
           bullet_points: string[] | null
