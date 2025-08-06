@@ -10,8 +10,8 @@ const PackageCarousel = () => {
   const { data: allPackages = [], isLoading } = usePackages();
   const navigate = useNavigate();
 
-  // Limit to 9 packages and responsive items per view
-  const packages = allPackages.slice(0, 9);
+  // Limit to 6 packages only
+  const packages = allPackages.slice(0, 6);
   const getItemsPerView = () => {
     if (typeof window !== 'undefined') {
       return window.innerWidth < 768 ? 1 : 3; // mobile: 1, desktop: 3
@@ -20,7 +20,7 @@ const PackageCarousel = () => {
   };
   
   const [itemsPerView, setItemsPerView] = useState(getItemsPerView());
-  const totalSlides = Math.ceil(packages.length / itemsPerView);
+  const maxSlides = packages.length - itemsPerView + 1; // Maximum possible slides
 
   useEffect(() => {
     const handleResize = () => {
@@ -35,22 +35,18 @@ const PackageCarousel = () => {
   // Note: Auto-scroll functionality removed per user request
 
   const goToPrevious = useCallback(() => {
-    if (isTransitioning) return;
+    if (isTransitioning || currentIndex <= 0) return;
     setIsTransitioning(true);
-    setCurrentIndex((prev) => {
-      return prev <= 0 ? totalSlides - 1 : prev - 1; // Loop from first to last
-    });
+    setCurrentIndex((prev) => prev - 1);
     setTimeout(() => setIsTransitioning(false), 300);
-  }, [isTransitioning, totalSlides]);
+  }, [isTransitioning, currentIndex]);
 
   const goToNext = useCallback(() => {
-    if (isTransitioning) return;
+    if (isTransitioning || currentIndex >= maxSlides - 1) return;
     setIsTransitioning(true);
-    setCurrentIndex((prev) => {
-      return prev >= totalSlides - 1 ? 0 : prev + 1; // Loop from last to first
-    });
+    setCurrentIndex((prev) => prev + 1);
     setTimeout(() => setIsTransitioning(false), 300);
-  }, [isTransitioning, totalSlides]);
+  }, [isTransitioning, currentIndex, maxSlides]);
 
   if (isLoading) {
     return (
@@ -99,48 +95,48 @@ const PackageCarousel = () => {
         {/* Carousel Container */}
         <div className="relative">
           {/* Navigation Arrows */}
-          {totalSlides > 1 && (
+          {packages.length > itemsPerView && (
             <>
-              <button
-                onClick={goToPrevious}
-                disabled={isTransitioning}
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-background/95 hover:bg-background border border-border text-foreground p-3 rounded-full shadow-xl transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed group hover:border-primary/50"
-                aria-label="Previous packages"
-              >
-                <ChevronLeft className="h-6 w-6 group-hover:scale-110 transition-transform group-hover:text-primary" />
-              </button>
-              <button
-                onClick={goToNext}
-                disabled={isTransitioning}
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-background/95 hover:bg-background border border-border text-foreground p-3 rounded-full shadow-xl transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed group hover:border-primary/50"
-                aria-label="Next packages"
-              >
-                <ChevronRight className="h-6 w-6 group-hover:scale-110 transition-transform group-hover:text-primary" />
-              </button>
+              {/* Previous Arrow - only show if not at the beginning */}
+              {currentIndex > 0 && (
+                <button
+                  onClick={goToPrevious}
+                  disabled={isTransitioning}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-background/95 hover:bg-background border border-border text-foreground p-3 rounded-full shadow-xl transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed group hover:border-primary/50"
+                  aria-label="Previous packages"
+                >
+                  <ChevronLeft className="h-6 w-6 group-hover:scale-110 transition-transform group-hover:text-primary" />
+                </button>
+              )}
+              {/* Next Arrow - only show if not at the end */}
+              {currentIndex < maxSlides - 1 && (
+                <button
+                  onClick={goToNext}
+                  disabled={isTransitioning}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-background/95 hover:bg-background border border-border text-foreground p-3 rounded-full shadow-xl transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed group hover:border-primary/50"
+                  aria-label="Next packages"
+                >
+                  <ChevronRight className="h-6 w-6 group-hover:scale-110 transition-transform group-hover:text-primary" />
+                </button>
+              )}
             </>
           )}
 
           {/* Carousel Viewport */}
-          <div className="overflow-hidden mx-6 sm:mx-8 lg:mx-12">
+          <div className="overflow-hidden mx-6 sm:mx-8 lg:mx-12 touch-pan-y">
             <div 
               className="flex transition-transform duration-500 ease-in-out gap-3 sm:gap-4 lg:gap-6"
               style={{ 
-                transform: `translateX(-${currentIndex * 100}%)`,
-                width: `${totalSlides * 100}%`
+                transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)`,
+                width: `${packages.length * (100 / itemsPerView)}%`
               }}
             >
-              {Array.from({ length: totalSlides }).map((_, slideIndex) => (
+              {packages.map((pkg) => (
                 <div 
-                  key={slideIndex}
-                  className="flex gap-3 sm:gap-4 lg:gap-6"
-                  style={{ width: `${100 / totalSlides}%` }}
+                  key={pkg.id} 
+                  className="flex-shrink-0"
+                  style={{ width: `${100 / packages.length}%` }}
                 >
-                  {packages.slice(slideIndex * itemsPerView, (slideIndex + 1) * itemsPerView).map((pkg) => (
-                    <div 
-                      key={pkg.id} 
-                      className="flex-shrink-0"
-                      style={{ width: `${100 / itemsPerView}%` }}
-                    >
                   <div 
                     className="bg-card border border-border rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group hover:-translate-y-2 h-full cursor-pointer backdrop-blur-sm"
                     onClick={() => navigate(`/my-tour/package/${pkg.id}`)}
@@ -212,8 +208,6 @@ const PackageCarousel = () => {
                     </div>
                   </div>
                     </div>
-                  ))}
-                </div>
               ))}
             </div>
           </div>
