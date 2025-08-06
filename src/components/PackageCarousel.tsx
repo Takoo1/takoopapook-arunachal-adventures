@@ -1,52 +1,23 @@
-import { useState, useEffect, useCallback } from 'react';
-import { MapPin, Clock, Users, Star, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, Clock, Users, Star, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import PlanButton from './PlanButton';
 import { usePackages } from '@/hooks/usePackages';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const PackageCarousel = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const { data: allPackages = [], isLoading } = usePackages();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   // Limit to 6 packages only
   const packages = allPackages.slice(0, 6);
-  const getItemsPerView = () => {
-    if (typeof window !== 'undefined') {
-      return window.innerWidth < 768 ? 1 : 3; // mobile: 1, desktop: 3
-    }
-    return 3;
-  };
-  
-  const [itemsPerView, setItemsPerView] = useState(getItemsPerView());
-  const maxSlides = packages.length - itemsPerView + 1; // Maximum possible slides
-
-  useEffect(() => {
-    const handleResize = () => {
-      setItemsPerView(getItemsPerView());
-      setCurrentIndex(0); // Reset to first slide on resize
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Note: Auto-scroll functionality removed per user request
-
-  const goToPrevious = useCallback(() => {
-    if (isTransitioning || currentIndex <= 0) return;
-    setIsTransitioning(true);
-    setCurrentIndex((prev) => prev - 1);
-    setTimeout(() => setIsTransitioning(false), 300);
-  }, [isTransitioning, currentIndex]);
-
-  const goToNext = useCallback(() => {
-    if (isTransitioning || currentIndex >= maxSlides - 1) return;
-    setIsTransitioning(true);
-    setCurrentIndex((prev) => prev + 1);
-    setTimeout(() => setIsTransitioning(false), 300);
-  }, [isTransitioning, currentIndex, maxSlides]);
 
   if (isLoading) {
     return (
@@ -92,50 +63,22 @@ const PackageCarousel = () => {
           </p>
         </div>
 
-        {/* Carousel Container */}
-        <div className="relative">
-          {/* Navigation Arrows */}
-          {packages.length > itemsPerView && (
-            <>
-              {/* Previous Arrow - only show if not at the beginning */}
-              {currentIndex > 0 && (
-                <button
-                  onClick={goToPrevious}
-                  disabled={isTransitioning}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-background/95 hover:bg-background border border-border text-foreground p-3 rounded-full shadow-xl transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed group hover:border-primary/50"
-                  aria-label="Previous packages"
-                >
-                  <ChevronLeft className="h-6 w-6 group-hover:scale-110 transition-transform group-hover:text-primary" />
-                </button>
-              )}
-              {/* Next Arrow - only show if not at the end */}
-              {currentIndex < maxSlides - 1 && (
-                <button
-                  onClick={goToNext}
-                  disabled={isTransitioning}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-background/95 hover:bg-background border border-border text-foreground p-3 rounded-full shadow-xl transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed group hover:border-primary/50"
-                  aria-label="Next packages"
-                >
-                  <ChevronRight className="h-6 w-6 group-hover:scale-110 transition-transform group-hover:text-primary" />
-                </button>
-              )}
-            </>
-          )}
-
-          {/* Carousel Viewport */}
-          <div className="overflow-hidden mx-6 sm:mx-8 lg:mx-12 touch-pan-y">
-            <div 
-              className="flex transition-transform duration-500 ease-in-out gap-3 sm:gap-4 lg:gap-6"
-              style={{ 
-                transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)`,
-                width: `${(packages.length * 100) / itemsPerView}%`
-              }}
-            >
+        {/* Carousel */}
+        <div className="relative px-4 md:px-12">
+          <Carousel
+            opts={{
+              align: "start",
+              slidesToScroll: 1,
+              skipSnaps: false,
+              dragFree: false,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-2 md:-ml-4">
               {packages.map((pkg) => (
-                <div 
+                <CarouselItem 
                   key={pkg.id} 
-                  className="flex-shrink-0"
-                  style={{ width: `${100 / packages.length}%` }}
+                  className={`pl-2 md:pl-4 ${isMobile ? 'basis-full' : 'basis-1/3'}`}
                 >
                   <div 
                     className="bg-card border border-border rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group hover:-translate-y-2 h-full cursor-pointer backdrop-blur-sm"
@@ -147,6 +90,9 @@ const PackageCarousel = () => {
                         src={pkg.image_url} 
                         alt={pkg.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        onError={(e) => {
+                          e.currentTarget.src = '/placeholder.svg';
+                        }}
                       />
                       <div className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-primary/90 text-primary-foreground px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
                         {pkg.price}
@@ -197,7 +143,7 @@ const PackageCarousel = () => {
 
                       <button 
                         onClick={(e) => {
-                          e.stopPropagation(); // Prevent card click when button is clicked
+                          e.stopPropagation();
                           navigate(`/my-tour/package/${pkg.id}`);
                         }}
                         className="w-full bg-primary text-primary-foreground py-2 sm:py-3 rounded-xl text-sm sm:text-base font-semibold hover:shadow-lg transition-all duration-300 group/btn flex items-center justify-center space-x-1 sm:space-x-2 hover:scale-105"
@@ -207,11 +153,14 @@ const PackageCarousel = () => {
                       </button>
                     </div>
                   </div>
-                    </div>
+                </CarouselItem>
               ))}
-            </div>
-          </div>
-
+            </CarouselContent>
+            
+            {/* Navigation Buttons */}
+            <CarouselPrevious className={`-left-6 md:-left-12 ${isMobile ? 'h-6 w-6' : 'h-8 w-8'} bg-background/95 hover:bg-background border border-border hover:border-primary/50 shadow-xl`} />
+            <CarouselNext className={`-right-6 md:-right-12 ${isMobile ? 'h-6 w-6' : 'h-8 w-8'} bg-background/95 hover:bg-background border border-border hover:border-primary/50 shadow-xl`} />
+          </Carousel>
         </div>
 
         {/* View All Button */}
