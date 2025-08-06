@@ -96,6 +96,14 @@ const Auth = () => {
           description: error.message,
           variant: "destructive",
         });
+      } else {
+        toast({
+          title: "Welcome back!",
+          description: "You have successfully signed in with Google.",
+        });
+        // Check for return URL from location state
+        const returnUrl = location.state?.returnUrl || '/';
+        navigate(returnUrl);
       }
     } catch (error) {
       toast({
