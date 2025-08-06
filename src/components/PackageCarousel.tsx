@@ -128,7 +128,7 @@ const PackageCarousel = () => {
               className="flex transition-transform duration-500 ease-in-out gap-3 sm:gap-4 lg:gap-6"
               style={{ 
                 transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)`,
-                width: `${packages.length * (100 / itemsPerView)}%`
+                width: `${(packages.length * 100) / itemsPerView}%`
               }}
             >
               {packages.map((pkg) => (
