@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import DestinationCard from '@/components/DestinationCard';
-import InteractiveLeafletSection from '@/components/InteractiveLeafletSection';
+
 import ReviewSection from '@/components/ReviewSection';
 
 const PackageDetail = () => {
@@ -248,32 +248,6 @@ const PackageDetail = () => {
             {includedLocations.map((location) => (
               <DestinationCard key={location.id} location={location} />
             ))}
-          </div>
-        </div>
-      )}
-
-      {/* Interactive Map */}
-      {(() => {
-        console.log('Rendering map section. includedLocations:', includedLocations, 'length:', includedLocations?.length);
-        return null;
-      })()}
-      {includedLocations && includedLocations.length > 0 ? (
-        <div className="mb-12">
-          <p className="text-sm text-muted-foreground mb-4">Locations included in this package ({includedLocations.length})</p>
-          {/* Container with 5:3 aspect ratio to match map image (2000x1200) */}
-          <div className="w-full max-w-4xl mx-auto aspect-[5/3] rounded-lg overflow-hidden border-2 border-gray-200 bg-gray-100">
-            <InteractiveLeafletSection filterLocations={includedLocations} useFullView={true} />
-          </div>
-        </div>
-      ) : (
-        <div className="mb-12">
-          <p className="text-sm text-muted-foreground mb-4">Loading map...</p>
-          {/* Loading container with same aspect ratio */}
-          <div className="w-full max-w-4xl mx-auto aspect-[5/3] rounded-lg overflow-hidden border-2 border-gray-200 bg-gray-100 flex items-center justify-center">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600 mx-auto mb-2"></div>
-              <p className="text-gray-600">Loading locations...</p>
-            </div>
           </div>
         </div>
       )}

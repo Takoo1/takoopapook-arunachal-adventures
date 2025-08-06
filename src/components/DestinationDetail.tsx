@@ -8,8 +8,6 @@ import { Separator } from '@/components/ui/separator';
 import { useLocations } from '@/hooks/useLocations';
 import { usePackages } from '@/hooks/usePackages';
 import PackageCard from './PackageCard';
-import StaticImageMap from './StaticImageMap';
-import { useMapSettings } from '@/hooks/useMapSettings';
 import ReviewSection from './ReviewSection';
 import type { Package } from '@/hooks/usePackages';
 
@@ -18,7 +16,7 @@ const DestinationDetail = () => {
   const navigate = useNavigate();
   const { data: locations = [] } = useLocations();
   const { data: packages = [] } = usePackages();
-  const { data: mapSettings } = useMapSettings();
+  
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showImageLightbox, setShowImageLightbox] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
@@ -175,27 +173,6 @@ const DestinationDetail = () => {
             </div>
           </div>
         </div>
-
-        {/* Map Section */}
-        <Card className="mb-12 overflow-hidden">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <MapPin className="h-5 w-5 text-emerald-600" />
-              <span>Location on Map</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="w-full max-w-4xl mx-auto aspect-[5/3]">
-              <StaticImageMap 
-                locations={[destination]}
-                selectedLocation={destination}
-                onLocationSelect={() => {}}
-                mapSettings={mapSettings}
-                useFullView={false}
-              />
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Packages Available Section */}
         {destinationPackages.length > 0 && (

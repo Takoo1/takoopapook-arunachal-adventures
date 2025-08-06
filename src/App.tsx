@@ -13,7 +13,7 @@ import About from "./pages/About";
 import Auth from "./pages/Auth";
 import Booking from "./pages/Booking";
 import NotFound from "./pages/NotFound";
-import AdminMapEditorPage from "./pages/AdminMapEditor";
+
 import AddReview from "./pages/AddReview";
 import ReviewsManagement from "./pages/ReviewsManagement";
 import FounderProfile from "./pages/FounderProfile";
@@ -38,7 +38,7 @@ const App = () => (
             <Route path="/services" element={<Services />} />
             <Route path="/about" element={<About />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/admin/map-editor" element={<AdminMapEditorPage />} />
+            
             <Route path="/add-review" element={<AddReview />} />
             <Route path="/admin/reviews" element={<ReviewsManagement />} />
             <Route path="/founder-profile" element={<FounderProfile />} />

@@ -2,7 +2,6 @@
 import HeroSection from '@/components/HeroSection';
 import PackageCarousel from '@/components/PackageCarousel';
 import DestinationCarousel from '@/components/DestinationCarousel';
-import InteractiveMapSection from '@/components/InteractiveMapSection';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useNavigate } from 'react-router-dom';
@@ -172,7 +171,7 @@ const Index = () => {
           </div>
         </section>
 
-        <InteractiveMapSection />
+        
       </main>
       <Footer />
     </div>

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin, Plus, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import StaticImageMap from '../StaticImageMap';
+
 import LocationForm, { LocationFormData } from './LocationForm';
 import { validateCoordinates } from '@/utils/coordinateValidation';
 import { supabase } from '@/integrations/supabase/client';
@@ -25,39 +25,16 @@ const DestinationManagement = () => {
   const { toast } = useToast();
 
   const handleAddLocationClick = () => {
-    setIsAddingLocation(true);
+    setIsAddingLocation(false);
     setSelectedLocation(null);
-    setShowForm(false);
+    setShowForm(true);
+    setClickCoordinates({ x: 0, y: 0 }); // Default coordinates
     toast({
-      title: 'Click on the map',
-      description: 'Click anywhere on the map to place a marker for the new destination.',
+      title: 'Add New Destination',
+      description: 'Fill out the form to create a new destination.',
     });
   };
 
-  const handleMapClick = (x: number, y: number) => {
-    if (!isAddingLocation) return;
-    
-    const validation = validateCoordinates(x, y);
-    if (!validation.isValid) {
-      toast({
-        title: 'Invalid coordinates',
-        description: validation.error,
-        variant: 'destructive'
-      });
-      return;
-    }
-    
-    const safeX = Math.max(0, Math.min(2000, Math.round(x)));
-    const safeY = Math.max(0, Math.min(1200, Math.round(y)));
-    
-    setClickCoordinates({ x: safeX, y: safeY });
-    setIsAddingLocation(false);
-    setShowForm(true);
-    toast({
-      title: 'Location placed!',
-      description: `New destination marker set at coordinates (${safeX}, ${safeY}).`,
-    });
-  };
 
   const handleSubmitLocation = async (formData: LocationFormData) => {
     const safeCoordinates = {
@@ -229,24 +206,23 @@ const DestinationManagement = () => {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        {/* Map Section */}
-        <div className="xl:col-span-2">
-          <Card className="h-[600px]">
+        {/* Action Section */}
+        <div className="xl:col-span-3">
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <MapPin className="h-5 w-5 text-blue-600" />
-                  <span>Destination Map</span>
+                  <span>Destination Management</span>
                 </div>
                 <div className="flex space-x-2">
                   <Button
                     onClick={handleAddLocationClick}
                     className="bg-green-600 hover:bg-green-700"
                     size="sm"
-                    disabled={isAddingLocation}
                   >
                     <Plus className="h-4 w-4 mr-2" />
-                    {isAddingLocation ? 'Click on Map' : 'Add Destination'}
+                    Add Destination
                   </Button>
                   <Button
                     onClick={resetForm}
@@ -258,16 +234,6 @@ const DestinationManagement = () => {
                 </div>
               </CardTitle>
             </CardHeader>
-            <CardContent className="h-[500px] p-4">
-              <StaticImageMap
-                locations={locations}
-                selectedLocation={selectedLocation}
-                onLocationSelect={editLocation}
-                isAdminMode={true}
-                isAddingLocation={isAddingLocation}
-                onMapClick={handleMapClick}
-              />
-            </CardContent>
           </Card>
         </div>
 
