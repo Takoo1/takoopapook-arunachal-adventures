@@ -18,6 +18,7 @@ const MyTour = () => {
   const { data: plannedLocations = [], isLoading } = usePlannedLocations();
   const removeFromPlanned = useRemoveFromPlanned();
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  const [bookingData, setBookingData] = useState<any>(null);
   
   const currentPath = window.location.pathname;
 
@@ -25,6 +26,14 @@ const MyTour = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [id, currentPath]);
+
+  // Check for booking data from localStorage
+  useEffect(() => {
+    const storedBooking = localStorage.getItem('currentBooking');
+    if (storedBooking) {
+      setBookingData(JSON.parse(storedBooking));
+    }
+  }, []);
 
   // If we have an ID, determine if it's a package or destination
   if (id) {
@@ -74,17 +83,6 @@ const MyTour = () => {
       </div>
     );
   }
-
-  // Check for booking data from localStorage
-  const [bookingData, setBookingData] = useState<any>(null);
-
-  useEffect(() => {
-    const storedBooking = localStorage.getItem('currentBooking');
-    if (storedBooking) {
-      setBookingData(JSON.parse(storedBooking));
-    }
-  }, []);
-
   // If we have booking data, show the booking details
   if (bookingData) {
     const { packageData, tourists, totalPrice, bookingDate } = bookingData;
