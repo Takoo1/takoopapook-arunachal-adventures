@@ -28,9 +28,9 @@ const DestinationDetail = () => {
       <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Destination not found</h2>
-          <Button onClick={() => navigate('/my-tour')} variant="outline">
+          <Button onClick={() => navigate('/explore')} variant="outline">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to My Tour
+            Back To All Destinations
           </Button>
         </div>
       </div>
@@ -55,19 +55,19 @@ const DestinationDetail = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-4">
         {/* Back Button */}
         <Button 
-          onClick={() => navigate('/my-tour')} 
+          onClick={() => navigate('/explore')} 
           variant="ghost" 
-          className="mb-6 hover:bg-white/50"
+          className="mb-4 hover:bg-white/50"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to My Tour
+          Back To All Destinations
         </Button>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Left Column - Images */}
           <div className="space-y-4">
             <div className="relative">
