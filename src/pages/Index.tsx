@@ -32,8 +32,8 @@ const Index = () => {
                 <div className="w-16 sm:w-20 lg:w-24 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 mx-auto rounded-full" />
               </div>
 
-              <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
-                <div className="content-spacing animate-fade-in">
+              <div className="max-w-4xl mx-auto">
+                <div className="content-spacing animate-fade-in text-center">
                   <div className="content-spacing-sm">
                     <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                       TAKOO-PAPOOK Eco-Tourist seeks to revolutionize eco-tourism in Arunachal Pradesh by providing tourists with memorable experiences that reflect the region's rich culture, natural beauty, and ecological diversity.
@@ -42,34 +42,6 @@ const Index = () => {
                       Our focus on sustainability, local employment, and customer satisfaction ensures that we not only grow as a business but also contribute to the well-being of the local community and environment.
                     </p>
                   </div>
-                  
-                  <div className="flex flex-wrap gap-2 sm:gap-3">
-                    <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/30 px-3 py-1.5 rounded-full">
-                      <Heart className="w-4 h-4 text-emerald-600" />
-                      <span className="text-xs sm:text-sm text-emerald-700 dark:text-emerald-300 font-medium">Sustainable Tourism</span>
-                    </div>
-                    <div className="flex items-center gap-2 bg-teal-50 dark:bg-teal-950/30 px-3 py-1.5 rounded-full">
-                      <Users className="w-4 h-4 text-teal-600" />
-                      <span className="text-xs sm:text-sm text-teal-700 dark:text-teal-300 font-medium">Local Employment</span>
-                    </div>
-                    <div className="flex items-center gap-2 bg-cyan-50 dark:bg-cyan-950/30 px-3 py-1.5 rounded-full">
-                      <Star className="w-4 h-4 text-cyan-600" />
-                      <span className="text-xs sm:text-sm text-cyan-700 dark:text-cyan-300 font-medium">Cultural Heritage</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="relative animate-scale-in">
-                  <div className="relative rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-all duration-500">
-                    <img
-                      src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                      alt="Arunachal Pradesh landscape"
-                      className="w-full h-48 sm:h-64 lg:h-80 object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-600/20 to-transparent" />
-                  </div>
-                  <div className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 w-12 h-12 sm:w-16 sm:h-16 lg:w-24 lg:h-24 bg-gradient-to-br from-emerald-400/30 to-teal-500/30 rounded-full animate-pulse" />
-                  <div className="absolute -bottom-2 -left-2 sm:-bottom-4 sm:-left-4 w-8 h-8 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-cyan-400/30 to-emerald-500/30 rounded-full animate-pulse" />
                 </div>
               </div>
             </div>
