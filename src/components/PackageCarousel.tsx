@@ -167,7 +167,7 @@ const PackageCarousel = () => {
         <div className="text-center mt-12 animate-fade-in">
           <button 
             onClick={() => navigate('/packages')}
-            className="group bg-primary text-primary-foreground px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center space-x-2 mx-auto"
+            className="group bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-2.5 rounded-xl font-semibold text-base hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 hover:scale-105 flex items-center space-x-2 mx-auto shadow-lg hover:shadow-xl"
           >
             <span>View All Packages</span>
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
