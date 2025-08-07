@@ -1,357 +1,217 @@
-import { useState } from 'react';
-import { useAllLocations, useCreateLocation, useUpdateLocation, useDeleteLocation } from '@/hooks/useLocations';
-import { useUpdatePackage } from '@/hooks/usePackages';
-import { Location } from '@/types/database';
-import { Button } from '@/components/ui/button';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MapPin, Plus, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useAllLocations, useCreateLocation, useUpdateLocation, useDeleteLocation } from '@/hooks/useLocations';
+import { useAllPackages, useUpdatePackage } from '@/hooks/usePackages';
 import { useToast } from '@/hooks/use-toast';
-
+import { Location } from '@/types/database';
 import LocationForm, { LocationFormData } from './LocationForm';
-import { validateCoordinates } from '@/utils/coordinateValidation';
-import { supabase } from '@/integrations/supabase/client';
+import LocationsList from './LocationsList';
+import { Plus } from 'lucide-react';
 
 const DestinationManagement = () => {
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
-  const [isAddingLocation, setIsAddingLocation] = useState(false);
-  const [clickCoordinates, setClickCoordinates] = useState({ x: 0, y: 0 });
-  const [showForm, setShowForm] = useState(false);
-
-  const { data: locations = [] } = useAllLocations();
+  const { data: locations = [], isLoading: locationsLoading } = useAllLocations();
+  const { data: packages = [] } = useAllPackages();
   const createLocation = useCreateLocation();
   const updateLocation = useUpdateLocation();
-  const updatePackage = useUpdatePackage();
   const deleteLocation = useDeleteLocation();
+  const updatePackage = useUpdatePackage();
   const { toast } = useToast();
 
-  const handleAddLocationClick = () => {
-    setIsAddingLocation(false);
-    setSelectedLocation(null);
-    setShowForm(true);
-    setClickCoordinates({ x: 0, y: 0 }); // Default coordinates
-    toast({
-      title: 'Add New Destination',
-      description: 'Fill out the form to create a new destination.',
-    });
-  };
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
-
-  const handleSubmitLocation = async (formData: LocationFormData) => {
-    const safeCoordinates = {
-      coordinates_x: Math.max(0, Math.min(2000, Math.round(formData.coordinates_x))),
-      coordinates_y: Math.max(0, Math.min(1200, Math.round(formData.coordinates_y)))
-    };
-    
-    const validation = validateCoordinates(safeCoordinates.coordinates_x, safeCoordinates.coordinates_y);
-    if (!validation.isValid) {
-      toast({
-        title: 'Invalid coordinates',
-        description: validation.error,
-        variant: 'destructive'
-      });
-      return;
-    }
-    
+  const handleSubmitLocation = async (data: LocationFormData) => {
     try {
-      const locationData = {
-        name: formData.name.trim(),
-        description: formData.description?.trim() || '',
-        bullet_points: formData.bullet_points.filter(point => point.trim() !== ''),
-        images: formData.images.filter(img => img.trim() !== ''),
-        rating: formData.rating || 0,
-        reviews_count: formData.reviews.filter(r => r.trim() !== '').length,
-        reviews: formData.reviews.filter(r => r.trim() !== ''),
-        packages_included: formData.packages_included || [],
-        categories: formData.categories || [],
-        is_active: formData.is_active,
-        ...safeCoordinates
-      };
-      
-      // Sync packages with their locations_included arrays
-      await syncPackageLocations(formData.packages_included, formData.name.trim(), selectedLocation);
-      
-      if (selectedLocation) {
-        await updateLocation.mutateAsync({ id: selectedLocation.id, ...locationData });
-        toast({ title: 'Destination updated successfully!' });
+      if (isEditing && selectedLocation) {
+        await updateLocation.mutateAsync({
+          id: selectedLocation.id,
+          ...data
+        });
+        
+        // Sync packages if location name changed
+        if (selectedLocation.name !== data.name) {
+          await syncPackageLocations(selectedLocation.name, data.name);
+        }
+        
+        toast({
+          title: "Success",
+          description: "Location updated successfully",
+        });
       } else {
-        await createLocation.mutateAsync(locationData);
-        toast({ title: 'Destination created successfully!' });
+        await createLocation.mutateAsync(data);
+        toast({
+          title: "Success",
+          description: "Location created successfully",
+        });
       }
-      resetForm();
-    } catch (error) {
-      console.error('Error saving destination:', error);
-      toast({ 
-        title: 'Error saving destination', 
-        description: 'Please check all fields and try again.',
-        variant: 'destructive' 
-      });
-    }
-  };
-
-  const syncPackageLocations = async (selectedPackageIds: string[], locationName: string, existingLocation?: Location | null) => {
-    try {
-      // Fetch all packages directly from Supabase
-      const { data: allPackages } = await supabase
-        .from('packages')
-        .select('*');
       
-      if (!allPackages) return;
-      
-      for (const pkg of allPackages) {
-        const shouldIncludeLocation = selectedPackageIds.includes(pkg.id);
-        const currentlyIncluded = pkg.locations_included.includes(locationName);
-        
-        // If existing location name changed, remove old name from all packages
-        if (existingLocation && existingLocation.name !== locationName) {
-          const hasOldName = pkg.locations_included.includes(existingLocation.name);
-          if (hasOldName) {
-            const updatedLocations = pkg.locations_included.filter(loc => loc !== existingLocation.name);
-            if (shouldIncludeLocation) {
-              updatedLocations.push(locationName);
-            }
-            
-            await updatePackage.mutateAsync({
-              id: pkg.id,
-              locations_included: updatedLocations
-            });
-            continue;
-          }
-        }
-        
-        // Add location to package if selected but not currently included
-        if (shouldIncludeLocation && !currentlyIncluded) {
-          await updatePackage.mutateAsync({
-            id: pkg.id,
-            locations_included: [...pkg.locations_included, locationName]
-          });
-        }
-        // Remove location from package if not selected but currently included
-        else if (!shouldIncludeLocation && currentlyIncluded) {
-          await updatePackage.mutateAsync({
-            id: pkg.id,
-            locations_included: pkg.locations_included.filter(loc => loc !== locationName)
-          });
-        }
-      }
+      setShowForm(false);
+      setIsEditing(false);
+      setIsCreating(false);
+      setSelectedLocation(null);
     } catch (error) {
-      console.error('Error syncing package locations:', error);
       toast({
-        title: 'Warning',
-        description: 'Destination saved but package sync failed. Please check package assignments.',
-        variant: 'destructive'
+        title: "Error",
+        description: "Failed to save location",
+        variant: "destructive",
       });
+      console.error('Error saving location:', error);
     }
   };
 
-  const resetForm = () => {
-    setSelectedLocation(null);
-    setIsAddingLocation(false);
-    setShowForm(false);
-    setClickCoordinates({ x: 0, y: 0 });
+  const syncPackageLocations = async (oldName: string, newName: string) => {
+    const packagesToUpdate = packages.filter(pkg => 
+      pkg.locations_included.includes(oldName)
+    );
+
+    for (const pkg of packagesToUpdate) {
+      const updatedLocations = pkg.locations_included.map(loc => 
+        loc === oldName ? newName : loc
+      );
+      
+      await updatePackage.mutateAsync({
+        id: pkg.id,
+        locations_included: updatedLocations
+      });
+    }
   };
 
   const editLocation = (location: Location) => {
     setSelectedLocation(location);
-    setIsAddingLocation(false);
+    setIsEditing(true);
     setShowForm(true);
-    setClickCoordinates({ x: location.coordinates_x, y: location.coordinates_y });
+    setIsCreating(false);
   };
 
   const handleDeleteLocation = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this destination?')) {
-      try {
-        await deleteLocation.mutateAsync(id);
-        toast({ title: 'Destination deleted successfully!' });
-        if (selectedLocation?.id === id) {
-          resetForm();
+    try {
+      const location = locations.find(loc => loc.id === id);
+      if (location) {
+        // Remove from packages
+        const packagesToUpdate = packages.filter(pkg => 
+          pkg.locations_included.includes(location.name)
+        );
+
+        for (const pkg of packagesToUpdate) {
+          const updatedLocations = pkg.locations_included.filter(loc => 
+            loc !== location.name
+          );
+          
+          await updatePackage.mutateAsync({
+            id: pkg.id,
+            locations_included: updatedLocations
+          });
         }
-      } catch (error) {
-        toast({ 
-          title: 'Error deleting destination',
-          description: 'Please try again later.',
-          variant: 'destructive' 
-        });
       }
+
+      await deleteLocation.mutateAsync(id);
+      toast({
+        title: "Success",
+        description: "Location deleted successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete location",
+        variant: "destructive",
+      });
+      console.error('Error deleting location:', error);
     }
   };
 
   const toggleLocationActive = async (id: string, isActive: boolean) => {
     try {
-      await updateLocation.mutateAsync({ 
-        id, 
-        is_active: isActive 
+      await updateLocation.mutateAsync({
+        id,
+        is_active: isActive
       });
-      toast({ 
-        title: `Destination ${isActive ? 'activated' : 'deactivated'}`,
-        description: `The destination is now ${isActive ? 'visible' : 'hidden'} to users.`
+      
+      toast({
+        title: "Success",
+        description: `Location ${isActive ? 'activated' : 'deactivated'} successfully`,
       });
     } catch (error) {
-      toast({ 
-        title: 'Error updating destination',
-        description: 'Please try again later.',
-        variant: 'destructive' 
+      toast({
+        title: "Error",
+        description: "Failed to update location status",
+        variant: "destructive",
       });
+      console.error('Error updating location status:', error);
     }
   };
 
+  const addNewLocation = () => {
+    setSelectedLocation(null);
+    setIsEditing(false);
+    setIsCreating(true);
+    setShowForm(true);
+  };
+
+  if (locationsLoading) {
+    return (
+      <div className="p-6">
+        <div className="text-lg">Loading destinations...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          Destination Management
-        </h2>
-        <p className="text-gray-600">
-          Add and manage tourism destinations that will appear on the explore map
-        </p>
+    <div className="p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold">Destination Management</h1>
+          <p className="text-muted-foreground">
+            Add and manage tourist destinations with their details, images, and information
+          </p>
+        </div>
+        <Button onClick={addNewLocation} className="flex items-center gap-2">
+          <Plus className="h-4 w-4" />
+          Add Destination
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        {/* Action Section */}
-        <div className="xl:col-span-3">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <MapPin className="h-5 w-5 text-blue-600" />
-                  <span>Destination Management</span>
-                </div>
-                <div className="flex space-x-2">
-                  <Button
-                    onClick={handleAddLocationClick}
-                    className="bg-green-600 hover:bg-green-700"
-                    size="sm"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Destination
-                  </Button>
-                  <Button
-                    onClick={resetForm}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </CardTitle>
-            </CardHeader>
-          </Card>
-        </div>
+      {showForm ? (
+        <LocationForm
+          location={selectedLocation}
+          isEditing={isEditing}
+          isCreating={isCreating}
+          coordinates={{ x: 0, y: 0 }}
+          onSubmit={handleSubmitLocation}
+          onCancel={() => {
+            setShowForm(false);
+            setIsEditing(false);
+            setIsCreating(false);
+            setSelectedLocation(null);
+          }}
+        />
+      ) : (
+        <LocationsList
+          locations={locations}
+          onEditLocation={editLocation}
+          onDeleteLocation={handleDeleteLocation}
+          onToggleActive={toggleLocationActive}
+          selectedLocationId={selectedLocation?.id}
+        />
+      )}
 
-        {/* Form/List Section */}
-        <div className="xl:col-span-1">
-          {showForm ? (
-            <LocationForm
-              location={selectedLocation}
-              isEditing={!!selectedLocation}
-              isCreating={!selectedLocation}
-              coordinates={clickCoordinates}
-              onSubmit={handleSubmitLocation}
-              onCancel={resetForm}
-            />
-          ) : (
-            <Card className="h-[600px]">
-              <CardHeader>
-                <CardTitle>All Destinations ({locations.length})</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 max-h-[500px] overflow-y-auto">
-                  {locations.length === 0 ? (
-                    <div className="text-center text-gray-500 py-8">
-                      <MapPin className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                      <p>No destinations added yet</p>
-                      <p className="text-sm">Click "Add Destination" to create your first location</p>
-                    </div>
-                  ) : (
-                    locations.map((location) => (
-                      <div
-                        key={location.id}
-                        className="border rounded-lg p-3 transition-all hover:shadow-md"
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h4 className="font-semibold flex items-center space-x-2">
-                              <span>{location.name}</span>
-                              {!location.is_active && (
-                                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                                  Hidden
-                                </span>
-                              )}
-                            </h4>
-                            <div className="flex items-center space-x-2 mt-1 text-xs text-gray-500">
-                              <span>⭐ {location.rating || 0}</span>
-                              <span>•</span>
-                              <span>{location.reviews_count || 0} reviews</span>
-                              <button
-                                onClick={() => window.open(`/add-review?itemType=destination&itemId=${location.id}`, '_blank')}
-                                className="text-blue-600 hover:text-blue-800 font-medium"
-                              >
-                                + Add Review
-                              </button>
-                              {location.packages_included && location.packages_included.length > 0 && (
-                                <>
-                                  <span>•</span>
-                                  <span>{location.packages_included.length} packages</span>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center justify-between mt-3">
-                          <Button
-                            onClick={() => editLocation(location)}
-                            size="sm"
-                            variant="outline"
-                            className="flex items-center space-x-1"
-                          >
-                            <Edit className="h-3 w-3" />
-                            <span>Edit</span>
-                          </Button>
-                          
-                          <div className="flex items-center space-x-2">
-                            <Button
-                              onClick={() => toggleLocationActive(location.id, !location.is_active)}
-                              size="sm"
-                              variant="outline"
-                              className={`flex items-center space-x-1 ${
-                                location.is_active 
-                                  ? 'text-orange-600 hover:text-orange-700' 
-                                  : 'text-green-600 hover:text-green-700'
-                              }`}
-                            >
-                              {location.is_active ? (
-                                <>
-                                  <EyeOff className="h-3 w-3" />
-                                  <span>Hide</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Eye className="h-3 w-3" />
-                                  <span>Show</span>
-                                </>
-                              )}
-                            </Button>
-                            
-                            <Button
-                              onClick={() => handleDeleteLocation(location.id)}
-                              size="sm"
-                              variant="outline"
-                              className="text-red-600 hover:text-red-700 flex items-center space-x-1"
-                            >
-                              <Trash2 className="h-3 w-3" />
-                              <span>Delete</span>
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-      </div>
+      {!showForm && locations.length === 0 && (
+        <Card className="p-12">
+          <CardContent className="text-center">
+            <div className="text-muted-foreground">
+              <Plus className="h-16 w-16 mx-auto mb-4 opacity-50" />
+              <h3 className="text-lg font-medium mb-2">No destinations yet</h3>
+              <p className="mb-4">Add your first tourist destination to get started.</p>
+              <Button onClick={addNewLocation}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Your First Destination
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

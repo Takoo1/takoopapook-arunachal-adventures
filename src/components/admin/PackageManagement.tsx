@@ -1,9 +1,19 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2, MapPin, Clock, Users, Star } from 'lucide-react';
-import { useAllPackages, useCreatePackage, useUpdatePackage, useDeletePackage, Package } from '@/hooks/usePackages';
+import { 
+  Plus, 
+  Edit, 
+  Trash2, 
+  Star, 
+  Clock, 
+  Users, 
+  MapPin,
+  Eye,
+  EyeOff
+} from 'lucide-react';
+import { useAllPackages, useCreatePackage, useUpdatePackage, useDeletePackage, Package, generatePackageCode } from '@/hooks/usePackages';
 import PackageForm from './PackageForm';
 import {
   AlertDialog,
@@ -26,9 +36,10 @@ const PackageManagement = () => {
   const [editingPackage, setEditingPackage] = useState<Package | null>(null);
   const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; package: Package | null }>({
     open: false,
-    package: null,
+    package: null
   });
 
+  // Get existing package codes for validation
   const existingCodes = packages.map(pkg => pkg.package_code);
 
   const handleCreate = () => {
@@ -52,17 +63,20 @@ const PackageManagement = () => {
     }
   };
 
-  const handleSubmit = async (packageData: Omit<Package, 'id' | 'created_at' | 'updated_at'>) => {
-    try {
-      if (editingPackage) {
-        await updatePackage.mutateAsync({ ...packageData, id: editingPackage.id });
-      } else {
-        await createPackage.mutateAsync(packageData);
-      }
-      setShowForm(false);
-      setEditingPackage(null);
-    } catch (error) {
-      console.error('Error saving package:', error);
+  const handleSubmit = (packageData: Omit<Package, 'id' | 'created_at' | 'updated_at'>) => {
+    if (editingPackage) {
+      updatePackage.mutate({ id: editingPackage.id, ...packageData }, {
+        onSuccess: () => {
+          setShowForm(false);
+          setEditingPackage(null);
+        }
+      });
+    } else {
+      createPackage.mutate(packageData, {
+        onSuccess: () => {
+          setShowForm(false);
+        }
+      });
     }
   };
 
@@ -74,7 +88,7 @@ const PackageManagement = () => {
   if (showForm) {
     return (
       <PackageForm
-        package={editingPackage || undefined}
+        package={editingPackage}
         existingCodes={existingCodes}
         onSubmit={handleSubmit}
         onCancel={handleCancel}
@@ -85,112 +99,153 @@ const PackageManagement = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
+      <div className="p-6">
         <div className="text-lg">Loading packages...</div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-6 space-y-6">
+      <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold">Package Management</h2>
-          <p className="text-muted-foreground">Manage tour packages for your website</p>
+          <h1 className="text-3xl font-bold">Package Management</h1>
+          <p className="text-muted-foreground">
+            Create and manage travel packages for your destinations
+          </p>
         </div>
-        <Button onClick={handleCreate}>
-          <Plus className="h-4 w-4 mr-2" />
+        <Button onClick={handleCreate} className="flex items-center gap-2">
+          <Plus className="h-4 w-4" />
           Add Package
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {packages.map((pkg) => (
-          <Card key={pkg.id} className={`group hover:shadow-lg transition-shadow ${!pkg.is_active ? 'opacity-50' : ''}`}>
-            <CardHeader className="pb-2">
-              <div className="flex items-start justify-between">
+          <Card key={pkg.id} className={`transition-all duration-200 hover:shadow-lg ${!pkg.is_active ? 'opacity-60' : ''}`}>
+            <CardHeader className="pb-3">
+              <div className="flex justify-between items-start">
                 <div className="flex items-center gap-2">
                   <Badge variant="outline" className="font-mono">
                     {pkg.package_code}
                   </Badge>
-                  {!pkg.is_active && <Badge variant="destructive">Inactive</Badge>}
+                  {!pkg.is_active && (
+                    <Badge variant="secondary">
+                      <EyeOff className="h-3 w-3 mr-1" />
+                      Hidden
+                    </Badge>
+                  )}
                 </div>
-                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button size="sm" variant="ghost" onClick={() => handleEdit(pkg)}>
+                <div className="flex gap-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleEdit(pkg)}
+                    disabled={!pkg.is_editable}
+                  >
                     <Edit className="h-4 w-4" />
                   </Button>
-                  <Button size="sm" variant="ghost" onClick={() => handleDelete(pkg)}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDelete(pkg)}
+                    className="text-red-600 hover:text-red-700"
+                  >
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
+            
+            <CardContent className="space-y-4">
               <div className="aspect-video relative overflow-hidden rounded-lg">
-                <img 
-                  src={pkg.image_url} 
+                <img
+                  src={pkg.image_url || '/placeholder.svg'}
                   alt={pkg.title}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = '/placeholder.svg';
+                  }}
                 />
-                <div className="absolute top-2 right-2 bg-white/90 text-black px-2 py-1 rounded text-sm font-medium">
-                  {pkg.price}
-                </div>
               </div>
 
               <div>
-                <CardTitle className="text-lg mb-1">{pkg.title}</CardTitle>
-                <div className="flex items-center text-sm text-muted-foreground mb-2">
-                  <MapPin className="h-3 w-3 mr-1" />
-                  {pkg.location}
-                </div>
-                <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-                  <div className="flex items-center">
-                    <Clock className="h-3 w-3 mr-1" />
-                    {pkg.duration}
+                <h3 className="text-lg font-semibold line-clamp-2">{pkg.title}</h3>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
+                  <div className="flex items-center gap-1">
+                    <MapPin className="h-4 w-4" />
+                    {pkg.location}
                   </div>
-                  <div className="flex items-center">
-                    <Users className="h-3 w-3 mr-1" />
-                    {pkg.group_size}
-                  </div>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center text-amber-500">
-                    <Star className="h-3 w-3 mr-1 fill-current" />
-                    {pkg.rating} ({pkg.reviews_count})
-                  </div>
-                  <button
-                    onClick={() => window.open(`/add-review?itemType=package&itemId=${pkg.id}`, '_blank')}
-                    className="text-blue-600 hover:text-blue-800 font-medium text-xs"
-                  >
-                    + Add Review
-                  </button>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-1">
-                {pkg.features.slice(0, 3).map((feature, index) => (
-                  <Badge key={index} variant="secondary" className="text-xs">
-                    {feature}
-                  </Badge>
-                ))}
-                {pkg.features.length > 3 && (
-                  <Badge variant="secondary" className="text-xs">
-                    +{pkg.features.length - 3} more
-                  </Badge>
-                )}
-              </div>
-
-              <div>
-                <div className="text-sm font-medium mb-1">Locations Included:</div>
-                <div className="text-xs text-muted-foreground">
-                  {pkg.locations_included.slice(0, 2).join(', ')}
-                  {pkg.locations_included.length > 2 && ` +${pkg.locations_included.length - 2} more`}
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="flex items-center gap-1">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <span>{pkg.duration}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                  <span>{pkg.group_size}</span>
                 </div>
               </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <span className="font-medium">{pkg.rating}</span>
+                  <span className="text-muted-foreground">({pkg.reviews_count})</span>
+                </div>
+                <div className="text-lg font-bold text-primary">{pkg.price}</div>
+              </div>
+
+              {pkg.features.length > 0 && (
+                <div>
+                  <div className="text-sm font-medium mb-2">Features:</div>
+                  <div className="flex flex-wrap gap-1">
+                    {pkg.features.slice(0, 3).map((feature, index) => (
+                      <Badge key={index} variant="secondary" className="text-xs">
+                        {feature}
+                      </Badge>
+                    ))}
+                    {pkg.features.length > 3 && (
+                      <Badge variant="outline" className="text-xs">
+                        +{pkg.features.length - 3} more
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {pkg.locations_included.length > 0 && (
+                <div>
+                  <div className="text-sm font-medium mb-2">Destinations:</div>
+                  <div className="text-sm text-muted-foreground">
+                    {pkg.locations_included.slice(0, 2).join(', ')}
+                    {pkg.locations_included.length > 2 && ` and ${pkg.locations_included.length - 2} more`}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {packages.length === 0 && (
+        <Card className="p-12">
+          <CardContent className="text-center">
+            <div className="text-muted-foreground">
+              <Plus className="h-16 w-16 mx-auto mb-4 opacity-50" />
+              <h3 className="text-lg font-medium mb-2">No packages yet</h3>
+              <p className="mb-4">Create your first travel package to get started.</p>
+              <Button onClick={handleCreate}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Your First Package
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <AlertDialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ open, package: null })}>
         <AlertDialogContent>
@@ -198,12 +253,16 @@ const PackageManagement = () => {
             <AlertDialogTitle>Delete Package</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete "{deleteDialog.package?.title}"? This action cannot be undone.
-              The package will be marked as inactive.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete}>Delete</AlertDialogAction>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete Package
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
