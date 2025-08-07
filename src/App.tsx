@@ -17,6 +17,9 @@ import NotFound from "./pages/NotFound";
 import AddReview from "./pages/AddReview";
 import ReviewsManagement from "./pages/ReviewsManagement";
 import BookingsManagement from "./components/admin/BookingsManagement";
+import PackageManagement from "./components/admin/PackageManagement";
+import DestinationManagement from "./components/admin/DestinationManagement";
+import AdminDashboard from "./pages/AdminDashboard";
 import FounderProfile from "./pages/FounderProfile";
 
 const queryClient = new QueryClient();
@@ -41,6 +44,9 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             
             <Route path="/add-review" element={<AddReview />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/packages" element={<PackageManagement />} />
+            <Route path="/admin/destinations" element={<DestinationManagement />} />
             <Route path="/admin/reviews" element={<ReviewsManagement />} />
             <Route path="/admin/bookings" element={<BookingsManagement />} />
             <Route path="/founder-profile" element={<FounderProfile />} />
