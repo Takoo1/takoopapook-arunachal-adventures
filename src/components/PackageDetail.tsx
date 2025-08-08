@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { usePackage } from '@/hooks/usePackages';
+import { useReviewStatistics } from '@/hooks/useReviewStatistics';
 import { Location } from '@/types/database';
 import { Star, MapPin, Clock, Users, Edit, ArrowLeft, Eye, X, Plus } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,6 +22,9 @@ const PackageDetail = () => {
 
   // Fetch package data
   const { data: packageData, isLoading: packageLoading } = usePackage(id || '');
+  
+  // Fetch real review statistics
+  const { data: reviewStats } = useReviewStatistics('package', id || '');
 
   // Fetch included locations
   const { data: includedLocations, isLoading: locationsLoading } = useQuery({
@@ -120,9 +124,11 @@ const PackageDetail = () => {
             <div className="text-3xl font-bold text-primary mb-1">{packageData.price}</div>
             <div className="flex items-center justify-end">
               <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-              <span className="font-medium">{packageData.rating.toFixed(1)}</span>
+              <span className="font-medium">
+                {reviewStats ? reviewStats.averageRating.toFixed(1) : '0.0'}
+              </span>
               <span className="text-muted-foreground text-sm ml-1">
-                ({packageData.reviews_count} reviews)
+                ({reviewStats ? reviewStats.totalReviews : 0} reviews)
               </span>
             </div>
           </div>

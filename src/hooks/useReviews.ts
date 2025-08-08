@@ -56,9 +56,10 @@ export const useCreateReview = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reviews'] });
+      queryClient.invalidateQueries({ queryKey: ['published-reviews'] });
       toast({
-        title: 'Review submitted successfully!',
-        description: 'Your review is pending approval and will be published soon.',
+        title: 'Review Submitted, it Will be Published soon',
+        description: 'Thank you for sharing your experience with us!',
       });
     },
     onError: (error) => {

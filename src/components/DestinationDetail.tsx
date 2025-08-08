@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useLocations } from '@/hooks/useLocations';
 import { usePackages } from '@/hooks/usePackages';
+import { useReviewStatistics } from '@/hooks/useReviewStatistics';
 import PackageCard from './PackageCard';
 import ReviewSection from './ReviewSection';
 import type { Package } from '@/hooks/usePackages';
@@ -22,6 +23,9 @@ const DestinationDetail = () => {
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
 
   const destination = locations.find(loc => loc.id === id);
+  
+  // Fetch real review statistics
+  const { data: reviewStats } = useReviewStatistics('destination', id || '');
   
   if (!destination) {
     return (
@@ -139,8 +143,12 @@ const DestinationDetail = () => {
               <div className="flex items-center space-x-4 mb-6">
                 <div className="flex items-center space-x-1">
                   <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold text-gray-700">{destination.rating}</span>
-                  <span className="text-gray-500">({destination.reviews_count} reviews)</span>
+                  <span className="font-semibold text-gray-700">
+                    {reviewStats ? reviewStats.averageRating.toFixed(1) : '0.0'}
+                  </span>
+                  <span className="text-gray-500">
+                    ({reviewStats ? reviewStats.totalReviews : 0} reviews)
+                  </span>
                 </div>
                 <Badge variant="secondary" className="flex items-center space-x-1">
                   <MapPin className="h-3 w-3" />

@@ -7,7 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useReviews, useUpdateReview, useDeleteReview } from '@/hooks/useReviews';
 import { Review } from '@/types/database';
-import { Edit, Eye, EyeOff, Trash2, Star, Calendar, User, MessageSquare } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { Edit, Eye, EyeOff, Trash2, Star, Calendar, User, MessageSquare, Upload, X, Image as ImageIcon, Video } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -37,8 +38,13 @@ const ReviewsManagement = () => {
     experience_summary: '',
     detailed_review: '',
     reviewer_name: '',
-    rating: 5
+    rating: 5,
+    images: [] as string[],
+    videos: [] as string[]
   });
+  const [newImages, setNewImages] = useState<File[]>([]);
+  const [newVideos, setNewVideos] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
 
   const handleEdit = (review: Review) => {
     setEditingReview(review);
@@ -46,19 +52,87 @@ const ReviewsManagement = () => {
       experience_summary: review.experience_summary,
       detailed_review: review.detailed_review,
       reviewer_name: review.reviewer_name,
-      rating: review.rating
+      rating: review.rating,
+      images: [...review.images],
+      videos: [...review.videos]
     });
+    setNewImages([]);
+    setNewVideos([]);
+  };
+
+  const handleFileUpload = async (files: File[], type: 'images' | 'videos') => {
+    const uploadedUrls: string[] = [];
+    
+    for (const file of files) {
+      const fileName = `${Date.now()}-${file.name}`;
+      const { data, error } = await supabase.storage
+        .from('review-media')
+        .upload(fileName, file);
+      
+      if (error) {
+        console.error('Upload error:', error);
+        continue;
+      }
+      
+      const { data: urlData } = supabase.storage
+        .from('review-media')
+        .getPublicUrl(data.path);
+      
+      uploadedUrls.push(urlData.publicUrl);
+    }
+    
+    return uploadedUrls;
+  };
+
+  const removeExistingMedia = (index: number, type: 'images' | 'videos') => {
+    setEditForm(prev => ({
+      ...prev,
+      [type]: prev[type].filter((_, i) => i !== index)
+    }));
+  };
+
+  const removeNewFile = (index: number, type: 'images' | 'videos') => {
+    if (type === 'images') {
+      setNewImages(prev => prev.filter((_, i) => i !== index));
+    } else {
+      setNewVideos(prev => prev.filter((_, i) => i !== index));
+    }
   };
 
   const handleUpdate = async () => {
     if (!editingReview) return;
     
-    await updateReview.mutateAsync({
-      id: editingReview.id,
-      ...editForm
-    });
+    setUploading(true);
     
-    setEditingReview(null);
+    try {
+      // Upload new files
+      const [newImageUrls, newVideoUrls] = await Promise.all([
+        handleFileUpload(newImages, 'images'),
+        handleFileUpload(newVideos, 'videos')
+      ]);
+
+      // Combine existing and new media URLs
+      const allImages = [...editForm.images, ...newImageUrls];
+      const allVideos = [...editForm.videos, ...newVideoUrls];
+
+      await updateReview.mutateAsync({
+        id: editingReview.id,
+        experience_summary: editForm.experience_summary,
+        detailed_review: editForm.detailed_review,
+        reviewer_name: editForm.reviewer_name,
+        rating: editForm.rating,
+        images: allImages,
+        videos: allVideos
+      });
+      
+      setEditingReview(null);
+      setNewImages([]);
+      setNewVideos([]);
+    } catch (error) {
+      console.error('Error updating review:', error);
+    } finally {
+      setUploading(false);
+    }
   };
 
   const togglePublished = async (review: Review) => {
@@ -251,13 +325,147 @@ const ReviewsManagement = () => {
                               onChange={(e) => setEditForm(prev => ({ ...prev, reviewer_name: e.target.value }))}
                             />
                           </div>
+
+                          {/* Existing Images */}
+                          {editForm.images.length > 0 && (
+                            <div className="space-y-2">
+                              <Label>Current Images</Label>
+                              <div className="grid grid-cols-3 gap-2">
+                                {editForm.images.map((image, index) => (
+                                  <div key={index} className="relative">
+                                    <img
+                                      src={image}
+                                      alt={`Current image ${index + 1}`}
+                                      className="w-full h-20 object-cover rounded"
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() => removeExistingMedia(index, 'images')}
+                                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
+                                    >
+                                      <X className="h-3 w-3" />
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Add New Images */}
+                          <div className="space-y-2">
+                            <Label>Add New Images</Label>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              onChange={(e) => {
+                                const files = Array.from(e.target.files || []);
+                                setNewImages(prev => [...prev, ...files]);
+                              }}
+                              className="hidden"
+                              id="new-images"
+                            />
+                            <label
+                              htmlFor="new-images"
+                              className="flex items-center justify-center w-full h-20 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-primary"
+                            >
+                              <div className="text-center">
+                                <Upload className="h-6 w-6 mx-auto mb-1 text-gray-400" />
+                                <p className="text-xs text-gray-600">Add images</p>
+                              </div>
+                            </label>
+                            
+                            {newImages.length > 0 && (
+                              <div className="grid grid-cols-3 gap-2">
+                                {newImages.map((file, index) => (
+                                  <div key={index} className="relative">
+                                    <img
+                                      src={URL.createObjectURL(file)}
+                                      alt={`New image ${index + 1}`}
+                                      className="w-full h-20 object-cover rounded"
+                                    />
+                                    <button
+                                      type="button"
+                                      onClick={() => removeNewFile(index, 'images')}
+                                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
+                                    >
+                                      <X className="h-3 w-3" />
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Existing Videos */}
+                          {editForm.videos.length > 0 && (
+                            <div className="space-y-2">
+                              <Label>Current Videos</Label>
+                              <div className="space-y-2">
+                                {editForm.videos.map((video, index) => (
+                                  <div key={index} className="flex items-center justify-between bg-gray-100 p-2 rounded">
+                                    <span className="text-sm truncate">Video {index + 1}</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => removeExistingMedia(index, 'videos')}
+                                      className="text-red-500 hover:text-red-700"
+                                    >
+                                      <X className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Add New Videos */}
+                          <div className="space-y-2">
+                            <Label>Add New Videos</Label>
+                            <input
+                              type="file"
+                              accept="video/*"
+                              multiple
+                              onChange={(e) => {
+                                const files = Array.from(e.target.files || []);
+                                setNewVideos(prev => [...prev, ...files]);
+                              }}
+                              className="hidden"
+                              id="new-videos"
+                            />
+                            <label
+                              htmlFor="new-videos"
+                              className="flex items-center justify-center w-full h-20 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-primary"
+                            >
+                              <div className="text-center">
+                                <Upload className="h-6 w-6 mx-auto mb-1 text-gray-400" />
+                                <p className="text-xs text-gray-600">Add videos</p>
+                              </div>
+                            </label>
+                            
+                            {newVideos.length > 0 && (
+                              <div className="space-y-2">
+                                {newVideos.map((file, index) => (
+                                  <div key={index} className="flex items-center justify-between bg-gray-100 p-2 rounded">
+                                    <span className="text-sm truncate">{file.name}</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => removeNewFile(index, 'videos')}
+                                      className="text-red-500 hover:text-red-700"
+                                    >
+                                      <X className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
                         <div className="flex justify-end space-x-2 mt-4">
-                          <Button variant="outline" onClick={() => setEditingReview(null)}>
+                          <Button variant="outline" onClick={() => setEditingReview(null)} disabled={uploading}>
                             Cancel
                           </Button>
-                          <Button onClick={handleUpdate}>
-                            Update Review
+                          <Button onClick={handleUpdate} disabled={uploading}>
+                            {uploading ? 'Updating...' : 'Update Review'}
                           </Button>
                         </div>
                       </DialogContent>

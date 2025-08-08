@@ -5,10 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Upload, X, Star } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { ArrowLeft, Upload, X, Star, User } from 'lucide-react';
 import { useAllPackages } from '@/hooks/usePackages';
 import { useAllLocations } from '@/hooks/useLocations';
 import { useCreateReview } from '@/hooks/useReviews';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import PackageCard from '@/components/PackageCard';
 import DestinationCard from '@/components/DestinationCard';
@@ -22,6 +25,7 @@ const AddReview = () => {
   const { data: packages = [] } = useAllPackages();
   const { data: locations = [] } = useAllLocations();
   const createReview = useCreateReview();
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState({
     experience_summary: '',
@@ -32,6 +36,18 @@ const AddReview = () => {
   const [images, setImages] = useState<File[]>([]);
   const [videos, setVideos] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
+
+  // Get user profile info
+  const userProfileImage = user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
+  const userName = user?.user_metadata?.full_name || user?.user_metadata?.name || '';
+
+  // Auto-populate reviewer name if user is logged in
+  useEffect(() => {
+    if (userName && !formData.reviewer_name) {
+      setFormData(prev => ({ ...prev, reviewer_name: userName }));
+    }
+  }, [userName, formData.reviewer_name]);
 
   const item = itemType === 'package' 
     ? packages.find(p => p.id === itemId)
@@ -44,23 +60,38 @@ const AddReview = () => {
   const handleFileUpload = async (files: File[], type: 'images' | 'videos') => {
     const uploadedUrls: string[] = [];
     
-    for (const file of files) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
       const fileName = `${Date.now()}-${file.name}`;
-      const { data, error } = await supabase.storage
-        .from('review-media')
-        .upload(fileName, file);
+      const fileKey = `${type}-${i}`;
       
-      if (error) {
-        console.error('Upload error:', error);
-        continue;
+      setUploadProgress(prev => ({ ...prev, [fileKey]: 0 }));
+      
+      try {
+        const { data, error } = await supabase.storage
+          .from('review-media')
+          .upload(fileName, file);
+        
+        if (error) {
+          console.error('Upload error:', error);
+          continue;
+        }
+        
+        const { data: urlData } = supabase.storage
+          .from('review-media')
+          .getPublicUrl(data.path);
+        
+        uploadedUrls.push(urlData.publicUrl);
+      } catch (error) {
+        console.error('Upload failed:', error);
+        setUploadProgress(prev => ({ ...prev, [fileKey]: 0 }));
       }
-      
-      const { data: urlData } = supabase.storage
-        .from('review-media')
-        .getPublicUrl(data.path);
-      
-      uploadedUrls.push(urlData.publicUrl);
     }
+    
+    // Clear progress after upload
+    setTimeout(() => {
+      setUploadProgress({});
+    }, 1000);
     
     return uploadedUrls;
   };
@@ -216,18 +247,44 @@ const AddReview = () => {
                     />
                   </div>
 
-                  {/* Reviewer Name */}
-                  <div className="space-y-2">
-                    <Label htmlFor="name">
-                      Your Name (as you want it to appear)
-                    </Label>
-                    <Input
-                      id="name"
-                      value={formData.reviewer_name}
-                      onChange={(e) => handleInputChange('reviewer_name', e.target.value)}
-                      placeholder="Enter your name or preferred display name"
-                      required
-                    />
+                   {/* Reviewer Profile Section */}
+                  <div className="space-y-4 p-4 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg">
+                    <Label className="text-base font-semibold">Your Profile</Label>
+                    <div className="flex items-center space-x-4">
+                      <Avatar className="h-16 w-16 ring-2 ring-primary/20">
+                        <AvatarImage src={userProfileImage} alt="Your profile" />
+                        <AvatarFallback className="bg-gradient-to-br from-primary/20 to-secondary/20 text-primary font-semibold text-lg">
+                          {user ? (
+                            formData.reviewer_name
+                              .split(' ')
+                              .map(n => n[0])
+                              .join('')
+                              .toUpperCase()
+                              .slice(0, 2)
+                          ) : (
+                            <User className="h-6 w-6" />
+                          )}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <Label htmlFor="name">
+                          Your Name (as you want it to appear)
+                        </Label>
+                        <Input
+                          id="name"
+                          value={formData.reviewer_name}
+                          onChange={(e) => handleInputChange('reviewer_name', e.target.value)}
+                          placeholder={user ? "Enter your display name" : "Enter your name"}
+                          required
+                          className="mt-1"
+                        />
+                        {user && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Profile image from your Google account
+                          </p>
+                        )}
+                      </div>
+                    </div>
                   </div>
 
                   {/* Image Upload */}
@@ -313,18 +370,32 @@ const AddReview = () => {
                       
                       {videos.length > 0 && (
                         <div className="space-y-2">
-                          {videos.map((file, index) => (
-                            <div key={index} className="flex items-center justify-between bg-gray-100 p-2 rounded">
-                              <span className="text-sm truncate">{file.name}</span>
-                              <button
-                                type="button"
-                                onClick={() => removeFile(index, 'videos')}
-                                className="text-red-500 hover:text-red-700"
-                              >
-                                <X className="h-4 w-4" />
-                              </button>
-                            </div>
-                          ))}
+                          {videos.map((file, index) => {
+                            const fileKey = `videos-${index}`;
+                            const progress = uploadProgress[fileKey] || 0;
+                            return (
+                              <div key={index} className="space-y-2">
+                                <div className="flex items-center justify-between bg-gray-100 p-2 rounded">
+                                  <span className="text-sm truncate">{file.name}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => removeFile(index, 'videos')}
+                                    className="text-red-500 hover:text-red-700"
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </button>
+                                </div>
+                                {uploading && (
+                                  <div className="space-y-1">
+                                    <div className="flex justify-between text-xs text-gray-600">
+                                      <span>Uploading...</span>
+                                    </div>
+                                    <Progress value={50} className="h-2" />
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
