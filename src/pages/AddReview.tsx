@@ -35,8 +35,43 @@ const AddReview = () => {
   });
   const [images, setImages] = useState<File[]>([]);
   const [videos, setVideos] = useState<File[]>([]);
+  const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([]);
+  const [uploadedVideoUrls, setUploadedVideoUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({});
+  const [fileProgressKeys, setFileProgressKeys] = useState<{ [index: number]: string }>({});
+
+  // Handle immediate file upload when files are selected
+  const handleFileSelect = async (files: File[], type: 'images' | 'videos') => {
+    const startIndex = type === 'images' ? images.length : videos.length;
+    
+    if (type === 'images') {
+      setImages(prev => [...prev, ...files]);
+    } else {
+      setVideos(prev => [...prev, ...files]);
+    }
+
+    // Start uploading immediately
+    for (let i = 0; i < files.length; i++) {
+      const fileIndex = startIndex + i;
+      const progressKey = `${type}-${Date.now()}-${i}`;
+      
+      // Store the progress key for this file
+      setFileProgressKeys(prev => ({ ...prev, [fileIndex]: progressKey }));
+      
+      try {
+        const url = await handleIndividualFileUpload(files[i], type, progressKey);
+        
+        if (type === 'images') {
+          setUploadedImageUrls(prev => [...prev, url]);
+        } else {
+          setUploadedVideoUrls(prev => [...prev, url]);
+        }
+      } catch (error: any) {
+        console.error(`Failed to upload ${type.slice(0, -1)}:`, error.message);
+      }
+    }
+  };
 
   // Get user profile info
   const userProfileImage = user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
@@ -57,44 +92,64 @@ const AddReview = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleFileUpload = async (files: File[], type: 'images' | 'videos') => {
-    const uploadedUrls: string[] = [];
+  const handleIndividualFileUpload = async (file: File, type: 'images' | 'videos', fileKey: string) => {
+    const fileName = `${Date.now()}-${file.name}`;
+    const bucketName = type === 'videos' ? 'review-videos' : 'review-media';
     
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const fileName = `${Date.now()}-${file.name}`;
-      const fileKey = `${type}-${i}`;
-      
-      setUploadProgress(prev => ({ ...prev, [fileKey]: 0 }));
-      
-      try {
-        const { data, error } = await supabase.storage
-          .from('review-media')
-          .upload(fileName, file);
-        
-        if (error) {
-          console.error('Upload error:', error);
-          continue;
-        }
-        
-        const { data: urlData } = supabase.storage
-          .from('review-media')
-          .getPublicUrl(data.path);
-        
-        uploadedUrls.push(urlData.publicUrl);
-      } catch (error) {
-        console.error('Upload failed:', error);
-        setUploadProgress(prev => ({ ...prev, [fileKey]: 0 }));
-      }
+    // Validate file size (10MB for images, 100MB for videos)
+    const maxSize = type === 'videos' ? 100 * 1024 * 1024 : 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      throw new Error(`File too large. ${type === 'videos' ? 'Videos' : 'Images'} must be less than ${type === 'videos' ? '100MB' : '10MB'}.`);
     }
     
-    // Clear progress after upload
-    setTimeout(() => {
-      setUploadProgress({});
-    }, 1000);
+    setUploadProgress(prev => ({ ...prev, [fileKey]: 0 }));
     
-    return uploadedUrls;
+    try {
+      // Simulate progress for better UX
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          const current = prev[fileKey] || 0;
+          if (current < 90) {
+            return { ...prev, [fileKey]: current + 10 };
+          }
+          return prev;
+        });
+      }, 200);
+      
+      const { data, error } = await supabase.storage
+        .from(bucketName)
+        .upload(fileName, file);
+      
+      clearInterval(progressInterval);
+      
+      if (error) {
+        console.error('Upload error:', error);
+        throw error;
+      }
+      
+      const { data: urlData } = supabase.storage
+        .from(bucketName)
+        .getPublicUrl(data.path);
+      
+      setUploadProgress(prev => ({ ...prev, [fileKey]: 100 }));
+      
+      // Clear progress after 2 seconds
+      setTimeout(() => {
+        setUploadProgress(prev => {
+          const newProgress = { ...prev };
+          delete newProgress[fileKey];
+          return newProgress;
+        });
+      }, 2000);
+      
+      return urlData.publicUrl;
+    } catch (error) {
+      console.error('Upload failed:', error);
+      setUploadProgress(prev => ({ ...prev, [fileKey]: 0 }));
+      throw error;
+    }
   };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,11 +158,6 @@ const AddReview = () => {
     setUploading(true);
     
     try {
-      const [imageUrls, videoUrls] = await Promise.all([
-        handleFileUpload(images, 'images'),
-        handleFileUpload(videos, 'videos')
-      ]);
-
       await createReview.mutateAsync({
         item_type: itemType,
         item_id: itemId!,
@@ -115,8 +165,8 @@ const AddReview = () => {
         detailed_review: formData.detailed_review,
         reviewer_name: formData.reviewer_name,
         rating: formData.rating,
-        images: imageUrls,
-        videos: videoUrls,
+        images: uploadedImageUrls,
+        videos: uploadedVideoUrls,
         is_published: false
       });
 
@@ -131,9 +181,18 @@ const AddReview = () => {
   const removeFile = (index: number, fileType: 'images' | 'videos') => {
     if (fileType === 'images') {
       setImages(prev => prev.filter((_, i) => i !== index));
+      setUploadedImageUrls(prev => prev.filter((_, i) => i !== index));
     } else {
       setVideos(prev => prev.filter((_, i) => i !== index));
+      setUploadedVideoUrls(prev => prev.filter((_, i) => i !== index));
     }
+    
+    // Clear the progress key for this file
+    setFileProgressKeys(prev => {
+      const newKeys = { ...prev };
+      delete newKeys[index];
+      return newKeys;
+    });
   };
 
   if (!item) {
@@ -295,10 +354,10 @@ const AddReview = () => {
                         type="file"
                         accept="image/*"
                         multiple
-                        onChange={(e) => {
+                        onChange={async (e) => {
                           const files = Array.from(e.target.files || []);
                           if (images.length + files.length <= 5) {
-                            setImages(prev => [...prev, ...files]);
+                            await handleFileSelect(files, 'images');
                           }
                         }}
                         className="hidden"
@@ -347,10 +406,10 @@ const AddReview = () => {
                         type="file"
                         accept="video/*"
                         multiple
-                        onChange={(e) => {
+                        onChange={async (e) => {
                           const files = Array.from(e.target.files || []);
                           if (videos.length + files.length <= 2) {
-                            setVideos(prev => [...prev, ...files]);
+                            await handleFileSelect(files, 'videos');
                           }
                         }}
                         className="hidden"
@@ -370,9 +429,9 @@ const AddReview = () => {
                       
                       {videos.length > 0 && (
                         <div className="space-y-2">
-                          {videos.map((file, index) => {
-                            const fileKey = `videos-${index}`;
-                            const progress = uploadProgress[fileKey] || 0;
+                           {videos.map((file, index) => {
+                             const progressKey = fileProgressKeys[index];
+                             const progress = progressKey ? uploadProgress[progressKey] || 0 : 0;
                             return (
                               <div key={index} className="space-y-2">
                                 <div className="flex items-center justify-between bg-gray-100 p-2 rounded">
@@ -385,14 +444,14 @@ const AddReview = () => {
                                     <X className="h-4 w-4" />
                                   </button>
                                 </div>
-                                {uploading && (
-                                  <div className="space-y-1">
-                                    <div className="flex justify-between text-xs text-gray-600">
-                                      <span>Uploading...</span>
-                                    </div>
-                                    <Progress value={50} className="h-2" />
-                                  </div>
-                                )}
+                                 {progress > 0 && progress < 100 && (
+                                   <div className="space-y-1">
+                                     <div className="flex justify-between text-xs text-gray-600">
+                                       <span>Uploading... {Math.round(progress)}%</span>
+                                     </div>
+                                     <Progress value={progress} className="h-2" />
+                                   </div>
+                                 )}
                               </div>
                             );
                           })}
