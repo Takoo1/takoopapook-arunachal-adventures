@@ -7,7 +7,8 @@ import DestinationDetail from '@/components/DestinationDetail';
 import PackageCard from '@/components/PackageCard';
 import DestinationCard from '@/components/DestinationCard';
 import { usePlannedLocations, usePlannedPackages } from '@/hooks/usePlannedLocations';
-import { MapPin, Plus, CheckCircle, Clock, CreditCard, Users, FileText, Calendar, Trash2 } from 'lucide-react';
+import { useCompletedBookings } from '@/hooks/useBookings';
+import { MapPin, Plus, CheckCircle, Clock, CreditCard, Users, FileText, Calendar, Trash2, History } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -18,6 +19,7 @@ const MyTour = () => {
   const navigate = useNavigate();
   const { data: plannedLocations = [], isLoading: locationsLoading } = usePlannedLocations();
   const { data: plannedPackages = [], isLoading: packagesLoading } = usePlannedPackages();
+  const { data: completedBookings = [], isLoading: completedBookingsLoading } = useCompletedBookings();
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [bookingData, setBookingData] = useState<any>(null);
   
@@ -66,8 +68,8 @@ const MyTour = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const isLoading = locationsLoading || packagesLoading;
-  const hasAnyPlanned = plannedLocations.length > 0 || plannedPackages.length > 0;
+  const isLoading = locationsLoading || packagesLoading || completedBookingsLoading;
+  const hasAnyPlanned = plannedLocations.length > 0 || plannedPackages.length > 0 || completedBookings.length > 0;
 
   if (isLoading) {
     return (
@@ -106,51 +108,54 @@ const MyTour = () => {
               </p>
             </div>
 
-            <div className="max-w-4xl mx-auto space-y-8">
-              {/* Package Details */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5 text-emerald-500" />
-                    Package Details
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="aspect-video rounded-lg overflow-hidden">
-                      <img
-                        src={packageData.image_url}
-                        alt={packageData.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="text-2xl font-bold mb-2">{packageData.title}</h3>
-                      <div className="space-y-2 text-muted-foreground mb-4">
-                        <p className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4" />
-                          {packageData.location}
-                        </p>
-                        <p className="flex items-center gap-2">
-                          <Clock className="h-4 w-4" />
-                          {packageData.duration}
-                        </p>
-                        <p className="flex items-center gap-2">
-                          <Users className="h-4 w-4" />
-                          {packageData.group_size}
-                        </p>
+            <div className="max-w-7xl mx-auto">
+              <div className="grid lg:grid-cols-3 gap-8">
+                {/* Main Booking Details - Left Side */}
+                <div className="lg:col-span-2 space-y-8">
+                  {/* Package Details */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <MapPin className="h-5 w-5 text-emerald-500" />
+                        Package Details
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="aspect-video rounded-lg overflow-hidden">
+                          <img
+                            src={packageData.image_url}
+                            alt={packageData.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl font-bold mb-2">{packageData.title}</h3>
+                          <div className="space-y-2 text-muted-foreground mb-4">
+                            <p className="flex items-center gap-2">
+                              <MapPin className="h-4 w-4" />
+                              {packageData.location}
+                            </p>
+                            <p className="flex items-center gap-2">
+                              <Clock className="h-4 w-4" />
+                              {packageData.duration}
+                            </p>
+                            <p className="flex items-center gap-2">
+                              <Users className="h-4 w-4" />
+                              {packageData.group_size}
+                            </p>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {packageData.features.slice(0, 3).map((feature: string, index: number) => (
+                              <Badge key={index} variant="secondary">
+                                {feature}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex flex-wrap gap-2">
-                        {packageData.features.slice(0, 3).map((feature: string, index: number) => (
-                          <Badge key={index} variant="secondary">
-                            {feature}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                    </CardContent>
+                  </Card>
 
               {/* Tourist Information */}
               <Card>
@@ -284,24 +289,92 @@ const MyTour = () => {
                 </CardContent>
               </Card>
 
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  onClick={() => {
-                    localStorage.removeItem('currentBooking');
-                    setBookingData(null);
-                  }}
-                  variant="outline"
-                  size="lg"
-                >
-                  Plan Another Trip
-                </Button>
-                <Button 
-                  onClick={() => navigate('/packages')}
-                  size="lg"
-                >
-                  Explore More Packages
-                </Button>
+                  {/* Action Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button 
+                      onClick={() => {
+                        localStorage.removeItem('currentBooking');
+                        setBookingData(null);
+                      }}
+                      variant="outline"
+                      size="lg"
+                    >
+                      Plan Another Trip
+                    </Button>
+                    <Button 
+                      onClick={() => navigate('/packages')}
+                      size="lg"
+                    >
+                      Explore More Packages
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Sidebar - Liked Destinations */}
+                <div className="space-y-6">
+                  {/* Liked Packages */}
+                  {plannedPackages.length > 0 && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">Liked Packages</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        {plannedPackages.slice(0, 3).map((planned: any) => (
+                          planned.packages && (
+                            <div key={planned.id} className="flex gap-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                              <img
+                                src={planned.packages.image_url}
+                                alt={planned.packages.title}
+                                className="w-12 h-12 object-cover rounded"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-medium text-sm truncate">{planned.packages.title}</h4>
+                                <p className="text-xs text-muted-foreground">{planned.packages.location}</p>
+                                <p className="text-xs text-muted-foreground">{planned.packages.price}</p>
+                              </div>
+                            </div>
+                          )
+                        ))}
+                        {plannedPackages.length > 3 && (
+                          <p className="text-xs text-muted-foreground text-center">
+                            +{plannedPackages.length - 3} more packages
+                          </p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Liked Destinations */}
+                  {plannedLocations.length > 0 && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">Liked Destinations</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        {plannedLocations.slice(0, 3).map((planned) => (
+                          planned.locations && (
+                            <div key={planned.id} className="flex gap-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+                              <img
+                                src={planned.locations.images?.[0] || '/placeholder.svg'}
+                                alt={planned.locations.name}
+                                className="w-12 h-12 object-cover rounded"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-medium text-sm truncate">{planned.locations.name}</h4>
+                                <p className="text-xs text-muted-foreground">{planned.locations.rating} ⭐</p>
+                              </div>
+                            </div>
+                          )
+                        ))}
+                        {plannedLocations.length > 3 && (
+                          <p className="text-xs text-muted-foreground text-center">
+                            +{plannedLocations.length - 3} more destinations
+                          </p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -356,53 +429,102 @@ const MyTour = () => {
             </div>
           ) : (
             <div className="max-w-6xl mx-auto space-y-12">
-              {/* Liked Packages Section */}
-              {plannedPackages.length > 0 && (
+              {/* My Plannings Section */}
+              {(plannedPackages.length > 0 || plannedLocations.length > 0) && (
                 <div>
                   <div className="mb-8">
                     <h2 className="text-3xl font-bold text-gray-800 mb-2">
                       My <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Plannings</span>
                     </h2>
-                    <div className="mb-6">
+                  </div>
+
+                  {/* Liked Packages */}
+                  {plannedPackages.length > 0 && (
+                    <div className="mb-8">
                       <h3 className="text-xl font-semibold text-gray-700 mb-4">Liked Packages ({plannedPackages.length})</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {plannedPackages.map((planned: any) => (
+                          planned.packages && (
+                            <PackageCard 
+                              key={planned.id} 
+                              package={planned.packages}
+                            />
+                          )
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    {plannedPackages.map((planned: any) => (
-                      planned.packages && (
-                        <PackageCard 
-                          key={planned.id} 
-                          package={planned.packages}
-                        />
-                      )
-                    ))}
-                  </div>
+                  )}
+
+                  {/* Liked Destinations */}
+                  {plannedLocations.length > 0 && (
+                    <div className="mb-8">
+                      <h3 className="text-xl font-semibold text-gray-700 mb-4">Liked Destinations ({plannedLocations.length})</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {plannedLocations.map((planned) => (
+                          planned.locations && (
+                            <DestinationCard 
+                              key={planned.id} 
+                              location={planned.locations}
+                            />
+                          )
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
-              {/* Liked Destinations Section */}
-              {plannedLocations.length > 0 && (
+              {/* Tour History Section */}
+              {completedBookings.length > 0 && (
                 <div>
-                  {plannedPackages.length === 0 && (
-                    <div className="mb-8">
-                      <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                        My <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Plannings</span>
-                      </h2>
-                    </div>
-                  )}
-                  <div className="mb-6">
-                    <h3 className="text-xl font-semibold text-gray-700 mb-4">Liked Destinations ({plannedLocations.length})</h3>
+                  <div className="mb-8">
+                    <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                      Tour <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">History</span>
+                    </h2>
+                    <p className="text-gray-600">Your completed travel experiences</p>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {plannedLocations.map((planned) => (
-                      planned.locations && (
-                        <DestinationCard 
-                          key={planned.id} 
-                          location={planned.locations}
-                        />
-                      )
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {completedBookings.map((booking) => (
+                      <Card key={booking.id} className="hover:shadow-lg transition-shadow">
+                        <CardContent className="p-6">
+                          <div className="flex gap-4">
+                            <img
+                              src={booking.package_image_url}
+                              alt={booking.package_title}
+                              className="w-20 h-20 object-cover rounded-lg"
+                            />
+                            <div className="flex-1">
+                              <h3 className="font-bold text-lg mb-1">{booking.package_title}</h3>
+                              <div className="space-y-1 text-sm text-muted-foreground">
+                                <p className="flex items-center gap-1">
+                                  <MapPin className="h-3 w-3" />
+                                  {booking.package_location}
+                                </p>
+                                <p className="flex items-center gap-1">
+                                  <Clock className="h-3 w-3" />
+                                  {booking.package_duration}
+                                </p>
+                                <p className="flex items-center gap-1">
+                                  <Users className="h-3 w-3" />
+                                  {booking.tourists.length} tourists
+                                </p>
+                                <p className="flex items-center gap-1">
+                                  <History className="h-3 w-3" />
+                                  Completed: {new Date(booking.updated_at).toLocaleDateString()}
+                                </p>
+                              </div>
+                              <div className="mt-3 flex items-center justify-between">
+                                <Badge variant="outline" className="text-green-600 border-green-600">
+                                  <CheckCircle className="h-3 w-3 mr-1" />
+                                  Completed
+                                </Badge>
+                                <span className="font-semibold">₹{booking.total_price.toLocaleString()}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
                     ))}
                   </div>
                 </div>

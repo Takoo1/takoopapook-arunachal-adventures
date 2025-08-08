@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Search, Filter, Calendar, User, CreditCard, Eye } from 'lucide-react';
+import { Search, Filter, Calendar, User, CreditCard, Eye, CheckCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useBookings } from '@/hooks/useBookings';
+import { useBookings, useUpdateBookingStatus } from '@/hooks/useBookings';
 import {
   Table,
   TableBody,
@@ -22,9 +22,17 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const BookingsManagement = () => {
   const { data: bookings = [], isLoading } = useBookings();
+  const updateBookingStatus = useUpdateBookingStatus();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -50,8 +58,18 @@ const BookingsManagement = () => {
         return 'secondary';
       case 'cancelled':
         return 'destructive';
+      case 'completed':
+        return 'outline';
       default:
         return 'outline';
+    }
+  };
+
+  const handleStatusUpdate = async (bookingId: string, newStatus: string) => {
+    try {
+      await updateBookingStatus.mutateAsync({ bookingId, status: newStatus });
+    } catch (error) {
+      console.error('Error updating booking status:', error);
     }
   };
 
@@ -116,6 +134,7 @@ const BookingsManagement = () => {
               <option value="confirmed">Confirmed</option>
               <option value="pending">Pending</option>
               <option value="cancelled">Cancelled</option>
+              <option value="completed">Completed</option>
             </select>
             <div className="text-sm text-muted-foreground flex items-center">
               Showing {filteredBookings.length} of {bookings.length} bookings
@@ -175,9 +194,22 @@ const BookingsManagement = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={getStatusBadgeVariant(booking.status)}>
-                        {booking.status}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={getStatusBadgeVariant(booking.status)}>
+                          {booking.status}
+                        </Badge>
+                        {booking.status !== 'completed' && booking.status !== 'cancelled' && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleStatusUpdate(booking.id, 'completed')}
+                            className="text-xs h-6 px-2"
+                          >
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            Complete
+                          </Button>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
@@ -258,14 +290,25 @@ const BookingsManagement = () => {
                                     <span className="text-muted-foreground">Total Price:</span>
                                     <div className="font-medium text-lg">₹{booking.total_price.toLocaleString()}</div>
                                   </div>
-                                  <div>
-                                    <span className="text-muted-foreground">Status:</span>
-                                    <div>
-                                      <Badge variant={getStatusBadgeVariant(booking.status)}>
-                                        {booking.status}
-                                      </Badge>
-                                    </div>
-                                  </div>
+                                   <div>
+                                     <span className="text-muted-foreground">Status:</span>
+                                     <div className="flex items-center gap-2">
+                                       <Select 
+                                         value={booking.status}
+                                         onValueChange={(newStatus) => handleStatusUpdate(booking.id, newStatus)}
+                                       >
+                                         <SelectTrigger className="w-32 h-8">
+                                           <SelectValue />
+                                         </SelectTrigger>
+                                         <SelectContent>
+                                           <SelectItem value="pending">Pending</SelectItem>
+                                           <SelectItem value="confirmed">Confirmed</SelectItem>
+                                           <SelectItem value="completed">Completed</SelectItem>
+                                           <SelectItem value="cancelled">Cancelled</SelectItem>
+                                         </SelectContent>
+                                       </Select>
+                                     </div>
+                                   </div>
                                   <div>
                                     <span className="text-muted-foreground">Booking Date:</span>
                                     <div className="font-medium">{formatDate(booking.booking_date)}</div>

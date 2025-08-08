@@ -64,3 +64,48 @@ export const useCreateBooking = () => {
     },
   });
 };
+
+export const useUpdateBookingStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ bookingId, status }: { bookingId: string; status: string }) => {
+      const { data, error } = await supabase
+        .from('bookings')
+        .update({ status, updated_at: new Date().toISOString() })
+        .eq('id', bookingId)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error updating booking status:', error);
+        throw error;
+      }
+
+      return data as Booking;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+    },
+  });
+};
+
+export const useCompletedBookings = () => {
+  return useQuery({
+    queryKey: ['bookings', 'completed'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('bookings')
+        .select('*')
+        .eq('status', 'completed')
+        .order('updated_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching completed bookings:', error);
+        throw error;
+      }
+
+      return data as Booking[];
+    },
+  });
+};
