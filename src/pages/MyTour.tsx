@@ -316,30 +316,17 @@ const MyTour = () => {
                   {plannedPackages.length > 0 && (
                     <Card>
                       <CardHeader>
-                        <CardTitle className="text-lg">Liked Packages</CardTitle>
+                        <CardTitle className="text-lg">Liked Packages ({plannedPackages.length})</CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        {plannedPackages.slice(0, 3).map((planned: any) => (
+                        {plannedPackages.map((planned: any) => (
                           planned.packages && (
-                            <div key={planned.id} className="flex gap-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
-                              <img
-                                src={planned.packages.image_url}
-                                alt={planned.packages.title}
-                                className="w-12 h-12 object-cover rounded"
-                              />
-                              <div className="flex-1 min-w-0">
-                                <h4 className="font-medium text-sm truncate">{planned.packages.title}</h4>
-                                <p className="text-xs text-muted-foreground">{planned.packages.location}</p>
-                                <p className="text-xs text-muted-foreground">{planned.packages.price}</p>
-                              </div>
-                            </div>
+                            <PackageCard 
+                              key={planned.id} 
+                              package={planned.packages}
+                            />
                           )
                         ))}
-                        {plannedPackages.length > 3 && (
-                          <p className="text-xs text-muted-foreground text-center">
-                            +{plannedPackages.length - 3} more packages
-                          </p>
-                        )}
                       </CardContent>
                     </Card>
                   )}
@@ -348,29 +335,17 @@ const MyTour = () => {
                   {plannedLocations.length > 0 && (
                     <Card>
                       <CardHeader>
-                        <CardTitle className="text-lg">Liked Destinations</CardTitle>
+                        <CardTitle className="text-lg">Liked Destinations ({plannedLocations.length})</CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        {plannedLocations.slice(0, 3).map((planned) => (
+                        {plannedLocations.map((planned) => (
                           planned.locations && (
-                            <div key={planned.id} className="flex gap-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
-                              <img
-                                src={planned.locations.images?.[0] || '/placeholder.svg'}
-                                alt={planned.locations.name}
-                                className="w-12 h-12 object-cover rounded"
-                              />
-                              <div className="flex-1 min-w-0">
-                                <h4 className="font-medium text-sm truncate">{planned.locations.name}</h4>
-                                <p className="text-xs text-muted-foreground">{planned.locations.rating} ⭐</p>
-                              </div>
-                            </div>
+                            <DestinationCard 
+                              key={planned.id} 
+                              location={planned.locations}
+                            />
                           )
                         ))}
-                        {plannedLocations.length > 3 && (
-                          <p className="text-xs text-muted-foreground text-center">
-                            +{plannedLocations.length - 3} more destinations
-                          </p>
-                        )}
                       </CardContent>
                     </Card>
                   )}
