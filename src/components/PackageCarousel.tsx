@@ -99,8 +99,9 @@ const PackageCarousel = () => {
                       </div>
                       <div className="absolute top-2 sm:top-4 left-2 sm:left-4">
                         <PlanButton 
-                          locationId={pkg.id.toString()} 
-                          locationName={pkg.title}
+                          itemId={pkg.id} 
+                          itemType="package"
+                          itemName={pkg.title}
                           variant="compact"
                         />
                       </div>

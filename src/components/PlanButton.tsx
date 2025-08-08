@@ -1,38 +1,56 @@
 import { Heart, HeartHandshake } from 'lucide-react';
-import { useAddToPlanned, useRemoveFromPlanned, useIsLocationPlanned } from '@/hooks/usePlannedLocations';
+import { useAddToPlanned, useRemoveFromPlanned, useIsLocationPlanned, useAddPackageToPlanned, useRemovePackageFromPlanned, useIsPackagePlanned } from '@/hooks/usePlannedLocations';
 import { cn } from '@/lib/utils';
 
 interface PlanButtonProps {
-  locationId: string;
-  locationName?: string;
+  itemId: string;
+  itemType: 'location' | 'package';
+  itemName?: string;
   variant?: 'default' | 'compact';
   className?: string;
 }
 
-// Helper function to check if locationId is a valid UUID
+// Helper function to check if itemId is a valid UUID
 const isValidUUID = (id: string) => {
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   return uuidRegex.test(id);
 };
 
-const PlanButton = ({ locationId, locationName, variant = 'default', className }: PlanButtonProps) => {
-  // Don't render plan button for non-UUID location IDs (like package IDs)
-  if (!isValidUUID(locationId)) {
+const PlanButton = ({ itemId, itemType, itemName, variant = 'default', className }: PlanButtonProps) => {
+  // Don't render plan button for non-UUID IDs
+  if (!isValidUUID(itemId)) {
     return null;
   }
-  const { data: isPlanned, isLoading } = useIsLocationPlanned(locationId);
-  const addToPlanned = useAddToPlanned();
-  const removeFromPlanned = useRemoveFromPlanned();
+
+  const locationPlannedQuery = useIsLocationPlanned(itemId);
+  const packagePlannedQuery = useIsPackagePlanned(itemId);
+  
+  const addLocationToPlanned = useAddToPlanned();
+  const removeLocationFromPlanned = useRemoveFromPlanned();
+  const addPackageToPlanned = useAddPackageToPlanned();
+  const removePackageFromPlanned = useRemovePackageFromPlanned();
+
+  const isPlanned = itemType === 'location' ? locationPlannedQuery.data : packagePlannedQuery.data;
+  const isLoading = itemType === 'location' ? locationPlannedQuery.isLoading : packagePlannedQuery.isLoading;
 
   const handleClick = () => {
-    if (isPlanned) {
-      removeFromPlanned.mutate(locationId);
+    if (itemType === 'location') {
+      if (isPlanned) {
+        removeLocationFromPlanned.mutate(itemId);
+      } else {
+        addLocationToPlanned.mutate({ locationId: itemId });
+      }
     } else {
-      addToPlanned.mutate({ locationId });
+      if (isPlanned) {
+        removePackageFromPlanned.mutate(itemId);
+      } else {
+        addPackageToPlanned.mutate({ packageId: itemId });
+      }
     }
   };
 
-  const isProcessing = addToPlanned.isPending || removeFromPlanned.isPending || isLoading;
+  const isProcessing = addLocationToPlanned.isPending || removeLocationFromPlanned.isPending || 
+                      addPackageToPlanned.isPending || removePackageFromPlanned.isPending || isLoading;
 
   if (variant === 'compact') {
     return (
@@ -47,7 +65,7 @@ const PlanButton = ({ locationId, locationName, variant = 'default', className }
           isProcessing && "opacity-50 cursor-not-allowed",
           className
         )}
-        title={isPlanned ? `Remove ${locationName || 'location'} from My Tour` : `Add ${locationName || 'location'} to My Tour`}
+        title={isPlanned ? `Remove ${itemName || itemType} from My Tour` : `Add ${itemName || itemType} to My Tour`}
       >
         {isPlanned ? (
           <HeartHandshake className="h-4 w-4" />

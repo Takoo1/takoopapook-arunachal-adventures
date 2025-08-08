@@ -148,8 +148,9 @@ const LocationDetails = ({ location }: LocationDetailsProps) => {
         {/* Plan Button */}
         <div className="mt-auto">
           <PlanButton 
-            locationId={location.id} 
-            locationName={location.name}
+            itemId={location.id} 
+            itemType="location"
+            itemName={location.name}
             className="w-full"
           />
         </div>

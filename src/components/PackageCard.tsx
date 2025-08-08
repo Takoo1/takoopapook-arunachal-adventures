@@ -4,6 +4,7 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Package } from '@/hooks/usePackages';
+import PlanButton from '@/components/PlanButton';
 
 interface PackageCardProps {
   package: Package;
@@ -14,6 +15,11 @@ const PackageCard = ({ package: pkg }: PackageCardProps) => {
 
   const handleCardClick = () => {
     navigate(`/my-tour/package/${pkg.id}`);
+  };
+
+  
+  const handlePlanClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card navigation when clicking heart
   };
 
   const handleButtonClick = (e: React.MouseEvent) => {
@@ -35,6 +41,17 @@ const PackageCard = ({ package: pkg }: PackageCardProps) => {
             e.currentTarget.src = '/placeholder.svg';
           }}
         />
+        
+        {/* Plan Button (Heart Icon) */}
+        <div className="absolute top-2 left-2" onClick={handlePlanClick}>
+          <PlanButton 
+            itemId={pkg.id} 
+            itemType="package"
+            itemName={pkg.title}
+            variant="compact"
+          />
+        </div>
+        
         <div className="absolute top-2 right-2">
           <Badge variant="secondary" className="bg-white/90 text-gray-800">
             {pkg.package_code}

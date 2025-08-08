@@ -1,12 +1,13 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PackageDetail from '@/components/PackageDetail';
 import DestinationDetail from '@/components/DestinationDetail';
-import { usePlannedLocations, useRemoveFromPlanned } from '@/hooks/usePlannedLocations';
-import { MapPin, Calendar, Trash2, Plus, Clock, CreditCard, Users, CheckCircle, FileText } from 'lucide-react';
+import PackageCard from '@/components/PackageCard';
+import DestinationCard from '@/components/DestinationCard';
+import { usePlannedLocations, usePlannedPackages } from '@/hooks/usePlannedLocations';
+import { MapPin, Plus, CheckCircle, Clock, CreditCard, Users, FileText, Calendar, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,8 +16,8 @@ import { Separator } from '@/components/ui/separator';
 const MyTour = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { data: plannedLocations = [], isLoading } = usePlannedLocations();
-  const removeFromPlanned = useRemoveFromPlanned();
+  const { data: plannedLocations = [], isLoading: locationsLoading } = usePlannedLocations();
+  const { data: plannedPackages = [], isLoading: packagesLoading } = usePlannedPackages();
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [bookingData, setBookingData] = useState<any>(null);
   
@@ -60,14 +61,13 @@ const MyTour = () => {
     }
   }
 
-  const handleRemoveLocation = (locationId: string) => {
-    removeFromPlanned.mutate(locationId);
-  };
-
   const handleExploreDestinations = () => {
     navigate('/explore');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const isLoading = locationsLoading || packagesLoading;
+  const hasAnyPlanned = plannedLocations.length > 0 || plannedPackages.length > 0;
 
   if (isLoading) {
     return (
@@ -83,6 +83,7 @@ const MyTour = () => {
       </div>
     );
   }
+
   // If we have booking data, show the booking details
   if (bookingData) {
     const { packageData, tourists, totalPrice, bookingDate } = bookingData;
@@ -325,133 +326,106 @@ const MyTour = () => {
             </p>
           </div>
 
-          {plannedLocations.length === 0 ? (
+          {!hasAnyPlanned ? (
             <div className="max-w-2xl mx-auto">
               <Card className="text-center p-12">
                 <CardContent>
                   <MapPin className="h-20 w-20 text-gray-300 mx-auto mb-6" />
-                  <h3 className="text-2xl font-bold text-gray-800 mb-4">No Destinations Planned Yet</h3>
+                  <h3 className="text-2xl font-bold text-gray-800 mb-4">No Items Planned Yet</h3>
                   <p className="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">
-                    Start building your dream trip by exploring locations on our interactive map and adding them to your tour plan.
+                    Start building your dream trip by exploring destinations and packages, then add them to your tour plan.
                   </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button 
+                      onClick={handleExploreDestinations}
+                      className="inline-flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+                    >
+                      <Plus className="h-5 w-5" />
+                      <span>Explore Destinations</span>
+                    </button>
+                    <button 
+                      onClick={() => navigate('/packages')}
+                      className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+                    >
+                      <Plus className="h-5 w-5" />
+                      <span>Browse Packages</span>
+                    </button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          ) : (
+            <div className="max-w-6xl mx-auto space-y-12">
+              {/* Liked Packages Section */}
+              {plannedPackages.length > 0 && (
+                <div>
+                  <div className="mb-8">
+                    <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                      My <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Plannings</span>
+                    </h2>
+                    <div className="mb-6">
+                      <h3 className="text-xl font-semibold text-gray-700 mb-4">Liked Packages ({plannedPackages.length})</h3>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    {plannedPackages.map((planned: any) => (
+                      planned.packages && (
+                        <PackageCard 
+                          key={planned.id} 
+                          package={planned.packages}
+                        />
+                      )
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Liked Destinations Section */}
+              {plannedLocations.length > 0 && (
+                <div>
+                  {plannedPackages.length === 0 && (
+                    <div className="mb-8">
+                      <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                        My <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Plannings</span>
+                      </h2>
+                    </div>
+                  )}
+                  <div className="mb-6">
+                    <h3 className="text-xl font-semibold text-gray-700 mb-4">Liked Destinations ({plannedLocations.length})</h3>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {plannedLocations.map((planned) => (
+                      planned.locations && (
+                        <DestinationCard 
+                          key={planned.id} 
+                          location={planned.locations}
+                        />
+                      )
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Add More Items Button */}
+              <div className="text-center pt-8">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <button 
                     onClick={handleExploreDestinations}
                     className="inline-flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
                   >
                     <Plus className="h-5 w-5" />
-                    <span>Explore Destinations</span>
+                    <span>Add More Destinations</span>
                   </button>
-                </CardContent>
-              </Card>
-            </div>
-          ) : (
-            <div className="max-w-6xl mx-auto">
-              {/* Summary Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg flex items-center space-x-2">
-                      <MapPin className="h-5 w-5 text-emerald-500" />
-                      <span>Planned Destinations</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-3xl font-bold text-gray-800">{plannedLocations.length}</p>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg flex items-center space-x-2">
-                      <Calendar className="h-5 w-5 text-emerald-500" />
-                      <span>Trip Duration</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-3xl font-bold text-gray-800">{Math.max(plannedLocations.length, 1)}</p>
-                    <p className="text-sm text-gray-600">Days recommended</p>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg flex items-center space-x-2">
-                      <Clock className="h-5 w-5 text-emerald-500" />
-                      <span>Last Updated</span>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-lg font-bold text-gray-800">
-                      {new Date(plannedLocations[0]?.planned_at).toLocaleDateString()}
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Planned Locations Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {plannedLocations.map((planned, index) => (
-                  <Card key={planned.id} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                    <div className="relative">
-                      {/* Location Image */}
-                      <div className="h-48 overflow-hidden rounded-t-lg">
-                        <img
-                          src={planned.locations.images?.[0] || 'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800&q=80'}
-                          alt={planned.locations.name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        />
-                      </div>
-                      
-                      {/* Day number badge */}
-                      <div className="absolute top-4 left-4 bg-emerald-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                        Day {index + 1}
-                      </div>
-                      
-                      {/* Remove button */}
-                      <button
-                        onClick={() => handleRemoveLocation(planned.location_id)}
-                        className="absolute top-4 right-4 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
-                        title="Remove from tour"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                    
-                    <CardContent className="p-6">
-                      <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-emerald-600 transition-colors">
-                        {planned.locations.name}
-                      </h3>
-                      
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                        {planned.locations.description || 'Discover the beauty and culture of this amazing destination.'}
-                      </p>
-                      
-                      <div className="flex items-center justify-between text-sm text-gray-500">
-                        <span className="flex items-center space-x-1">
-                          <Calendar className="h-4 w-4" />
-                          <span>Added {new Date(planned.planned_at).toLocaleDateString()}</span>
-                        </span>
-                      </div>
-                      
-                      {planned.notes && (
-                        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                          <p className="text-sm text-gray-700 italic">"{planned.notes}"</p>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-              
-              {/* Add More Button */}
-              <div className="text-center mt-12">
-                <button 
-                  onClick={handleExploreDestinations}
-                  className="inline-flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-                >
-                  <Plus className="h-5 w-5" />
-                  <span>Add More Destinations</span>
-                </button>
+                  <button 
+                    onClick={() => navigate('/packages')}
+                    className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+                  >
+                    <Plus className="h-5 w-5" />
+                    <span>Add More Packages</span>
+                  </button>
+                </div>
               </div>
             </div>
           )}

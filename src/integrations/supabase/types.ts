@@ -238,6 +238,30 @@ export type Database = {
           },
         ]
       }
+      planned_packages: {
+        Row: {
+          id: string
+          notes: string | null
+          package_id: string
+          planned_at: string
+          user_session: string
+        }
+        Insert: {
+          id?: string
+          notes?: string | null
+          package_id: string
+          planned_at?: string
+          user_session: string
+        }
+        Update: {
+          id?: string
+          notes?: string | null
+          package_id?: string
+          planned_at?: string
+          user_session?: string
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           created_at: string

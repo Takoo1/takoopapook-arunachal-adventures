@@ -83,8 +83,9 @@ const DestinationCard = ({ location, onClick }: DestinationCardProps) => {
         {/* Plan Button (Heart Icon) */}
         <div className="absolute top-3 right-3" onClick={handlePlanClick}>
           <PlanButton 
-            locationId={location.id} 
-            locationName={location.name}
+            itemId={location.id} 
+            itemType="location"
+            itemName={location.name}
             variant="compact"
           />
         </div>
