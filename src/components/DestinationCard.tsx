@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Star } from 'lucide-react';
 import { Location } from '@/types/database';
+import PlanButton from '@/components/PlanButton';
 
 interface DestinationCardProps {
   location: Location;
@@ -35,6 +36,10 @@ const DestinationCard = ({ location, onClick }: DestinationCardProps) => {
     } else {
       navigate(`/my-tour/destination/${location.id}`);
     }
+  };
+
+  const handlePlanClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card navigation when clicking heart
   };
 
   return (
@@ -74,6 +79,15 @@ const DestinationCard = ({ location, onClick }: DestinationCardProps) => {
             className="w-full h-full object-cover"
           />
         )}
+        
+        {/* Plan Button (Heart Icon) */}
+        <div className="absolute top-3 right-3" onClick={handlePlanClick}>
+          <PlanButton 
+            locationId={location.id} 
+            locationName={location.name}
+            variant="compact"
+          />
+        </div>
         
         {/* Rating Overlay */}
         <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur-sm text-white px-2 py-1 rounded-lg flex items-center space-x-1 text-sm">

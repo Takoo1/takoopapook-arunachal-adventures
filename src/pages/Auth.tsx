@@ -73,6 +73,11 @@ const Auth = () => {
             title: "Registration Successful",
             description: "Please check your email for verification.",
           });
+          // Store returnUrl in localStorage for post-verification redirect
+          const returnUrl = location.state?.returnUrl;
+          if (returnUrl) {
+            localStorage.setItem('returnUrl', returnUrl);
+          }
           setIsLogin(true);
         }
       }

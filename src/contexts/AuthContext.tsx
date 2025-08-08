@@ -34,6 +34,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        
+        // Handle post-verification redirect
+        if (event === 'SIGNED_IN' && session?.user) {
+          const returnUrl = localStorage.getItem('returnUrl');
+          if (returnUrl) {
+            localStorage.removeItem('returnUrl');
+            // Use setTimeout to ensure navigation happens after component updates
+            setTimeout(() => {
+              window.location.href = returnUrl;
+            }, 100);
+          }
+        }
       }
     );
 

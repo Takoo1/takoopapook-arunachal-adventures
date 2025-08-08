@@ -39,7 +39,7 @@ const App = () => (
             <Route path="/my-tour/package/:id" element={<MyTour />} />
             <Route path="/my-tour/destination/:id" element={<MyTour />} />
             <Route path="/booking/:packageId" element={<Booking />} />
-            <Route path="/services" element={<Services />} />
+            <Route path="/services" element={<About />} />
             <Route path="/about" element={<About />} />
             <Route path="/auth" element={<Auth />} />
             
