@@ -260,7 +260,15 @@ export type Database = {
           planned_at?: string
           user_session?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "planned_packages_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "packages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reviews: {
         Row: {
