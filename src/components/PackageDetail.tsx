@@ -13,6 +13,7 @@ import DestinationCard from '@/components/DestinationCard';
 import DestinationDetailPopup from '@/components/DestinationDetailPopup';
 import ReviewSection from '@/components/ReviewSection';
 import BookingButton from '@/components/BookingButton';
+import PlanButton from '@/components/PlanButton';
 
 const PackageDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -130,6 +131,14 @@ const PackageDetail = () => {
               <span className="text-muted-foreground text-sm ml-1">
                 ({reviewStats ? reviewStats.totalReviews : 0} reviews)
               </span>
+            </div>
+            <div className="mt-2 flex justify-end">
+              <PlanButton 
+                itemId={packageData.id} 
+                itemType="package" 
+                itemName={packageData.title}
+                labelMode="liked"
+              />
             </div>
           </div>
         </div>

@@ -11,6 +11,7 @@ import { useReviewStatistics } from '@/hooks/useReviewStatistics';
 import PackageCard from './PackageCard';
 import ReviewSection from './ReviewSection';
 import type { Package } from '@/hooks/usePackages';
+import PlanButton from '@/components/PlanButton';
 
 const DestinationDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -140,20 +141,28 @@ const DestinationDetail = () => {
                 {destination.name}
               </h1>
               
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="flex items-center space-x-1">
-                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold text-gray-700">
-                    {reviewStats ? reviewStats.averageRating.toFixed(1) : '0.0'}
-                  </span>
-                  <span className="text-gray-500">
-                    ({reviewStats ? reviewStats.totalReviews : 0} reviews)
-                  </span>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-1">
+                    <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                    <span className="font-semibold text-gray-700">
+                      {reviewStats ? reviewStats.averageRating.toFixed(1) : '0.0'}
+                    </span>
+                    <span className="text-gray-500">
+                      ({reviewStats ? reviewStats.totalReviews : 0} reviews)
+                    </span>
+                  </div>
+                  <Badge variant="secondary" className="flex items-center space-x-1">
+                    <MapPin className="h-3 w-3" />
+                    <span>Arunachal Pradesh</span>
+                  </Badge>
                 </div>
-                <Badge variant="secondary" className="flex items-center space-x-1">
-                  <MapPin className="h-3 w-3" />
-                  <span>Arunachal Pradesh</span>
-                </Badge>
+                <PlanButton 
+                  itemId={destination.id}
+                  itemType="location"
+                  itemName={destination.name}
+                  labelMode="liked"
+                />
               </div>
 
               <div className="space-y-4">

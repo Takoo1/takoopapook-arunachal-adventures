@@ -8,6 +8,7 @@ interface PlanButtonProps {
   itemName?: string;
   variant?: 'default' | 'compact';
   className?: string;
+  labelMode?: 'tour' | 'liked';
 }
 
 // Helper function to check if itemId is a valid UUID
@@ -16,7 +17,7 @@ const isValidUUID = (id: string) => {
   return uuidRegex.test(id);
 };
 
-const PlanButton = ({ itemId, itemType, itemName, variant = 'default', className }: PlanButtonProps) => {
+const PlanButton = ({ itemId, itemType, itemName, variant = 'default', className, labelMode = 'tour' }: PlanButtonProps) => {
   // Don't render plan button for non-UUID IDs
   if (!isValidUUID(itemId)) {
     return null;
@@ -33,21 +34,26 @@ const PlanButton = ({ itemId, itemType, itemName, variant = 'default', className
   const isPlanned = itemType === 'location' ? locationPlannedQuery.data : packagePlannedQuery.data;
   const isLoading = itemType === 'location' ? locationPlannedQuery.isLoading : packagePlannedQuery.isLoading;
 
-  const handleClick = () => {
-    if (itemType === 'location') {
-      if (isPlanned) {
-        removeLocationFromPlanned.mutate(itemId);
-      } else {
-        addLocationToPlanned.mutate({ locationId: itemId });
-      }
+  const addLabel = labelMode === 'liked' ? `Add to Liked ${itemType === 'package' ? 'Package' : 'Destination'}` : 'Add to My Tour';
+  const removeLabel = labelMode === 'liked' ? 'Remove from Liked' : 'Remove from Tour';
+
+const handleClick = (e?: React.MouseEvent<HTMLButtonElement>) => {
+  e?.preventDefault();
+  e?.stopPropagation();
+  if (itemType === 'location') {
+    if (isPlanned) {
+      removeLocationFromPlanned.mutate(itemId);
     } else {
-      if (isPlanned) {
-        removePackageFromPlanned.mutate(itemId);
-      } else {
-        addPackageToPlanned.mutate({ packageId: itemId });
-      }
+      addLocationToPlanned.mutate({ locationId: itemId });
     }
-  };
+  } else {
+    if (isPlanned) {
+      removePackageFromPlanned.mutate(itemId);
+    } else {
+      addPackageToPlanned.mutate({ packageId: itemId });
+    }
+  }
+};
 
   const isProcessing = addLocationToPlanned.isPending || removeLocationFromPlanned.isPending || 
                       addPackageToPlanned.isPending || removePackageFromPlanned.isPending || isLoading;
@@ -65,7 +71,7 @@ const PlanButton = ({ itemId, itemType, itemName, variant = 'default', className
           isProcessing && "opacity-50 cursor-not-allowed",
           className
         )}
-        title={isPlanned ? `Remove ${itemName || itemType} from My Tour` : `Add ${itemName || itemType} to My Tour`}
+        title={`${isPlanned ? removeLabel : addLabel}${itemName ? `: ${itemName}` : ''}`}
       >
         {isPlanned ? (
           <HeartHandshake className="h-4 w-4" />
@@ -92,12 +98,12 @@ const PlanButton = ({ itemId, itemType, itemName, variant = 'default', className
       {isPlanned ? (
         <>
           <HeartHandshake className="h-4 w-4" />
-          <span>Remove from Tour</span>
+          <span>{removeLabel}</span>
         </>
       ) : (
         <>
           <Heart className="h-4 w-4" />
-          <span>Add to My Tour</span>
+          <span>{addLabel}</span>
         </>
       )}
     </button>
