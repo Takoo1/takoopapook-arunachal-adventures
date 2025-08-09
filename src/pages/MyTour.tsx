@@ -70,6 +70,7 @@ const MyTour = () => {
 
   const isLoading = locationsLoading || packagesLoading || completedBookingsLoading;
   const hasAnyPlanned = plannedLocations.length > 0 || plannedPackages.length > 0 || completedBookings.length > 0;
+  const hasLiked = plannedPackages.length > 0 || plannedLocations.length > 0;
 
   if (isLoading) {
     return (
@@ -108,10 +109,10 @@ const MyTour = () => {
               </p>
             </div>
 
-            <div className="max-w-7xl mx-auto">
-              <div className="grid lg:grid-cols-3 gap-8">
+            <div className={`mx-auto ${hasLiked ? 'max-w-7xl' : 'max-w-3xl'}`}>
+              <div className={`grid gap-8 ${hasLiked ? 'lg:grid-cols-3' : 'lg:grid-cols-1'}`}>
                 {/* Main Booking Details - Left Side */}
-                <div className="lg:col-span-2 space-y-8">
+                <div className={`${hasLiked ? 'lg:col-span-2' : ''} space-y-8`}>
                   {/* Package Details */}
                   <Card>
                     <CardHeader>
@@ -310,46 +311,48 @@ const MyTour = () => {
                   </div>
                 </div>
 
-                {/* Sidebar - Liked Destinations */}
-                <div className="space-y-6">
-                  {/* Liked Packages */}
-                  {plannedPackages.length > 0 && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-lg">Liked Packages ({plannedPackages.length})</CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        {plannedPackages.map((planned: any) => (
-                          planned.packages && (
-                            <PackageCard 
-                              key={planned.id} 
-                              package={planned.packages}
-                            />
-                          )
-                        ))}
-                      </CardContent>
-                    </Card>
-                  )}
+                {/* Sidebar - Liked Items */}
+                {hasLiked && (
+                  <div className="space-y-6">
+                    {/* Liked Packages */}
+                    {plannedPackages.length > 0 && (
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="text-lg">Liked Packages ({plannedPackages.length})</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          {plannedPackages.map((planned: any) => (
+                            planned.packages && (
+                              <PackageCard 
+                                key={planned.id} 
+                                package={planned.packages}
+                              />
+                            )
+                          ))}
+                        </CardContent>
+                      </Card>
+                    )}
 
-                  {/* Liked Destinations */}
-                  {plannedLocations.length > 0 && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-lg">Liked Destinations ({plannedLocations.length})</CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        {plannedLocations.map((planned) => (
-                          planned.locations && (
-                            <DestinationCard 
-                              key={planned.id} 
-                              location={planned.locations}
-                            />
-                          )
-                        ))}
-                      </CardContent>
-                    </Card>
-                  )}
-                </div>
+                    {/* Liked Destinations */}
+                    {plannedLocations.length > 0 && (
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="text-lg">Liked Destinations ({plannedLocations.length})</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          {plannedLocations.map((planned) => (
+                            planned.locations && (
+                              <DestinationCard 
+                                key={planned.id} 
+                                location={planned.locations}
+                              />
+                            )
+                          ))}
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -403,7 +406,7 @@ const MyTour = () => {
               </Card>
             </div>
           ) : (
-            <div className="max-w-6xl mx-auto space-y-12">
+            <div className={`mx-auto space-y-12 ${hasLiked ? 'max-w-6xl' : 'max-w-3xl'}`}>
               {/* My Plannings Section */}
               {(plannedPackages.length > 0 || plannedLocations.length > 0) && (
                 <div>
