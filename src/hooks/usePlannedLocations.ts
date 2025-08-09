@@ -54,9 +54,11 @@ export const useAddToPlanned = () => {
       if (error) throw error;
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['planned-locations'] });
       queryClient.invalidateQueries({ queryKey: ['planned-items'] });
+      // Ensure the heart state updates immediately for this location
+      queryClient.invalidateQueries({ queryKey: ['is-planned', variables.locationId], exact: false });
       toast({
         title: "Added to My Tour",
         description: "Location has been added to your planned destinations.",
@@ -100,9 +102,11 @@ export const useAddPackageToPlanned = () => {
       if (error) throw error;
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['planned-packages'] });
       queryClient.invalidateQueries({ queryKey: ['planned-items'] });
+      // Ensure the heart state updates immediately for this package
+      queryClient.invalidateQueries({ queryKey: ['is-package-planned', variables.packageId], exact: false });
       toast({
         title: "Added to My Tour",
         description: "Package has been added to your planned items.",
@@ -141,9 +145,11 @@ export const useRemoveFromPlanned = () => {
       
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['planned-locations'] });
       queryClient.invalidateQueries({ queryKey: ['planned-items'] });
+      // Ensure the heart state updates immediately for this location
+      queryClient.invalidateQueries({ queryKey: ['is-planned', variables], exact: false });
       toast({
         title: "Removed from My Tour",
         description: "Location has been removed from your planned destinations.",
@@ -174,9 +180,11 @@ export const useRemovePackageFromPlanned = () => {
       
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['planned-packages'] });
       queryClient.invalidateQueries({ queryKey: ['planned-items'] });
+      // Ensure the heart state updates immediately for this package
+      queryClient.invalidateQueries({ queryKey: ['is-package-planned', variables], exact: false });
       toast({
         title: "Removed from My Tour",
         description: "Package has been removed from your planned items.",
