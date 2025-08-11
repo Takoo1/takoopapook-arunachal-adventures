@@ -22,6 +22,7 @@ import DestinationManagement from "./components/admin/DestinationManagement";
 import AdminDashboard from "./pages/AdminDashboard";
 import FounderProfile from "./pages/FounderProfile";
 import CancelBooking from "./pages/CancelBooking";
+import AdminGuard from "./components/auth/AdminGuard";
 
 const queryClient = new QueryClient();
 
@@ -44,11 +45,11 @@ const App = () => (
             <Route path="/services" element={<About />} />
             <Route path="/about" element={<About />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/packages" element={<PackageManagement />} />
-            <Route path="/admin/destinations" element={<DestinationManagement />} />
-            <Route path="/admin/reviews" element={<ReviewsManagement />} />
-            <Route path="/admin/bookings" element={<BookingsManagement />} />
+            <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
+            <Route path="/admin/packages" element={<AdminGuard><PackageManagement /></AdminGuard>} />
+            <Route path="/admin/destinations" element={<AdminGuard><DestinationManagement /></AdminGuard>} />
+            <Route path="/admin/reviews" element={<AdminGuard><ReviewsManagement /></AdminGuard>} />
+            <Route path="/admin/bookings" element={<AdminGuard><BookingsManagement /></AdminGuard>} />
             <Route path="/founder-profile" element={<FounderProfile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
