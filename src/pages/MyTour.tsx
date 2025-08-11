@@ -9,6 +9,7 @@ import DestinationCard from '@/components/DestinationCard';
 import { usePlannedLocations, usePlannedPackages } from '@/hooks/usePlannedLocations';
 import { useMyBookings } from '@/hooks/useBookings';
 import { MapPin, Plus, CheckCircle, Clock, CreditCard, Users, FileText, Calendar, History } from 'lucide-react';
+import { useBookingCancellations } from '@/hooks/useBookingCancellations';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -22,8 +23,8 @@ const MyTour = () => {
   const { data: plannedLocations = [], isLoading: locationsLoading } = usePlannedLocations();
   const { data: plannedPackages = [], isLoading: packagesLoading } = usePlannedPackages();
 const { data: myBookings = [], isLoading: myBookingsLoading } = useMyBookings(user?.id);
+const { data: cancellations = [] } = useBookingCancellations();
 
-  
   const [bookingData, setBookingData] = useState<any>(null);
   
   const currentPath = window.location.pathname;
@@ -83,20 +84,33 @@ const isCancellationProcessing = normalizedStatus === 'processing_cancellation' 
   };
 
 const isLoading = locationsLoading || packagesLoading || myBookingsLoading;
+const cancellationByBooking = useMemo(() => {
+  const map = new Map<string, any>();
+  for (const c of cancellations) {
+    if (!map.has(c.booking_id)) map.set(c.booking_id, c); // cancellations already ordered desc
+  }
+  return map;
+}, [cancellations]);
+
 const currentBookings = useMemo(() =>
   myBookings.filter((b: any) => {
     const s = (b.status || '').toLowerCase().replace(/\s+/g, '_');
-    return s === 'confirmed' || s === 'processing_cancellation' || s === 'processing';
+    const cancel = cancellationByBooking.get(b.id);
+    const isCancelled = s === 'cancelled' || cancel?.status === 'cancelled';
+    const isCompleted = s === 'completed';
+    return !isCancelled && !isCompleted;
   })
-, [myBookings]);
+, [myBookings, cancellationByBooking]);
+
 const historyBookings = useMemo(() =>
   myBookings
     .filter((b: any) => {
       const s = (b.status || '').toLowerCase().replace(/\s+/g, '_');
-      return s === 'completed' || s === 'cancelled';
+      const cancel = cancellationByBooking.get(b.id);
+      return s === 'completed' || s === 'cancelled' || cancel?.status === 'cancelled';
     })
     .sort((a: any, b: any) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
-, [myBookings]);
+, [myBookings, cancellationByBooking]);
 const hasAnyContent = currentBookings.length > 0 || plannedLocations.length > 0 || plannedPackages.length > 0 || historyBookings.length > 0;
 const hasLiked = plannedPackages.length > 0 || plannedLocations.length > 0;
 
