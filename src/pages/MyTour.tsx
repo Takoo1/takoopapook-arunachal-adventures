@@ -89,9 +89,13 @@ const MyTour = () => {
   };
 
   const isLoading = locationsLoading || packagesLoading || completedBookingsLoading || bookingsLoading;
-  const hasAnyPlanned = plannedLocations.length > 0 || plannedPackages.length > 0 || completedBookings.length > 0;
+  const cancelledBookings = useMemo(() => bookings.filter((b: any) => b.status === 'cancelled'), [bookings]);
+  const historyBookings = useMemo(() => {
+    const list = [...completedBookings, ...cancelledBookings];
+    return list.sort((a: any, b: any) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
+  }, [completedBookings, cancelledBookings]);
+  const hasAnyPlanned = plannedLocations.length > 0 || plannedPackages.length > 0 || historyBookings.length > 0;
   const hasLiked = plannedPackages.length > 0 || plannedLocations.length > 0;
-
   if (isLoading) {
     return (
       <div className="min-h-screen">
@@ -142,7 +146,7 @@ const MyTour = () => {
 
   // If there are no active bookings (non-completed), show default message even if completed history exists
   if (!bookingData && !bookingsLoading) {
-    const hasCurrentBookings = bookings.some((b: any) => b.status !== 'completed');
+    const hasCurrentBookings = bookings.some((b: any) => b.status !== 'completed' && b.status !== 'cancelled');
     if (!hasCurrentBookings) {
       return (
         <div className="min-h-screen">
@@ -575,57 +579,66 @@ const MyTour = () => {
               )}
 
               {/* Tour History Section */}
-              {completedBookings.length > 0 && (
+              {historyBookings.length > 0 && (
                 <div>
                   <div className="mb-8">
                     <h2 className="text-3xl font-bold text-gray-800 mb-2">
                       Travel History With Takoopapook
                     </h2>
-                    <p className="text-gray-600">Your completed travel experiences</p>
+                    <p className="text-gray-600">Your completed and cancelled travel experiences</p>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {completedBookings.map((booking) => (
-                      <Card key={booking.id} className="hover:shadow-lg transition-shadow">
-                        <CardContent className="p-6">
-                          <div className="flex gap-4">
-                            <img
-                              src={booking.package_image_url}
-                              alt={booking.package_title}
-                              className="w-20 h-20 object-cover rounded-lg"
-                            />
-                            <div className="flex-1">
-                              <h3 className="font-bold text-lg mb-1">{booking.package_title}</h3>
-                              <div className="space-y-1 text-sm text-muted-foreground">
-                                <p className="flex items-center gap-1">
-                                  <MapPin className="h-3 w-3" />
-                                  {booking.package_location}
-                                </p>
-                                <p className="flex items-center gap-1">
-                                  <Clock className="h-3 w-3" />
-                                  {booking.package_duration}
-                                </p>
-                                <p className="flex items-center gap-1">
-                                  <Users className="h-3 w-3" />
-                                  {booking.tourists.length} tourists
-                                </p>
-                                <p className="flex items-center gap-1">
-                                  <History className="h-3 w-3" />
-                                  Completed: {new Date(booking.updated_at).toLocaleDateString()}
-                                </p>
-                              </div>
-                              <div className="mt-3 flex items-center justify-between">
-                                <Badge variant="outline" className="text-green-600 border-green-600">
-                                  <CheckCircle className="h-3 w-3 mr-1" />
-                                  Completed
-                                </Badge>
-                                <span className="font-semibold">₹{booking.total_price.toLocaleString()}</span>
+                    {historyBookings.map((booking: any) => {
+                      const wasCancelled = booking.status === 'cancelled';
+                      return (
+                        <Card key={booking.id} className="hover:shadow-lg transition-shadow">
+                          <CardContent className="p-6">
+                            <div className="flex gap-4">
+                              <img
+                                src={booking.package_image_url}
+                                alt={booking.package_title}
+                                className="w-20 h-20 object-cover rounded-lg"
+                              />
+                              <div className="flex-1">
+                                <h3 className="font-bold text-lg mb-1">{booking.package_title}</h3>
+                                <div className="space-y-1 text-sm text-muted-foreground">
+                                  <p className="flex items-center gap-1">
+                                    <MapPin className="h-3 w-3" />
+                                    {booking.package_location}
+                                  </p>
+                                  <p className="flex items-center gap-1">
+                                    <Clock className="h-3 w-3" />
+                                    {booking.package_duration}
+                                  </p>
+                                  <p className="flex items-center gap-1">
+                                    <Users className="h-3 w-3" />
+                                    {booking.tourists.length} tourists
+                                  </p>
+                                  <p className="flex items-center gap-1">
+                                    <History className="h-3 w-3" />
+                                    {wasCancelled ? 'Cancelled' : 'Completed'}: {new Date(booking.updated_at).toLocaleDateString()}
+                                  </p>
+                                </div>
+                                <div className="mt-3 flex items-center justify-between">
+                                  {wasCancelled ? (
+                                    <Badge variant="destructive">
+                                      Cancelled
+                                    </Badge>
+                                  ) : (
+                                    <Badge variant="outline" className="text-green-600 border-green-600">
+                                      <CheckCircle className="h-3 w-3 mr-1" />
+                                      Completed
+                                    </Badge>
+                                  )}
+                                  <span className="font-semibold">₹{booking.total_price.toLocaleString()}</span>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
                   </div>
                 </div>
               )}
