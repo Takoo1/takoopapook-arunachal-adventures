@@ -20,6 +20,14 @@ const reasons = [
   'Other',
 ];
 
+// Validate UUID (v4 or generic UUID format)
+const isValidUUID = (id: string | undefined | null) => {
+  if (!id) return false;
+  const trimmed = String(id).trim();
+  if (!trimmed || trimmed.toLowerCase() === 'undefined' || trimmed.toLowerCase() === 'null') return false;
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(trimmed);
+};
+
 const useQuery = () => {
   const { search } = useLocation();
   return useMemo(() => new URLSearchParams(search), [search]);
@@ -34,32 +42,33 @@ const CancelBooking = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  // bookingId priority: URL ?bookingId=... -> localStorage.currentBooking.bookingId
-  const bookingIdFromUrl = query.get('bookingId') || undefined;
-  const currentBooking = (() => {
-    try {
-      const raw = localStorage.getItem('currentBooking');
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
-  })();
-  const bookingId = bookingIdFromUrl || currentBooking?.bookingId;
+// bookingId priority: URL ?bookingId=... -> localStorage.currentBooking.bookingId
+const currentBooking = (() => {
+  try {
+    const raw = localStorage.getItem('currentBooking');
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+})();
+const rawBookingId = (query.get('bookingId') ?? '').toString().trim() || String(currentBooking?.bookingId ?? '').trim();
+const bookingId = isValidUUID(rawBookingId) ? rawBookingId : undefined;
+const isValidBooking = !!bookingId;
 
   const [selectedReason, setSelectedReason] = useState<string>('');
   const [details, setDetails] = useState<string>('');
   const [submitted, setSubmitted] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!bookingId) {
-      toast.error('No booking found to cancel.');
-      return;
-    }
-    if (!selectedReason) {
-      toast.error('Please select a reason for cancellation.');
-      return;
-    }
+e.preventDefault();
+if (!isValidBooking) {
+  toast.error('No valid booking found to cancel.');
+  return;
+}
+if (!selectedReason) {
+  toast.error('Please select a reason for cancellation.');
+  return;
+}
 
     try {
       await createCancellation.mutateAsync({
@@ -118,12 +127,12 @@ const CancelBooking = () => {
                   />
                 </div>
 
-                <div className="flex gap-3">
-                  <Button type="submit" className="w-full">Submit</Button>
-                  <Button type="button" variant="outline" className="w-full" onClick={() => navigate('/my-tour')}>
-                    Go Back
-                  </Button>
-                </div>
+<div className="flex gap-3">
+  <Button type="submit" className="w-full" disabled={!selectedReason || !isValidBooking}>Submit</Button>
+  <Button type="button" variant="outline" className="w-full" onClick={() => navigate('/my-tour')}>
+    Go Back
+  </Button>
+</div>
               </form>
             </CardContent>
           </Card>
