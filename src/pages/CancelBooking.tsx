@@ -1,5 +1,5 @@
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -29,6 +29,10 @@ const CancelBooking = () => {
   const navigate = useNavigate();
   const query = useQuery();
   const createCancellation = useCreateCancellationRequest();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   // bookingId priority: URL ?bookingId=... -> localStorage.currentBooking.bookingId
   const bookingIdFromUrl = query.get('bookingId') || undefined;
@@ -79,7 +83,7 @@ const CancelBooking = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <div className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 pt-20">
         {!submitted ? (
           <Card className="max-w-2xl mx-auto">
             <CardHeader>
@@ -138,7 +142,7 @@ const CancelBooking = () => {
             </CardContent>
           </Card>
         )}
-      </div>
+      </main>
 
       <Footer />
     </div>

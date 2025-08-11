@@ -13,6 +13,16 @@ export interface BookingCancellation {
   updated_at: string;
 }
 
+// Generate a session ID for the user (simple implementation)
+const getUserSession = () => {
+  let session = localStorage.getItem('user_session');
+  if (!session) {
+    session = 'user_' + Math.random().toString(36).substring(2, 15);
+    localStorage.setItem('user_session', session);
+  }
+  return session;
+};
+
 export const useBookingCancellations = () => {
   return useQuery({
     queryKey: ['booking_cancellations'],
@@ -36,10 +46,11 @@ export const useCreateCancellationRequest = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (payload: Omit<BookingCancellation, 'id' | 'created_at' | 'updated_at' | 'user_session'>) => {
+    mutationFn: async (payload: { booking_id: string; reason: string; details: string | null; status?: string }) => {
+      const payloadWithSession = { ...payload, user_session: getUserSession() };
       const { data, error } = await supabase
         .from('booking_cancellations')
-        .insert([payload])
+        .insert([payloadWithSession])
         .select()
         .single();
 
