@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Trash2, User, IdCard } from 'lucide-react';
@@ -149,6 +150,7 @@ const Booking = () => {
         tourists,
         total_price: totalPrice,
         status: 'confirmed' as const,
+        user_session: user.id, // Link booking to the authenticated user
       };
 
       const created = await createBooking.mutateAsync(bookingData);

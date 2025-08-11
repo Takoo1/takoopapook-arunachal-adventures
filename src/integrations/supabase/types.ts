@@ -70,6 +70,7 @@ export type Database = {
           total_price: number
           tourists: Json
           updated_at: string
+          user_session: string | null
         }
         Insert: {
           booking_date?: string
@@ -85,6 +86,7 @@ export type Database = {
           total_price: number
           tourists: Json
           updated_at?: string
+          user_session?: string | null
         }
         Update: {
           booking_date?: string
@@ -100,6 +102,7 @@ export type Database = {
           total_price?: number
           tourists?: Json
           updated_at?: string
+          user_session?: string | null
         }
         Relationships: []
       }

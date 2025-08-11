@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -20,6 +21,7 @@ export interface Booking {
   status: string;
   created_at: string;
   updated_at: string;
+  user_session?: string | null;
 }
 
 export const useBookings = () => {
@@ -38,6 +40,29 @@ export const useBookings = () => {
 
       return data as Booking[];
     },
+  });
+};
+
+// New: fetch bookings for a specific user
+export const useMyBookings = (userId?: string) => {
+  return useQuery({
+    queryKey: ['bookings', 'me', userId],
+    queryFn: async () => {
+      if (!userId) return [] as Booking[];
+      const { data, error } = await supabase
+        .from('bookings')
+        .select('*')
+        .eq('user_session', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching my bookings:', error);
+        throw error;
+      }
+
+      return data as Booking[];
+    },
+    enabled: !!userId,
   });
 };
 
@@ -61,6 +86,7 @@ export const useCreateBooking = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
+      queryClient.invalidateQueries({ queryKey: ['bookings', 'me'] });
     },
   });
 };
@@ -86,6 +112,7 @@ export const useUpdateBookingStatus = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
+      queryClient.invalidateQueries({ queryKey: ['bookings', 'me'] });
     },
   });
 };

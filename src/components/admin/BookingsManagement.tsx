@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { Search, Filter, Calendar, User, CreditCard, Eye, CheckCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -67,6 +68,8 @@ const BookingsManagement = () => {
     switch (status) {
       case 'confirmed':
         return 'default';
+      case 'processing_cancellation':
+        return 'secondary';
       case 'pending':
         return 'secondary';
       case 'cancelled':
@@ -153,6 +156,7 @@ const BookingsManagement = () => {
             >
               <option value="all">All Status</option>
               <option value="confirmed">Confirmed</option>
+              <option value="processing_cancellation">Processing Cancellation</option>
               <option value="pending">Pending</option>
               <option value="cancelled">Cancelled</option>
               <option value="completed">Completed</option>
@@ -219,7 +223,7 @@ const BookingsManagement = () => {
                     <TableCell>
                       <div className="flex items-center gap-2 flex-wrap">
                         <Badge variant={getStatusBadgeVariant(booking.status)}>
-                          {booking.status}
+                          {booking.status === 'processing_cancellation' ? 'Processing Cancellation' : booking.status}
                         </Badge>
                         {cancellation && (
                           <Badge variant={cancellation.status === 'processing' ? 'secondary' : 'destructive'}>
@@ -325,12 +329,13 @@ const BookingsManagement = () => {
                                          value={booking.status}
                                          onValueChange={(newStatus) => handleStatusUpdate(booking.id, newStatus)}
                                        >
-                                         <SelectTrigger className="w-32 h-8">
+                                         <SelectTrigger className="w-48 h-8">
                                            <SelectValue />
                                          </SelectTrigger>
                                          <SelectContent>
                                            <SelectItem value="pending">Pending</SelectItem>
                                            <SelectItem value="confirmed">Confirmed</SelectItem>
+                                           <SelectItem value="processing_cancellation">Processing Cancellation</SelectItem>
                                            <SelectItem value="completed">Completed</SelectItem>
                                            <SelectItem value="cancelled">Cancelled</SelectItem>
                                          </SelectContent>
