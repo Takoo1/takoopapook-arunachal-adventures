@@ -7,8 +7,7 @@ import DestinationDetail from '@/components/DestinationDetail';
 import PackageCard from '@/components/PackageCard';
 import DestinationCard from '@/components/DestinationCard';
 import { usePlannedLocations, usePlannedPackages } from '@/hooks/usePlannedLocations';
-import { useCompletedBookings, useBookings } from '@/hooks/useBookings';
-import { useBookingCancellations } from '@/hooks/useBookingCancellations';
+import { useMyBookings } from '@/hooks/useBookings';
 import { MapPin, Plus, CheckCircle, Clock, CreditCard, Users, FileText, Calendar, Trash2, History } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,9 +21,8 @@ const MyTour = () => {
   const { user } = useAuth();
   const { data: plannedLocations = [], isLoading: locationsLoading } = usePlannedLocations();
   const { data: plannedPackages = [], isLoading: packagesLoading } = usePlannedPackages();
-  const { data: completedBookings = [], isLoading: completedBookingsLoading } = useCompletedBookings();
-  const { data: bookings = [], isLoading: bookingsLoading } = useBookings();
-  const { data: cancellations = [] } = useBookingCancellations();
+const { data: myBookings = [], isLoading: myBookingsLoading } = useMyBookings(user?.id);
+
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [bookingData, setBookingData] = useState<any>(null);
   
@@ -43,20 +41,16 @@ const MyTour = () => {
     }
   }, []);
 
-  const currentBooking = useMemo(() => {
-    if (!bookingData) return undefined;
-    return bookings.find((b: any) => b.id === bookingData.bookingId);
-  }, [bookings, bookingData]);
+const currentBooking = useMemo(() => {
+  if (!bookingData) return undefined;
+  return myBookings.find((b: any) => b.id === bookingData.bookingId);
+}, [myBookings, bookingData]);
 
-  const cancellationForBooking = useMemo(() => {
-    if (!bookingData) return undefined;
-    const relevant = cancellations.filter((c: any) => c.booking_id === bookingData.bookingId);
-    return relevant[0];
-  }, [cancellations, bookingData]);
+const normalizedStatus = (currentBooking?.status || '').toLowerCase().replace(/\s+/g, '_');
+const isCompleted = normalizedStatus === 'completed';
+const isCancelled = normalizedStatus === 'cancelled';
+const isCancellationProcessing = normalizedStatus === 'processing_cancellation' || normalizedStatus === 'processing';
 
-  const isCompleted = currentBooking?.status === 'completed';
-  const isCancelled = currentBooking?.status === 'cancelled' || cancellationForBooking?.status === 'cancelled';
-  const isCancellationProcessing = cancellationForBooking?.status === 'processing';
 
   // If we have an ID, determine if it's a package or destination
   if (id) {
@@ -88,14 +82,24 @@ const MyTour = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const isLoading = locationsLoading || packagesLoading || completedBookingsLoading || bookingsLoading;
-  const cancelledBookings = useMemo(() => bookings.filter((b: any) => b.status === 'cancelled'), [bookings]);
-  const historyBookings = useMemo(() => {
-    const list = [...completedBookings, ...cancelledBookings];
-    return list.sort((a: any, b: any) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
-  }, [completedBookings, cancelledBookings]);
-  const hasAnyPlanned = plannedLocations.length > 0 || plannedPackages.length > 0 || historyBookings.length > 0;
-  const hasLiked = plannedPackages.length > 0 || plannedLocations.length > 0;
+const isLoading = locationsLoading || packagesLoading || myBookingsLoading;
+const currentBookings = useMemo(() =>
+  myBookings.filter((b: any) => {
+    const s = (b.status || '').toLowerCase().replace(/\s+/g, '_');
+    return s === 'confirmed' || s === 'processing_cancellation' || s === 'processing';
+  })
+, [myBookings]);
+const historyBookings = useMemo(() =>
+  myBookings
+    .filter((b: any) => {
+      const s = (b.status || '').toLowerCase().replace(/\s+/g, '_');
+      return s === 'completed' || s === 'cancelled';
+    })
+    .sort((a: any, b: any) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
+, [myBookings]);
+const hasAnyPlanned = plannedLocations.length > 0 || plannedPackages.length > 0 || historyBookings.length > 0;
+const hasLiked = plannedPackages.length > 0 || plannedLocations.length > 0;
+
   if (isLoading) {
     return (
       <div className="min-h-screen">
@@ -144,41 +148,42 @@ const MyTour = () => {
     );
   }
 
-  // If there are no active bookings (non-completed), show default message even if completed history exists
-  if (!bookingData && !bookingsLoading) {
-    const hasCurrentBookings = bookings.some((b: any) => b.status !== 'completed' && b.status !== 'cancelled');
-    if (!hasCurrentBookings) {
-      return (
-        <div className="min-h-screen">
-          <Header />
-          <main className="pt-20 min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50">
-            <div className="container mx-auto px-4 py-8">
-              <div className="max-w-2xl mx-auto">
-                <Card className="text-center p-12">
-                  <CardContent>
-                    <MapPin className="h-20 w-20 text-gray-300 mx-auto mb-6" />
-                    <h3 className="text-2xl font-bold text-gray-800 mb-4">You don't have any bookings yet</h3>
-                    <p className="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">
-                      Start by exploring packages and destinations to plan your next adventure.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                      <Button onClick={() => navigate('/packages')}>
-                        Explore Packages
-                      </Button>
-                      <Button variant="outline" onClick={handleExploreDestinations}>
-                        Explore Destinations
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+// If there are no active bookings (non-completed), show default message only when no history as well
+if (!bookingData && !myBookingsLoading) {
+  const hasCurrentBookings = currentBookings.length > 0;
+  if (!hasCurrentBookings && historyBookings.length === 0) {
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <main className="pt-20 min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50">
+          <div className="container mx-auto px-4 py-8">
+            <div className="max-w-2xl mx-auto">
+              <Card className="text-center p-12">
+                <CardContent>
+                  <MapPin className="h-20 w-20 text-gray-300 mx-auto mb-6" />
+                  <h3 className="text-2xl font-bold text-gray-800 mb-4">You don't have any bookings yet</h3>
+                  <p className="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">
+                    Start by exploring packages and destinations to plan your next adventure.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button onClick={() => navigate('/packages')}>
+                      Explore Packages
+                    </Button>
+                    <Button variant="outline" onClick={handleExploreDestinations}>
+                      Explore Destinations
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </main>
-          <Footer />
-        </div>
-      );
-    }
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
   }
+}
+
 
   // If we have booking data, show the booking details
   if (bookingData) {
@@ -532,51 +537,109 @@ const MyTour = () => {
               </Card>
             </div>
           ) : (
-            <div className={`mx-auto space-y-12 ${hasLiked ? 'max-w-6xl' : 'max-w-3xl'}`}>
-              {/* My Plannings Section */}
-              {(plannedPackages.length > 0 || plannedLocations.length > 0) && (
-                <div>
-                  <div className="mb-8">
-                    <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                      My <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Plannings</span>
-                    </h2>
+<div className={`mx-auto space-y-12 ${hasLiked ? 'max-w-6xl' : 'max-w-3xl'}`}>
+  {/* Current Bookings Section */}
+  {currentBookings.length > 0 && (
+    <div>
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-800 mb-2">
+          Your Current Bookings
+        </h2>
+        <p className="text-gray-600">All bookings that are confirmed or in processing</p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {currentBookings.map((booking: any) => {
+          const s = (booking.status || '').toLowerCase().replace(/\s+/g, '_');
+          const isProcessing = s === 'processing_cancellation' || s === 'processing';
+          return (
+            <Card key={booking.id} className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex gap-4">
+                  <img
+                    src={booking.package_image_url}
+                    alt={booking.package_title}
+                    className="w-24 h-24 object-cover rounded-lg"
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-bold text-lg mb-1">{booking.package_title}</h3>
+                      <Badge variant={isProcessing ? 'secondary' : 'default'}>
+                        {isProcessing ? 'Processing Cancellation' : 'Confirmed'}
+                      </Badge>
+                    </div>
+                    <div className="space-y-1 text-sm text-muted-foreground">
+                      <p className="flex items-center gap-1">
+                        <MapPin className="h-3 w-3" />
+                        {booking.package_location}
+                      </p>
+                      <p className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {booking.package_duration}
+                      </p>
+                      <p className="flex items-center gap-1">
+                        <Users className="h-3 w-3" />
+                        {booking.tourists.length} tourists
+                      </p>
+                      <p className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        Booked on {new Date(booking.booking_date).toLocaleDateString()}
+                      </p>
+                    </div>
                   </div>
-
-                  {/* Liked Packages */}
-                  {plannedPackages.length > 0 && (
-                    <div className="mb-8">
-                      <h3 className="text-xl font-semibold text-gray-700 mb-4">Liked Packages ({plannedPackages.length})</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {plannedPackages.map((planned: any) => (
-                          planned.packages && (
-                            <PackageCard 
-                              key={planned.id} 
-                              package={planned.packages}
-                            />
-                          )
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Liked Destinations */}
-                  {plannedLocations.length > 0 && (
-                    <div className="mb-8">
-                      <h3 className="text-xl font-semibold text-gray-700 mb-4">Liked Destinations ({plannedLocations.length})</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {plannedLocations.map((planned) => (
-                          planned.locations && (
-                            <DestinationCard 
-                              key={planned.id} 
-                              location={planned.locations}
-                            />
-                          )
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
-              )}
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+    </div>
+  )}
+
+  {/* My Plannings Section */}
+  {(plannedPackages.length > 0 || plannedLocations.length > 0) && (
+    <div>
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-800 mb-2">
+          My <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Plannings</span>
+        </h2>
+      </div>
+
+      {/* Liked Packages */}
+      {plannedPackages.length > 0 && (
+        <div className="mb-8">
+          <h3 className="text-xl font-semibold text-gray-700 mb-4">Liked Packages ({plannedPackages.length})</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {plannedPackages.map((planned: any) => (
+              planned.packages && (
+                <PackageCard 
+                  key={planned.id} 
+                  package={planned.packages}
+                />
+              )
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Liked Destinations */}
+      {plannedLocations.length > 0 && (
+        <div className="mb-8">
+          <h3 className="text-xl font-semibold text-gray-700 mb-4">Liked Destinations ({plannedLocations.length})</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {plannedLocations.map((planned) => (
+              planned.locations && (
+                <DestinationCard 
+                  key={planned.id} 
+                  location={planned.locations}
+                />
+              )
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )}
+</div>
 
               {/* Tour History Section */}
               {historyBookings.length > 0 && (
