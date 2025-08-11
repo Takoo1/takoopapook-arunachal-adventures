@@ -39,6 +39,9 @@ export const useBookingCancellations = () => {
 
       return data as BookingCancellation[];
     },
+    refetchInterval: 5000,
+    refetchOnWindowFocus: true,
+    staleTime: 0,
   });
 };
 

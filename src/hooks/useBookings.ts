@@ -63,6 +63,9 @@ export const useMyBookings = (userId?: string) => {
       return data as Booking[];
     },
     enabled: !!userId,
+    refetchInterval: 5000,
+    refetchOnWindowFocus: true,
+    staleTime: 0,
   });
 };
 

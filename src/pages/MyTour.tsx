@@ -92,6 +92,20 @@ const cancellationByBooking = useMemo(() => {
   return map;
 }, [cancellations]);
 
+// Auto-reset detail view when a booking moves to history (completed/cancelled)
+useEffect(() => {
+  if (!bookingData) return;
+  const serverBooking = myBookings.find((b: any) => b.id === bookingData.bookingId);
+  const s = (serverBooking?.status || '').toLowerCase().replace(/\s+/g, '_');
+  const cancel = cancellationByBooking.get(bookingData.bookingId);
+  const movedToHistory = s === 'completed' || s === 'cancelled' || cancel?.status === 'cancelled';
+  if (movedToHistory) {
+    localStorage.removeItem('currentBooking');
+    setBookingData(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}, [myBookings, bookingData, cancellationByBooking]);
+
 const currentBookings = useMemo(() =>
   myBookings.filter((b: any) => {
     const s = (b.status || '').toLowerCase().replace(/\s+/g, '_');
