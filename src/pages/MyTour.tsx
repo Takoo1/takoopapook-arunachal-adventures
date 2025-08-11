@@ -97,7 +97,7 @@ const historyBookings = useMemo(() =>
     })
     .sort((a: any, b: any) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
 , [myBookings]);
-const hasAnyPlanned = plannedLocations.length > 0 || plannedPackages.length > 0 || historyBookings.length > 0;
+const hasAnyContent = currentBookings.length > 0 || plannedLocations.length > 0 || plannedPackages.length > 0 || historyBookings.length > 0;
 const hasLiked = plannedPackages.length > 0 || plannedLocations.length > 0;
 
   if (isLoading) {
@@ -508,7 +508,7 @@ if (!bookingData && !myBookingsLoading) {
             </p>
           </div>
 
-          {!hasAnyPlanned ? (
+          {!hasAnyContent ? (
             <div className="max-w-2xl mx-auto">
               <Card className="text-center p-12">
                 <CardContent>

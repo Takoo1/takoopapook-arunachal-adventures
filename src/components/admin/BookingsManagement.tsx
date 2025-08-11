@@ -157,7 +157,6 @@ const BookingsManagement = () => {
               <option value="all">All Status</option>
               <option value="confirmed">Confirmed</option>
               <option value="processing_cancellation">Processing Cancellation</option>
-              <option value="pending">Pending</option>
               <option value="cancelled">Cancelled</option>
               <option value="completed">Completed</option>
             </select>
@@ -333,7 +332,6 @@ const BookingsManagement = () => {
                                            <SelectValue />
                                          </SelectTrigger>
                                          <SelectContent>
-                                           <SelectItem value="pending">Pending</SelectItem>
                                            <SelectItem value="confirmed">Confirmed</SelectItem>
                                            <SelectItem value="processing_cancellation">Processing Cancellation</SelectItem>
                                            <SelectItem value="completed">Completed</SelectItem>
