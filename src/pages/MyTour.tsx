@@ -579,7 +579,8 @@ if (!bookingData && !myBookingsLoading) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {currentBookings.map((booking: any) => {
           const s = (booking.status || '').toLowerCase().replace(/\s+/g, '_');
-          const isProcessing = s === 'processing_cancellation' || s === 'processing';
+          const cancel = cancellationByBooking.get(booking.id);
+          const isProcessing = s === 'processing_cancellation' || s === 'processing' || cancel?.status === 'processing';
           return (
             <Card key={booking.id} className="hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
@@ -682,7 +683,9 @@ if (!bookingData && !myBookingsLoading) {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {historyBookings.map((booking: any) => {
-                      const wasCancelled = booking.status === 'cancelled';
+                      const s = (booking.status || '').toLowerCase().replace(/\s+/g, '_');
+                      const cancel = cancellationByBooking.get(booking.id);
+                      const wasCancelled = s === 'cancelled' || cancel?.status === 'cancelled';
                       return (
                         <Card key={booking.id} className="hover:shadow-lg transition-shadow">
                           <CardContent className="p-6">
