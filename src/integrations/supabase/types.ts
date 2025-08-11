@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      booking_cancellations: {
+        Row: {
+          booking_id: string
+          created_at: string
+          details: string | null
+          id: string
+          reason: string
+          status: string
+          updated_at: string
+          user_session: string | null
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason: string
+          status?: string
+          updated_at?: string
+          user_session?: string | null
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason?: string
+          status?: string
+          updated_at?: string
+          user_session?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_cancellations_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookings: {
         Row: {
           booking_date: string

@@ -1,0 +1,148 @@
+
+import { useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useCreateCancellationRequest } from '@/hooks/useBookingCancellations';
+import { toast } from 'sonner';
+
+const reasons = [
+  'Change of plans',
+  'Found a better price',
+  'Health reasons',
+  'Visa/Documentation issues',
+  'Weather concerns',
+  'Other',
+];
+
+const useQuery = () => {
+  const { search } = useLocation();
+  return useMemo(() => new URLSearchParams(search), [search]);
+};
+
+const CancelBooking = () => {
+  const navigate = useNavigate();
+  const query = useQuery();
+  const createCancellation = useCreateCancellationRequest();
+
+  // bookingId priority: URL ?bookingId=... -> localStorage.currentBooking.bookingId
+  const bookingIdFromUrl = query.get('bookingId') || undefined;
+  const currentBooking = (() => {
+    try {
+      const raw = localStorage.getItem('currentBooking');
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  })();
+  const bookingId = bookingIdFromUrl || currentBooking?.bookingId;
+
+  const [selectedReason, setSelectedReason] = useState<string>('');
+  const [details, setDetails] = useState<string>('');
+  const [submitted, setSubmitted] = useState<boolean>(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!bookingId) {
+      toast.error('No booking found to cancel.');
+      return;
+    }
+    if (!selectedReason) {
+      toast.error('Please select a reason for cancellation.');
+      return;
+    }
+
+    try {
+      await createCancellation.mutateAsync({
+        booking_id: bookingId,
+        reason: selectedReason,
+        details: details || null,
+        status: 'processing',
+      });
+
+      setSubmitted(true);
+      toast.success('Processing for Cancellation');
+      // Optionally navigate back after a delay
+      // setTimeout(() => navigate('/my-tour'), 1500);
+    } catch (error) {
+      console.error('Failed to submit cancellation:', error);
+      toast.error('Failed to submit cancellation. Please try again.');
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+
+      <div className="container mx-auto px-4 py-8">
+        {!submitted ? (
+          <Card className="max-w-2xl mx-auto">
+            <CardHeader>
+              <CardTitle>Traveller, what stopped you?</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-3">
+                  <Label>Select a reason</Label>
+                  <RadioGroup
+                    value={selectedReason}
+                    onValueChange={setSelectedReason}
+                    className="space-y-2"
+                  >
+                    {reasons.map((r) => (
+                      <div key={r} className="flex items-center space-x-2">
+                        <RadioGroupItem value={r} id={r} />
+                        <Label htmlFor={r}>{r}</Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="details">Tell us more (optional)</Label>
+                  <Textarea
+                    id="details"
+                    placeholder="Share any details that can help us improve..."
+                    value={details}
+                    onChange={(e) => setDetails(e.target.value)}
+                    className="min-h-[120px]"
+                  />
+                </div>
+
+                <div className="flex gap-3">
+                  <Button type="submit" className="w-full">Submit</Button>
+                  <Button type="button" variant="outline" className="w-full" onClick={() => navigate('/my-tour')}>
+                    Go Back
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="max-w-2xl mx-auto">
+            <CardHeader>
+              <CardTitle>Processing for Cancellation</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">
+                We’ve received your request. Our team will process it shortly. You can check the status on your My Tour page.
+              </p>
+              <div className="mt-6">
+                <Button onClick={() => navigate('/my-tour')} className="w-full">Back to My Tour</Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default CancelBooking;

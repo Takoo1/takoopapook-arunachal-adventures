@@ -151,7 +151,7 @@ const Booking = () => {
         status: 'confirmed' as const,
       };
 
-      await createBooking.mutateAsync(bookingData);
+      const created = await createBooking.mutateAsync(bookingData);
 
       // Also store in localStorage for immediate display
       const displayData = {
@@ -159,7 +159,9 @@ const Booking = () => {
         packageData: packageData,
         tourists,
         totalPrice,
-        bookingDate: new Date().toISOString()
+        bookingDate: created?.booking_date || new Date().toISOString(),
+        bookingId: created?.id,
+        bookingStatus: created?.status,
       };
       
       localStorage.setItem('currentBooking', JSON.stringify(displayData));

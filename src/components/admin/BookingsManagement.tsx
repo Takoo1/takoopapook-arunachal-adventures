@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Search, Filter, Calendar, User, CreditCard, Eye, CheckCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -29,12 +29,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useBookingCancellations, useUpdateCancellationStatus, BookingCancellation } from '@/hooks/useBookingCancellations';
 
 const BookingsManagement = () => {
   const { data: bookings = [], isLoading } = useBookings();
   const updateBookingStatus = useUpdateBookingStatus();
+  const { data: cancellations = [] } = useBookingCancellations();
+  const updateCancellationStatus = useUpdateCancellationStatus();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+
+  const cancellationByBooking = useMemo(() => {
+    const map = new Map<string, BookingCancellation>();
+    for (const c of cancellations) {
+      if (!map.has(c.booking_id)) {
+        map.set(c.booking_id, c); // cancellations already sorted desc
+      }
+    }
+    return map;
+  }, [cancellations]);
 
   // Filter bookings based on search term and status
   const filteredBookings = bookings.filter(booking => {
@@ -70,6 +83,14 @@ const BookingsManagement = () => {
       await updateBookingStatus.mutateAsync({ bookingId, status: newStatus });
     } catch (error) {
       console.error('Error updating booking status:', error);
+    }
+  };
+
+  const handleCancellationStatusUpdate = async (cancellationId: string, newStatus: 'processing' | 'cancelled') => {
+    try {
+      await updateCancellationStatus.mutateAsync({ cancellationId, status: newStatus });
+    } catch (error) {
+      console.error('Error updating cancellation status:', error);
     }
   };
 
@@ -163,7 +184,9 @@ const BookingsManagement = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredBookings.map((booking) => (
+                {filteredBookings.map((booking) => {
+                  const cancellation = cancellationByBooking.get(booking.id);
+                  return (
                   <TableRow key={booking.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -194,10 +217,15 @@ const BookingsManagement = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <Badge variant={getStatusBadgeVariant(booking.status)}>
                           {booking.status}
                         </Badge>
+                        {cancellation && (
+                          <Badge variant={cancellation.status === 'processing' ? 'secondary' : 'destructive'}>
+                            {cancellation.status === 'processing' ? 'Processing Cancellation' : 'Cancelled'}
+                          </Badge>
+                        )}
                         {booking.status !== 'completed' && booking.status !== 'cancelled' && (
                           <Button
                             size="sm"
@@ -319,13 +347,49 @@ const BookingsManagement = () => {
                                   </div>
                                 </div>
                               </div>
+
+                              {/* Cancellation Section */}
+                              {cancellation && (
+                                <div>
+                                  <h4 className="font-semibold mb-2">Cancellation</h4>
+                                  <div className="grid grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                      <span className="text-muted-foreground">Status:</span>
+                                      <div className="mt-1">
+                                        <Select
+                                          value={cancellation.status}
+                                          onValueChange={(newStatus) => handleCancellationStatusUpdate(cancellation.id, newStatus as 'processing' | 'cancelled')}
+                                        >
+                                          <SelectTrigger className="w-40 h-8">
+                                            <SelectValue />
+                                          </SelectTrigger>
+                                          <SelectContent>
+                                            <SelectItem value="processing">Processing</SelectItem>
+                                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                                          </SelectContent>
+                                        </Select>
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <span className="text-muted-foreground">Reason:</span>
+                                      <div className="font-medium">{cancellation.reason}</div>
+                                    </div>
+                                    {cancellation.details && (
+                                      <div className="col-span-2">
+                                        <span className="text-muted-foreground">Details:</span>
+                                        <div className="font-medium whitespace-pre-wrap">{cancellation.details}</div>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </ScrollArea>
                         </DialogContent>
                       </Dialog>
                     </TableCell>
                   </TableRow>
-                ))}
+                )})}
               </TableBody>
             </Table>
           </div>
