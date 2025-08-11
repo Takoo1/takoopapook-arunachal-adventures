@@ -14,10 +14,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { useAuth } from '@/contexts/AuthContext';
 
 const MyTour = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { data: plannedLocations = [], isLoading: locationsLoading } = usePlannedLocations();
   const { data: plannedPackages = [], isLoading: packagesLoading } = usePlannedPackages();
   const { data: completedBookings = [], isLoading: completedBookingsLoading } = useCompletedBookings();
@@ -98,6 +100,39 @@ const MyTour = () => {
           <div className="text-center">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-emerald-500 mx-auto mb-4"></div>
             <p className="text-gray-600">Loading your tour plans...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Auth gate: only logged-in users see bookings, history and likes
+  if (!user) {
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <main className="pt-20 min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50">
+          <div className="container mx-auto px-4 py-8">
+            <div className="max-w-2xl mx-auto">
+              <Card className="text-center p-12">
+                <CardContent>
+                  <MapPin className="h-20 w-20 text-gray-300 mx-auto mb-6" />
+                  <h3 className="text-2xl font-bold text-gray-800 mb-4">You don't have any bookings yet</h3>
+                  <p className="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">
+                    Sign in to view your current bookings, travel history, and liked items.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button onClick={() => navigate('/auth', { state: { returnUrl: '/my-tour' } })}>
+                      Sign in
+                    </Button>
+                    <Button variant="outline" onClick={() => navigate('/packages')}>
+                      Explore Packages
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </main>
         <Footer />

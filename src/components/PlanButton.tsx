@@ -1,7 +1,8 @@
 import { Heart, HeartHandshake } from 'lucide-react';
 import { useAddToPlanned, useRemoveFromPlanned, useIsLocationPlanned, useAddPackageToPlanned, useRemovePackageFromPlanned, useIsPackagePlanned } from '@/hooks/usePlannedLocations';
 import { cn } from '@/lib/utils';
-
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 interface PlanButtonProps {
   itemId: string;
   itemType: 'location' | 'package';
@@ -23,6 +24,10 @@ const PlanButton = ({ itemId, itemType, itemName, variant = 'default', className
     return null;
   }
 
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const locationPlannedQuery = useIsLocationPlanned(itemId);
   const packagePlannedQuery = useIsPackagePlanned(itemId);
   
@@ -40,6 +45,13 @@ const PlanButton = ({ itemId, itemType, itemName, variant = 'default', className
 const handleClick = (e?: React.MouseEvent<HTMLButtonElement>) => {
   e?.preventDefault();
   e?.stopPropagation();
+
+  // Require authentication to like/plan
+  if (!user) {
+    navigate('/auth', { state: { returnUrl: `${location.pathname}${location.search}` } });
+    return;
+  }
+
   if (itemType === 'location') {
     if (isPlanned) {
       removeLocationFromPlanned.mutate(itemId);

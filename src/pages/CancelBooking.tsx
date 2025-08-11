@@ -128,7 +128,7 @@ if (!selectedReason) {
                 </div>
 
 <div className="flex gap-3">
-  <Button type="submit" className="w-full" disabled={!selectedReason || !isValidBooking}>Submit</Button>
+  <Button type="submit" className="w-full" disabled={!selectedReason}>Submit</Button>
   <Button type="button" variant="outline" className="w-full" onClick={() => navigate('/my-tour')}>
     Go Back
   </Button>
