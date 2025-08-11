@@ -8,7 +8,7 @@ import PackageCard from '@/components/PackageCard';
 import DestinationCard from '@/components/DestinationCard';
 import { usePlannedLocations, usePlannedPackages } from '@/hooks/usePlannedLocations';
 import { useMyBookings } from '@/hooks/useBookings';
-import { MapPin, Plus, CheckCircle, Clock, CreditCard, Users, FileText, Calendar, Trash2, History } from 'lucide-react';
+import { MapPin, Plus, CheckCircle, Clock, CreditCard, Users, FileText, Calendar, History } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -23,7 +23,7 @@ const MyTour = () => {
   const { data: plannedPackages = [], isLoading: packagesLoading } = usePlannedPackages();
 const { data: myBookings = [], isLoading: myBookingsLoading } = useMyBookings(user?.id);
 
-  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
+  
   const [bookingData, setBookingData] = useState<any>(null);
   
   const currentPath = window.location.pathname;
