@@ -23,7 +23,7 @@ const MyTour = () => {
   const { data: plannedLocations = [], isLoading: locationsLoading } = usePlannedLocations();
   const { data: plannedPackages = [], isLoading: packagesLoading } = usePlannedPackages();
   const { data: completedBookings = [], isLoading: completedBookingsLoading } = useCompletedBookings();
-  const { data: bookings = [] } = useBookings();
+  const { data: bookings = [], isLoading: bookingsLoading } = useBookings();
   const { data: cancellations = [] } = useBookingCancellations();
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [bookingData, setBookingData] = useState<any>(null);
@@ -88,7 +88,7 @@ const MyTour = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const isLoading = locationsLoading || packagesLoading || completedBookingsLoading;
+  const isLoading = locationsLoading || packagesLoading || completedBookingsLoading || bookingsLoading;
   const hasAnyPlanned = plannedLocations.length > 0 || plannedPackages.length > 0 || completedBookings.length > 0;
   const hasLiked = plannedPackages.length > 0 || plannedLocations.length > 0;
 
@@ -138,6 +138,42 @@ const MyTour = () => {
         <Footer />
       </div>
     );
+  }
+
+  // If there are no active bookings (non-completed), show default message even if completed history exists
+  if (!bookingData && !bookingsLoading) {
+    const hasCurrentBookings = bookings.some((b: any) => b.status !== 'completed');
+    if (!hasCurrentBookings) {
+      return (
+        <div className="min-h-screen">
+          <Header />
+          <main className="pt-20 min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50">
+            <div className="container mx-auto px-4 py-8">
+              <div className="max-w-2xl mx-auto">
+                <Card className="text-center p-12">
+                  <CardContent>
+                    <MapPin className="h-20 w-20 text-gray-300 mx-auto mb-6" />
+                    <h3 className="text-2xl font-bold text-gray-800 mb-4">You don't have any bookings yet</h3>
+                    <p className="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">
+                      Start by exploring packages and destinations to plan your next adventure.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <Button onClick={() => navigate('/packages')}>
+                        Explore Packages
+                      </Button>
+                      <Button variant="outline" onClick={handleExploreDestinations}>
+                        Explore Destinations
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </main>
+          <Footer />
+        </div>
+      );
+    }
   }
 
   // If we have booking data, show the booking details
