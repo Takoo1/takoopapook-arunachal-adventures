@@ -21,6 +21,7 @@ import PackageManagement from "./components/admin/PackageManagement";
 import DestinationManagement from "./components/admin/DestinationManagement";
 import AdminDashboard from "./pages/AdminDashboard";
 import FounderProfile from "./pages/FounderProfile";
+import CancelBooking from "./pages/CancelBooking";
 
 const queryClient = new QueryClient();
 
@@ -39,11 +40,10 @@ const App = () => (
             <Route path="/my-tour/package/:id" element={<MyTour />} />
             <Route path="/my-tour/destination/:id" element={<MyTour />} />
             <Route path="/booking/:packageId" element={<Booking />} />
+            <Route path="/cancel-booking" element={<CancelBooking />} />
             <Route path="/services" element={<About />} />
             <Route path="/about" element={<About />} />
             <Route path="/auth" element={<Auth />} />
-            
-            <Route path="/add-review" element={<AddReview />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/packages" element={<PackageManagement />} />
             <Route path="/admin/destinations" element={<DestinationManagement />} />

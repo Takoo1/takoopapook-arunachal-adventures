@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -7,7 +7,8 @@ import DestinationDetail from '@/components/DestinationDetail';
 import PackageCard from '@/components/PackageCard';
 import DestinationCard from '@/components/DestinationCard';
 import { usePlannedLocations, usePlannedPackages } from '@/hooks/usePlannedLocations';
-import { useCompletedBookings } from '@/hooks/useBookings';
+import { useCompletedBookings, useBookings } from '@/hooks/useBookings';
+import { useBookingCancellations } from '@/hooks/useBookingCancellations';
 import { MapPin, Plus, CheckCircle, Clock, CreditCard, Users, FileText, Calendar, Trash2, History } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,6 +21,8 @@ const MyTour = () => {
   const { data: plannedLocations = [], isLoading: locationsLoading } = usePlannedLocations();
   const { data: plannedPackages = [], isLoading: packagesLoading } = usePlannedPackages();
   const { data: completedBookings = [], isLoading: completedBookingsLoading } = useCompletedBookings();
+  const { data: bookings = [] } = useBookings();
+  const { data: cancellations = [] } = useBookingCancellations();
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [bookingData, setBookingData] = useState<any>(null);
   
@@ -37,6 +40,21 @@ const MyTour = () => {
       setBookingData(JSON.parse(storedBooking));
     }
   }, []);
+
+  const currentBooking = useMemo(() => {
+    if (!bookingData) return undefined;
+    return bookings.find((b: any) => b.id === bookingData.bookingId);
+  }, [bookings, bookingData]);
+
+  const cancellationForBooking = useMemo(() => {
+    if (!bookingData) return undefined;
+    const relevant = cancellations.filter((c: any) => c.booking_id === bookingData.bookingId);
+    return relevant[0];
+  }, [cancellations, bookingData]);
+
+  const isCompleted = currentBooking?.status === 'completed';
+  const isCancelled = currentBooking?.status === 'cancelled' || cancellationForBooking?.status === 'cancelled';
+  const isCancellationProcessing = cancellationForBooking?.status === 'processing';
 
   // If we have an ID, determine if it's a package or destination
   if (id) {
@@ -101,11 +119,19 @@ const MyTour = () => {
               <div className="flex items-center justify-center mb-4">
                 <CheckCircle className="h-8 w-8 text-green-500 mr-3" />
                 <h1 className="text-4xl font-bold text-gray-800">
-                  Booking <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Confirmed</span>
+                  {isCancelled
+                    ? 'Trip Cancelled'
+                    : isCancellationProcessing
+                      ? 'Processing for Cancellation'
+                      : 'Booking Confirmed'}
                 </h1>
               </div>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Your package has been booked successfully. Here are your tour details and payment information.
+                {isCancelled
+                  ? 'Your trip has been cancelled. Refunds are processed as per our policy below.'
+                  : isCancellationProcessing
+                    ? 'We’ve received your request. Our team will process it shortly.'
+                    : 'Your package has been booked successfully. Here are your tour details and payment information.'}
               </p>
             </div>
 
@@ -219,6 +245,22 @@ const MyTour = () => {
                 </CardContent>
               </Card>
 
+              {isCancelled && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-emerald-500" />
+                      Refund Policy
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-sm text-muted-foreground">
+                    <p>• Full refund if cancelled 48 hours before departure.</p>
+                    <p>• 50% refund if cancelled within 24-48 hours of departure.</p>
+                    <p>• No refund if cancelled within 24 hours of departure.</p>
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Terms and Conditions */}
               <Card>
                 <CardHeader>
@@ -290,25 +332,34 @@ const MyTour = () => {
                 </CardContent>
               </Card>
 
-                  {/* Action Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button 
-                      onClick={() => {
-                        localStorage.removeItem('currentBooking');
-                        setBookingData(null);
-                      }}
-                      variant="outline"
-                      size="lg"
-                    >
-                      Plan Another Trip
-                    </Button>
-                    <Button 
-                      onClick={() => navigate('/packages')}
-                      size="lg"
-                    >
-                      Explore More Packages
-                    </Button>
-                  </div>
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                {!isCompleted && !isCancelled && !isCancellationProcessing && (
+                  <Button 
+                    onClick={() => navigate(`/cancel-booking?bookingId=${bookingData.bookingId}`)}
+                    variant="destructive"
+                    size="lg"
+                  >
+                    Cancel My Trip
+                  </Button>
+                )}
+                <Button 
+                  onClick={() => {
+                    localStorage.removeItem('currentBooking');
+                    setBookingData(null);
+                  }}
+                  variant="outline"
+                  size="lg"
+                >
+                  Plan Another Trip
+                </Button>
+                <Button 
+                  onClick={() => navigate('/packages')}
+                  size="lg"
+                >
+                  Explore Another Package
+                </Button>
+              </div>
                 </div>
 
                 {/* Sidebar - Liked Items */}
@@ -457,7 +508,7 @@ const MyTour = () => {
                 <div>
                   <div className="mb-8">
                     <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                      Tour <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">History</span>
+                      Travel History With Takoopapook
                     </h2>
                     <p className="text-gray-600">Your completed travel experiences</p>
                   </div>
