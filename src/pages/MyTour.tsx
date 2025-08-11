@@ -537,6 +537,7 @@ if (!bookingData && !myBookingsLoading) {
               </Card>
             </div>
           ) : (
+<>
 <div className={`mx-auto space-y-12 ${hasLiked ? 'max-w-6xl' : 'max-w-3xl'}`}>
   {/* Current Bookings Section */}
   {currentBookings.length > 0 && (
@@ -725,8 +726,7 @@ if (!bookingData && !myBookingsLoading) {
                   </button>
                 </div>
               </div>
-            </div>
-          )}
+          </>)}
         </div>
       </main>
       <Footer />
