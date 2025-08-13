@@ -209,7 +209,7 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="lg:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md shadow-lg border-t">
+          <div className="lg:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md shadow-lg border-t max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain">
             <nav className="flex flex-col p-4 space-y-2">
               {navItems.map((item) => (
                 <Link
