@@ -116,6 +116,7 @@ export const useUpdateBookingStatus = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
       queryClient.invalidateQueries({ queryKey: ['bookings', 'me'] });
+      queryClient.invalidateQueries({ queryKey: ['booking_cancellations'] });
     },
   });
 };

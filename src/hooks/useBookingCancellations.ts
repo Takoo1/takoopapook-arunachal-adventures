@@ -93,6 +93,7 @@ export const useUpdateCancellationStatus = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['booking_cancellations'] });
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
+      queryClient.invalidateQueries({ queryKey: ['bookings', 'me'] });
     },
   });
 };
