@@ -28,6 +28,19 @@ const Auth = () => {
     }
   }, [user, navigate]);
 
+  // Listen for auth success events
+  useEffect(() => {
+    const handleAuthSuccess = (event: CustomEvent) => {
+      toast({
+        title: "Welcome back!",
+        description: event.detail.message,
+      });
+    };
+
+    window.addEventListener('auth-success', handleAuthSuccess as EventListener);
+    return () => window.removeEventListener('auth-success', handleAuthSuccess as EventListener);
+  }, [toast]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -95,6 +108,12 @@ const Auth = () => {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
+      // Store returnUrl in localStorage for post-redirect handling
+      const returnUrl = location.state?.returnUrl;
+      if (returnUrl) {
+        localStorage.setItem('returnUrl', returnUrl);
+      }
+      
       const { error } = await signInWithGoogle();
       if (error) {
         toast({
@@ -102,15 +121,8 @@ const Auth = () => {
           description: error.message,
           variant: "destructive",
         });
-      } else {
-        toast({
-          title: "Welcome back!",
-          description: "You have successfully signed in with Google.",
-        });
-        // Check for return URL from location state
-        const returnUrl = location.state?.returnUrl || '/';
-        navigate(returnUrl);
       }
+      // Don't show success toast here - it will be shown after redirect in AuthContext
     } catch (error) {
       toast({
         title: "An error occurred",

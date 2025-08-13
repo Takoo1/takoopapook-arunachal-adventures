@@ -35,8 +35,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user ?? null);
         setLoading(false);
         
-        // Handle post-verification redirect
+        // Handle post-verification and OAuth redirect
         if (event === 'SIGNED_IN' && session?.user) {
+          // Show success toast for Google sign-in
+          setTimeout(() => {
+            const toastEvent = new CustomEvent('auth-success', {
+              detail: { message: 'You have successfully signed in with Google.' }
+            });
+            window.dispatchEvent(toastEvent);
+          }, 100);
+          
           const returnUrl = localStorage.getItem('returnUrl');
           if (returnUrl) {
             localStorage.removeItem('returnUrl');

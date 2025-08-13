@@ -196,7 +196,7 @@ const DestinationDetail = () => {
           <div className="mb-12">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">Available Packages</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">Our All Available Packages For {destination.name}</h2>
                 <p className="text-gray-600">Explore curated packages that include this destination</p>
               </div>
               <Badge variant="outline" className="flex items-center space-x-1">
