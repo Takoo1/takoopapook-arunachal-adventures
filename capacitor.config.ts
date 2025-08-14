@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'TakooPapook',
   webDir: 'dist',
   server: {
-    url: 'https://1d3f6d28-35e7-4a1d-b317-c3d3ec5faf81.lovableproject.com?forceHideBadge=true',
+    url: 'https://42d85255-1700-464a-bbcd-919ecf5241eb.lovableproject.com?forceHideBadge=true',
     cleartext: true
   },
   bundledWebRuntime: false
