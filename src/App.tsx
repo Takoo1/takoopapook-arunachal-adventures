@@ -26,37 +26,39 @@ import AdminGuard from "./components/auth/AdminGuard";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/explore" element={<Explore />} />
-            <Route path="/packages" element={<Packages />} />
-            <Route path="/my-tour" element={<MyTour />} />
-            <Route path="/my-tour/package/:id" element={<MyTour />} />
-            <Route path="/my-tour/destination/:id" element={<MyTour />} />
-            <Route path="/booking/:packageId" element={<Booking />} />
-            <Route path="/cancel-booking" element={<CancelBooking />} />
-            <Route path="/services" element={<About />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
-            <Route path="/admin/packages" element={<AdminGuard><PackageManagement /></AdminGuard>} />
-            <Route path="/admin/destinations" element={<AdminGuard><DestinationManagement /></AdminGuard>} />
-            <Route path="/admin/reviews" element={<AdminGuard><ReviewsManagement /></AdminGuard>} />
-            <Route path="/admin/bookings" element={<AdminGuard><BookingsManagement /></AdminGuard>} />
-            <Route path="/founder-profile" element={<FounderProfile />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/explore" element={<Explore />} />
+              <Route path="/packages" element={<Packages />} />
+              <Route path="/my-tour" element={<MyTour />} />
+              <Route path="/my-tour/package/:id" element={<MyTour />} />
+              <Route path="/my-tour/destination/:id" element={<MyTour />} />
+              <Route path="/booking/:packageId" element={<Booking />} />
+              <Route path="/cancel-booking" element={<CancelBooking />} />
+              <Route path="/services" element={<About />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
+              <Route path="/admin/packages" element={<AdminGuard><PackageManagement /></AdminGuard>} />
+              <Route path="/admin/destinations" element={<AdminGuard><DestinationManagement /></AdminGuard>} />
+              <Route path="/admin/reviews" element={<AdminGuard><ReviewsManagement /></AdminGuard>} />
+              <Route path="/admin/bookings" element={<AdminGuard><BookingsManagement /></AdminGuard>} />
+              <Route path="/founder-profile" element={<FounderProfile />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
