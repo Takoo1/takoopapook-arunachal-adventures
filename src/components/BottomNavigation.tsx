@@ -22,7 +22,7 @@ const BottomNavigation = () => {
             <Link
               key={item.name}
               to={item.path}
-              className={`flex flex-col items-center space-y-1 py-3 px-4 rounded-2xl transition-all duration-300 ${
+              className={`flex flex-col items-center space-y-1 py-4 px-6 rounded-2xl transition-all duration-300 min-w-[80px] min-h-[80px] justify-center ${
                 isActive(item.path)
                   ? 'bg-primary text-white shadow-lg'
                   : 'text-muted-foreground hover:text-primary hover:bg-primary/10'

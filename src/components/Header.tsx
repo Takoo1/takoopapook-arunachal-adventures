@@ -59,8 +59,8 @@ const Header = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 ${isNativeApp ? 'bg-transparent' : 'bg-white/95 backdrop-blur-md shadow-lg'}`}>
-      <div className={`container mx-auto container-padding ${isNativeApp ? 'pt-12' : ''}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 ${isNativeApp ? 'bg-transparent pt-8' : 'bg-white/95 backdrop-blur-md shadow-lg'}`}>
+      <div className={`container mx-auto container-padding ${isNativeApp ? 'pt-4' : ''}`}>
         <div className="flex items-center justify-between h-14 sm:h-16 md:h-18">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">

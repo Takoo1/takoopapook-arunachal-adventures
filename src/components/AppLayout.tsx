@@ -15,7 +15,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, className = '' }) => {
   return (
     <div className={`min-h-screen font-sans ${isNativeApp ? 'pb-24' : ''} ${className}`}>
       <Header />
-      <main className={`${isNativeApp ? 'pt-24' : 'pt-16 sm:pt-20'}`}>
+      <main className={`${isNativeApp ? 'pt-32' : 'pt-16 sm:pt-20'}`}>
         {children}
       </main>
       {!isNativeApp && <Footer />}
