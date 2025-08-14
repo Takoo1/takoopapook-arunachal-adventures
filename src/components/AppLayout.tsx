@@ -13,9 +13,9 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, className = '' }) => {
   const isNativeApp = Capacitor.isNativePlatform();
 
   return (
-    <div className={`min-h-screen font-sans ${isNativeApp ? 'pb-20' : ''} ${className}`}>
+    <div className={`min-h-screen font-sans ${isNativeApp ? 'pb-24' : ''} ${className}`}>
       <Header />
-      <main className={`${isNativeApp ? 'pt-20' : 'pt-16 sm:pt-20'}`}>
+      <main className={`${isNativeApp ? 'pt-24' : 'pt-16 sm:pt-20'}`}>
         {children}
       </main>
       {!isNativeApp && <Footer />}

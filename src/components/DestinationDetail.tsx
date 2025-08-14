@@ -196,7 +196,7 @@ const DestinationDetail = () => {
           <div className="mb-8 lg:mb-12">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 lg:mb-8">
               <div>
-                <h2 className="text-xl lg:text-2xl font-bold text-gray-800 mb-2">Available Packages for {destination.name}</h2>
+                <h2 className="text-xl lg:text-2xl font-bold text-gray-800 mb-2">Our All Available Packages For {destination.name}</h2>
                 <p className="text-gray-600 text-sm lg:text-base">Explore curated packages that include this destination</p>
               </div>
               <Badge variant="outline" className="flex items-center space-x-1 self-start sm:self-auto">

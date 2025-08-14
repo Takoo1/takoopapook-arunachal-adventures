@@ -108,7 +108,7 @@ const DestinationCarousel = () => {
               plugins={[
                 Autoplay({
                   delay: 3000,
-                }),
+                }) as any,
               ]}
               opts={{
                 align: "start",

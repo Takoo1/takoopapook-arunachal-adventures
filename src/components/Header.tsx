@@ -60,7 +60,7 @@ const Header = () => {
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 ${isNativeApp ? 'bg-transparent' : 'bg-white/95 backdrop-blur-md shadow-lg'}`}>
-      <div className={`container mx-auto container-padding ${isNativeApp ? 'pt-8' : ''}`}>
+      <div className={`container mx-auto container-padding ${isNativeApp ? 'pt-12' : ''}`}>
         <div className="flex items-center justify-between h-14 sm:h-16 md:h-18">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
@@ -204,7 +204,7 @@ const Header = () => {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={`lg:hidden p-2 rounded-lg transition-colors ${isNativeApp ? 'bg-white/90 backdrop-blur-sm hover:bg-white' : 'hover:bg-gray-100'}`}
+              className={`lg:hidden p-2 rounded-lg transition-colors ${isNativeApp ? 'bg-white/90 backdrop-blur-sm hover:bg-white rounded-full' : 'hover:bg-gray-100'}`}
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -214,7 +214,7 @@ const Header = () => {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="lg:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md shadow-lg border-t max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain">
-            <nav className="flex flex-col p-4 space-y-2 pb-8">
+            <nav className="flex flex-col p-4 space-y-2 pb-12">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
