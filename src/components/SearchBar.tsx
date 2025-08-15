@@ -5,11 +5,12 @@ import { useLocations } from '@/hooks/useLocations';
 import { usePackages } from '@/hooks/usePackages';
 
 const searchSuggestions = [
-  "Search destinations, packages...",
-  "Find your next adventure...",
-  "Discover Arunachal Pradesh...",
+  "Search destinations",
+  "Search packages",
+  "Your next adventure",
+  "Discover Arunachal ",
   "Explore hidden gems...",
-  "Search trekking routes...",
+  "Trekking routes...",
   "Find cultural tours...",
   "Discover monasteries...",
   "Search nature trails..."
