@@ -22,7 +22,7 @@ const Index = () => {
   const shouldHideFounderSection = isNativeApp || isMobile;
 
   return (
-    <AppLayout>
+    <AppLayout className="hero-no-gap">
       <HeroSection />
       
       <PackageCarousel />

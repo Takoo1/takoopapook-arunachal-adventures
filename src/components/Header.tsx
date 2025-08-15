@@ -3,14 +3,17 @@ import { Menu, X, User, MapPin, ChevronDown, LogOut } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 import logo from '@/assets/logo.png';
 import { Capacitor } from '@capacitor/core';
+import SearchBar from '@/components/SearchBar';
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isExploreDropdownOpen, setIsExploreDropdownOpen] = useState(false);
   const [isPackagesDropdownOpen, setIsPackagesDropdownOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const location = useLocation();
+  const isMobile = useIsMobile();
   const {
     user,
     signOut
@@ -19,6 +22,7 @@ const Header = () => {
     toast
   } = useToast();
   const isNativeApp = Capacitor.isNativePlatform();
+  const isHomePage = location.pathname === '/';
   const handleSignOut = async () => {
     const {
       error
@@ -89,6 +93,13 @@ const Header = () => {
               <img src={logo} alt="Logo" className="h-12 w-12 sm:h-20 sm:w-20 object-contain group-hover:scale-105 transition-all duration-300" />
             </div>
           </Link>
+
+          {/* Mobile Search Bar - Only on Home page */}
+          {isMobile && isHomePage && (
+            <div className="flex-1 mx-4">
+              <SearchBar />
+            </div>
+          )}
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">

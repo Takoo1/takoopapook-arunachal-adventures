@@ -33,8 +33,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, className = '' }) => {
     <div className={`min-h-screen font-sans ${useMobileLayout ? 'pb-16' : ''} ${className}`}>
       {showHeader && <Header />}
       <main className={`${isNativeApp ? 'pt-safe-area-top' : ''} ${
-        useMobileLayout && isHomePage ? 'pt-20' : ''
-      }`}>
+        useMobileLayout && isHomePage && !className?.includes('hero-no-gap') ? 'pt-20' : ''
+      } ${className?.includes('hero-no-gap') && useMobileLayout && isHomePage ? 'pt-14' : ''}`}>
         {children}
       </main>
       {useMobileLayout && (
@@ -47,16 +47,28 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, className = '' }) => {
       
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-md">
-          <div className="flex flex-col p-6 space-y-4 mt-20">
-            <h2 className="text-xl font-bold text-center mb-6">Menu</h2>
-            {/* Add menu items here */}
-            <button 
-              onClick={() => setIsMenuOpen(false)}
-              className="self-end p-2 bg-primary/10 rounded-full"
-            >
-              Close
-            </button>
+        <div className="fixed inset-0 z-[200] bg-white/95 backdrop-blur-md overflow-hidden">
+          <div className="h-full flex flex-col">
+            <div className="flex justify-between items-center p-6 border-b border-border/20">
+              <h2 className="text-xl font-bold">Menu</h2>
+              <button 
+                onClick={() => setIsMenuOpen(false)}
+                className="p-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              {/* Menu items will be added here */}
+              <div className="space-y-2">
+                <a href="/" className="block p-3 rounded-lg hover:bg-muted text-lg font-medium">Home</a>
+                <a href="/packages" className="block p-3 rounded-lg hover:bg-muted text-lg font-medium">Packages</a>
+                <a href="/explore" className="block p-3 rounded-lg hover:bg-muted text-lg font-medium">Explore</a>
+                <a href="/my-tour" className="block p-3 rounded-lg hover:bg-muted text-lg font-medium">My Tour</a>
+                <a href="/about" className="block p-3 rounded-lg hover:bg-muted text-lg font-medium">About</a>
+                <a href="/auth" className="block p-3 rounded-lg hover:bg-muted text-lg font-medium">Login</a>
+              </div>
+            </div>
           </div>
         </div>
       )}
