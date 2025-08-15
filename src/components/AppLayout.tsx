@@ -58,7 +58,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({
               </a>
               
               <a href="/packages" onClick={() => setIsMenuOpen(false)} className="flex flex-col items-center p-3 bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl hover:from-primary/20 hover:to-primary/10 transition-all duration-200 active:scale-95">
-                <svg className="h-5 w-5 mb-1.5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-5 w-5 mb-1.5 text-primary">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10" />
                 </svg>
                 <span className="text-xs font-medium">Packages</span>
@@ -66,7 +66,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({
               
               {/* Second Row */}
               <a href="/explore" onClick={() => setIsMenuOpen(false)} className="flex flex-col items-center p-3 bg-gradient-to-r from-accent/10 to-accent/5 rounded-xl hover:from-accent/20 hover:to-accent/10 transition-all duration-200 active:scale-95">
-                <svg className="h-5 w-5 mb-1.5 text-accent-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-5 w-5 mb-1.5 text-muted-foreground">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <span className="text-xs font-medium">Explore</span>
