@@ -4,6 +4,17 @@ import { useNavigate } from 'react-router-dom';
 import { useLocations } from '@/hooks/useLocations';
 import { usePackages } from '@/hooks/usePackages';
 
+const searchSuggestions = [
+  "Search destinations, packages...",
+  "Find your next adventure...",
+  "Discover Arunachal Pradesh...",
+  "Explore hidden gems...",
+  "Search trekking routes...",
+  "Find cultural tours...",
+  "Discover monasteries...",
+  "Search nature trails..."
+];
+
 interface SearchResult {
   id: string;
   title: string;
@@ -22,10 +33,19 @@ const SearchBar: React.FC<SearchBarProps> = ({ onClose }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const { data: locations } = useLocations();
   const { data: packages } = usePackages();
+
+  // Rotate placeholder suggestions
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentPlaceholder(prev => (prev + 1) % searchSuggestions.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (query.length < 2) {
@@ -122,8 +142,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ onClose }) => {
           }}
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
-          placeholder="Search destinations, packages..."
-          className="w-full pl-10 pr-10 py-2.5 rounded-lg border border-border bg-background/90 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-sm"
+          placeholder={searchSuggestions[currentPlaceholder]}
+          className="w-full pl-10 pr-10 py-2.5 rounded-xl border-2 border-primary/20 bg-white/95 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary shadow-sm hover:shadow-md transition-all duration-300 text-sm placeholder:text-muted-foreground/70 placeholder:transition-opacity placeholder:duration-500"
         />
         {query && (
           <button

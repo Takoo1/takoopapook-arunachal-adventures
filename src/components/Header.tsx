@@ -96,7 +96,7 @@ const Header = () => {
 
           {/* Mobile Search Bar - Only on Home page */}
           {isMobile && isHomePage && (
-            <div className="flex-1 mx-4">
+            <div className="flex-1 mx-6">
               <SearchBar />
             </div>
           )}
