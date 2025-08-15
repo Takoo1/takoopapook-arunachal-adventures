@@ -244,8 +244,8 @@ if (!bookingData && !myBookingsLoading) {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid md:grid-cols-2 gap-6">
-                        <div className="aspect-video rounded-lg overflow-hidden">
+                       <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-6">
+                         <div className="aspect-video rounded-lg overflow-hidden">
                           <img
                             src={packageData.image_url}
                             alt={packageData.title}
@@ -293,17 +293,17 @@ if (!bookingData && !myBookingsLoading) {
                     {tourists.map((tourist: any, index: number) => (
                       <div key={tourist.id} className="p-4 border rounded-lg">
                         <h4 className="font-semibold mb-2">Tourist {index + 1}</h4>
-                        <div className="grid md:grid-cols-3 gap-4 text-sm">
-                          <div>
-                            <span className="font-medium">Name:</span> {tourist.name}
-                          </div>
-                          <div>
-                            <span className="font-medium">ID Type:</span> {tourist.idType}
-                          </div>
-                          <div>
-                            <span className="font-medium">ID Number:</span> {tourist.idNumber}
-                          </div>
-                        </div>
+                         <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                           <div>
+                             <span className="font-medium">Name:</span> {tourist.name}
+                           </div>
+                           <div>
+                             <span className="font-medium">ID Type:</span> {tourist.idType}
+                           </div>
+                           <div>
+                             <span className="font-medium">ID Number:</span> {tourist.idNumber}
+                           </div>
+                         </div>
                       </div>
                     ))}
                   </div>

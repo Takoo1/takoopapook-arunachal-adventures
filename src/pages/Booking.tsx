@@ -191,7 +191,7 @@ const Booking = () => {
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Booking Form */}
-          <div className="space-y-6">
+          <div className="space-y-6 order-2 lg:order-1">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -232,9 +232,9 @@ const Booking = () => {
                             />
                           </div>
                           
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <Label htmlFor={`idType-${tourist.id}`}>ID Type *</Label>
+                           <div className="grid sm:grid-cols-2 gap-4">
+                             <div>
+                               <Label htmlFor={`idType-${tourist.id}`}>ID Type *</Label>
                               <Select
                                 value={tourist.idType}
                                 onValueChange={(value) => updateTourist(tourist.id, 'idType', value)}
@@ -319,7 +319,7 @@ const Booking = () => {
           </div>
 
           {/* Package Details & Media */}
-          <div className="space-y-6">
+          <div className="space-y-6 order-1 lg:order-2">
             <Card>
               <CardHeader>
                 <CardTitle>{packageData.title}</CardTitle>
