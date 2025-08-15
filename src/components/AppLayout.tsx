@@ -47,8 +47,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, className = '' }) => {
       
       {/* Mobile Menu Overlay - Compact Bottom Menu */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-[300] bg-black/20 backdrop-blur-sm">
-          <div className="fixed bottom-0 left-0 right-0 bg-white/98 backdrop-blur-md border-t border-border shadow-2xl rounded-t-3xl p-6 pb-20">
+        <div className="fixed inset-0 z-[300] bg-black/40 backdrop-blur-sm">
+          <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-border shadow-2xl rounded-t-3xl p-6 pb-20">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-semibold text-primary">Menu</h2>
               <button 

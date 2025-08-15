@@ -90,35 +90,6 @@ const HeroSection = () => {
         ))}
       </div>
 
-      {/* Navigation Arrows */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md text-white p-2 sm:p-3 rounded-full hover:bg-white/30 transition-all duration-300 group"
-      >
-        <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6 group-hover:-translate-x-1 transition-transform" />
-      </button>
-      
-      <button
-        onClick={nextSlide}
-        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md text-white p-2 sm:p-3 rounded-full hover:bg-white/30 transition-all duration-300 group"
-      >
-        <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6 group-hover:translate-x-1 transition-transform" />
-      </button>
-
-      {/* Slide Indicators */}
-      <div className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 flex space-x-2 sm:space-x-3">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`w-8 sm:w-12 h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
-              index === currentSlide 
-                ? 'bg-white shadow-lg' 
-                : 'bg-white/50 hover:bg-white/70'
-            }`}
-          />
-        ))}
-      </div>
 
       {/* Scroll Indicator */}
       <div className="absolute bottom-4 sm:bottom-8 right-4 sm:right-8 animate-bounce hidden sm:block">
