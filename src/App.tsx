@@ -23,6 +23,7 @@ import DestinationManagement from "./components/admin/DestinationManagement";
 import AdminDashboard from "./pages/AdminDashboard";
 import FounderProfile from "./pages/FounderProfile";
 import CancelBooking from "./pages/CancelBooking";
+import BookingDetail from "./components/BookingDetail";
 import AdminGuard from "./components/auth/AdminGuard";
 
 const queryClient = new QueryClient();
@@ -42,6 +43,7 @@ const App = () => {
               <Route path="/my-tour" element={<MyTour />} />
               <Route path="/my-tour/package/:id" element={<MyTour />} />
               <Route path="/my-tour/destination/:id" element={<MyTour />} />
+              <Route path="/my-tour/booking/:bookingId" element={<BookingDetail />} />
               <Route path="/booking/:packageId" element={<Booking />} />
               <Route path="/cancel-booking" element={<CancelBooking />} />
               <Route path="/services" element={<About />} />

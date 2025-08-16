@@ -152,18 +152,6 @@ const Booking = () => {
 
       const created = await createBooking.mutateAsync(bookingData);
 
-      // Also store in localStorage for immediate display
-      const displayData = {
-        packageId,
-        packageData: packageData,
-        tourists,
-        totalPrice,
-        bookingDate: created?.booking_date || new Date().toISOString(),
-        bookingId: created?.id,
-        bookingStatus: created?.status,
-      };
-      
-      localStorage.setItem('currentBooking', JSON.stringify(displayData));
       toast.success('Booking confirmed! Redirecting to My Tour...');
       navigate('/my-tour');
     } catch (error) {
