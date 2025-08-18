@@ -10,7 +10,8 @@ import {
   Users,
   Settings,
   FileText,
-  BarChart3
+  BarChart3,
+  Images
 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -44,6 +45,13 @@ const AdminDashboard = () => {
       icon: Star,
       link: '/admin/reviews',
       color: 'bg-yellow-500'
+    },
+    {
+      title: 'Slider Management',
+      description: 'Manage home page image slider',
+      icon: Images,
+      link: '/admin/slider',
+      color: 'bg-pink-500'
     },
     {
       title: 'Analytics',

@@ -20,6 +20,7 @@ import ReviewsManagement from "./pages/ReviewsManagement";
 import BookingsManagement from "./components/admin/BookingsManagement";
 import PackageManagement from "./components/admin/PackageManagement";
 import DestinationManagement from "./components/admin/DestinationManagement";
+import SliderManagement from "./components/admin/SliderManagement";
 import AdminDashboard from "./pages/AdminDashboard";
 import FounderProfile from "./pages/FounderProfile";
 import CancelBooking from "./pages/CancelBooking";
@@ -54,6 +55,7 @@ const App = () => {
               <Route path="/admin/destinations" element={<AdminGuard><DestinationManagement /></AdminGuard>} />
               <Route path="/admin/reviews" element={<AdminGuard><ReviewsManagement /></AdminGuard>} />
               <Route path="/admin/bookings" element={<AdminGuard><BookingsManagement /></AdminGuard>} />
+              <Route path="/admin/slider" element={<AdminGuard><SliderManagement /></AdminGuard>} />
               <Route path="/founder-profile" element={<FounderProfile />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

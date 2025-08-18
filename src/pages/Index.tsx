@@ -2,6 +2,7 @@
 import HeroSection from '@/components/HeroSection';
 import PackageCarousel from '@/components/PackageCarousel';
 import DestinationCarousel from '@/components/DestinationCarousel';
+import ImageSlider from '@/components/ImageSlider';
 import AppLayout from '@/components/AppLayout';
 import { useNavigate } from 'react-router-dom';
 import { Star, Eye, Heart, Users } from 'lucide-react';
@@ -91,6 +92,8 @@ const Index = () => {
       <PackageCarousel />
 
       <DestinationCarousel />
+
+      <ImageSlider />
 
       {/* Founder Section - Hidden on mobile/native */}
       {!shouldHideFounderSection && (
