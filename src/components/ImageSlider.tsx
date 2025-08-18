@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import { useActiveSliderImages } from '@/hooks/useSliderImages';
 import { MediaLightbox } from '@/components/ui/MediaLightbox';
@@ -8,12 +8,14 @@ const ImageSlider = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showLightbox, setShowLightbox] = useState(false);
   const [lightboxImage, setLightboxImage] = useState('');
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout>();
 
   if (isLoading) {
     return (
       <section className="mobile-section bg-gradient-to-br from-primary/5 to-accent/10">
         <div className="mobile-container">
-          <div className="text-center mobile-spacing-lg">
+          <div className="text-center mobile-spacing-lg hidden sm:block">
             <h2 className="mobile-heading-xl mb-3 sm:mb-4">Featured Gallery</h2>
             <div className="w-16 sm:w-20 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full" />
           </div>
@@ -40,6 +42,37 @@ const ImageSlider = () => {
       prevIndex === images.length - 1 ? 0 : prevIndex + 1
     );
   };
+
+  // Handle scroll-based navigation
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleScroll = (e: WheelEvent) => {
+      e.preventDefault();
+      
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+
+      scrollTimeoutRef.current = setTimeout(() => {
+        if (e.deltaY > 0) {
+          goToNext();
+        } else {
+          goToPrevious();
+        }
+      }, 100);
+    };
+
+    container.addEventListener('wheel', handleScroll, { passive: false });
+    
+    return () => {
+      container.removeEventListener('wheel', handleScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, [images.length]);
 
   const handleImageClick = (image: typeof images[0]) => {
     if (image.link_url) {
@@ -75,25 +108,25 @@ const ImageSlider = () => {
     <>
       <section className="mobile-section bg-gradient-to-br from-primary/5 to-accent/10">
         <div className="mobile-container">
-          <div className="text-center mobile-spacing-lg">
+          <div className="text-center mobile-spacing-lg hidden sm:block">
             <h2 className="mobile-heading-xl mb-3 sm:mb-4">Featured Gallery</h2>
             <div className="w-16 sm:w-20 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full" />
           </div>
 
-          <div className="relative max-w-6xl mx-auto">
-            {/* Navigation Buttons */}
+          <div ref={containerRef} className="relative max-w-6xl mx-auto">
+            {/* Navigation Buttons - Hidden on mobile */}
             {images.length > 1 && (
               <>
                 <button
                   onClick={goToPrevious}
-                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 bg-background/80 hover:bg-background rounded-full shadow-lg transition-all duration-200 hover:scale-105"
+                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 bg-background/80 hover:bg-background rounded-full shadow-lg transition-all duration-300 hover:scale-105 hidden sm:block"
                   aria-label="Previous image"
                 >
                   <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-foreground" />
                 </button>
                 <button
                   onClick={goToNext}
-                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 bg-background/80 hover:bg-background rounded-full shadow-lg transition-all duration-200 hover:scale-105"
+                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 bg-background/80 hover:bg-background rounded-full shadow-lg transition-all duration-300 hover:scale-105 hidden sm:block"
                   aria-label="Next image"
                 >
                   <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-foreground" />
@@ -102,11 +135,11 @@ const ImageSlider = () => {
             )}
 
             {/* Image Container */}
-            <div className="flex items-center justify-center gap-2 sm:gap-4 px-8 sm:px-16 py-4">
+            <div className="flex items-center justify-center gap-2 sm:gap-4 px-2 sm:px-8 md:px-16 py-4">
               {visibleImages.map((image, index) => (
                 <div
                   key={`${image.id}-${image.position}`}
-                  className={`relative transition-all duration-500 ease-out cursor-pointer group ${
+                  className={`relative transition-all duration-700 ease-out cursor-pointer group transform ${
                     image.position === 'center'
                       ? 'w-48 h-60 sm:w-64 sm:h-80 md:w-80 md:h-96 z-10 scale-105'
                       : 'w-32 h-40 sm:w-40 sm:h-50 md:w-48 md:h-60 opacity-60 scale-95'
@@ -117,14 +150,14 @@ const ImageSlider = () => {
                     <img
                       src={image.image_url}
                       alt="Featured gallery image"
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
                       style={{ aspectRatio: '4/5' }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
                     
                     {/* Link indicator */}
                     {image.position === 'center' && image.link_url && (
-                      <div className="absolute top-3 right-3 p-2 bg-background/90 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="absolute top-3 right-3 p-2 bg-background/90 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500">
                         <ExternalLink className="w-4 h-4 text-primary" />
                       </div>
                     )}
@@ -133,14 +166,14 @@ const ImageSlider = () => {
               ))}
             </div>
 
-            {/* Dots Indicator */}
+            {/* Dots Indicator - Hidden on mobile */}
             {images.length > 1 && (
-              <div className="flex justify-center gap-2 mt-6">
+              <div className="flex justify-center gap-2 mt-6 hidden sm:flex">
                 {images.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentIndex(index)}
-                    className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-200 ${
+                    className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
                       index === currentIndex
                         ? 'bg-primary scale-125'
                         : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
