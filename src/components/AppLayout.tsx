@@ -27,7 +27,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-  return <div className={`min-h-screen font-sans ${useMobileLayout ? 'pb-16' : ''} ${className}`}>
+  return <div className={`min-h-screen font-sans ${useMobileLayout ? 'pb-16 pb-safe-area-bottom' : ''} ${className}`}>
       {showHeader && <Header />}
       <main className={`${isNativeApp ? 'pt-safe-area-top' : ''} ${useMobileLayout && isHomePage && !className?.includes('hero-no-gap') ? 'pt-20' : ''} ${className?.includes('hero-no-gap') && useMobileLayout && isHomePage ? 'pt-14' : ''}`}>
         {children}
@@ -37,7 +37,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({
       
       {/* Mobile Menu Overlay - Compact Bottom Menu */}
       {isMenuOpen && <div className="fixed inset-0 z-[300] bg-black/50 backdrop-blur-sm" onClick={() => setIsMenuOpen(false)}>
-          <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-border shadow-2xl rounded-t-3xl p-4 pb-20" onClick={e => e.stopPropagation()}>
+          <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-border shadow-2xl rounded-t-3xl p-4 pb-safe-area-bottom" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-base font-semibold text-primary">Menu</h2>
               <button onClick={() => setIsMenuOpen(false)} className="p-1.5 bg-muted rounded-full hover:bg-muted/80 transition-colors">

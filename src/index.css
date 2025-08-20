@@ -286,3 +286,12 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--primary));
 }
+
+/* Safe area utilities for native apps */
+.pb-safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.mb-safe-area-bottom {
+  margin-bottom: env(safe-area-inset-bottom);
+}

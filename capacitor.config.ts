@@ -32,6 +32,7 @@ const config: CapacitorConfig = {
     overrideUserAgent: false,
     loggingBehavior: 'none',
     useLegacyBridge: false,
+    hideNavigationBar: false,
   },
   ios: {
     contentInset: 'automatic',
