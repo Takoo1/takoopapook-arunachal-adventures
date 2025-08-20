@@ -7,8 +7,8 @@ const config: CapacitorConfig = {
   bundledWebRuntime: false,
   plugins: {
     StatusBar: {
-      style: 'DARK',
-      backgroundColor: '#000000',
+      style: 'LIGHT',
+      backgroundColor: '#ffffff',
       overlaysWebView: false,
     },
     SplashScreen: {
@@ -28,7 +28,7 @@ const config: CapacitorConfig = {
     captureInput: true,
     webContentsDebuggingEnabled: false,
     appendUserAgent: 'TakooPapook',
-    backgroundColor: '#000000',
+    backgroundColor: '#ffffff',
     overrideUserAgent: false,
     loggingBehavior: 'none',
     useLegacyBridge: false,
