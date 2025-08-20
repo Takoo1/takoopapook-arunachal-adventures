@@ -95,19 +95,17 @@ const Header = () => {
     const whatsappUrl = `https://wa.me/${phoneNumber}`;
     window.open(whatsappUrl, '_blank');
   };
-  return <header className={`fixed top-0 left-0 right-0 z-50 ${isNativeApp ? 'bg-white/95 backdrop-blur-md shadow-lg pt-safe-area-top' : 'bg-white/95 backdrop-blur-md shadow-lg'}`}>
+  return <header className={`fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-lg ${isNativeApp ? 'pt-safe-area-top' : ''}`}>
       <div className={`container mx-auto container-padding ${isNativeApp ? 'pt-4' : ''}`}>
         <div className="flex items-center justify-between h-14 sm:h-16 md:h-18">
           {/* Logo */}
           <button onClick={playAudio} className="flex items-center space-x-2 group">
-            <div className={`${isNativeApp ? 'bg-white/95 backdrop-blur-sm rounded-full p-1' : ''}`}>
-              <img src={logo} alt="Logo" className="h-14 w-14 sm:h-22 sm:w-22 object-contain group-hover:scale-105 transition-all duration-300" />
-            </div>
+            <img src={logo} alt="Logo" className="h-14 w-14 sm:h-22 sm:w-22 object-contain group-hover:scale-105 transition-all duration-300" />
           </button>
 
           {/* Mobile Search Bar - Only on Home page */}
           {isMobile && isHomePage && (
-            <div className={`flex-1 mx-4 ${isNativeApp ? 'bg-white/95 backdrop-blur-sm rounded-lg p-1' : ''}`}>
+            <div className="flex-1 mx-4">
               <SearchBar />
             </div>
           )}
@@ -116,7 +114,7 @@ const Header = () => {
           {isMobile && isHomePage && (
             <button 
               onClick={openWhatsApp}
-              className={`flex items-center justify-center hover:scale-105 transition-transform duration-300 ${isNativeApp ? 'bg-white/95 backdrop-blur-sm rounded-full p-2' : 'bg-transparent'}`}
+              className="flex items-center justify-center hover:scale-105 transition-transform duration-300"
             >
               <img 
                 src="https://mhhfdjtqzcbcixnpnaqp.supabase.co/storage/v1/object/sign/icons/icons8-whatsapp-48.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mNzY4MTEyNS0zZjA1LTQ0YjMtOWMwOS1jOTg2ZTk1NWY0ZmQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJpY29ucy9pY29uczgtd2hhdHNhcHAtNDgucG5nIiwiaWF0IjoxNzU1NTAxNDg0LCJleHAiOjE3ODcwMzc0ODR9.ED6bnO15kt5XnrI8f6LXrPCHknE4MdJ_WSBXV7XpUmE"
@@ -195,7 +193,7 @@ const Header = () => {
             {(isMobile && !isHomePage) && (
               <button 
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className={`p-2 rounded-lg transition-colors ${isNativeApp ? 'bg-white/95 backdrop-blur-sm' : 'hover:bg-gray-100'}`}
+                className="p-2 rounded-lg transition-colors hover:bg-gray-100"
               >
                 {isMenuOpen ? <X className="h-6 w-6 text-gray-700" /> : <Menu className="h-6 w-6 text-gray-700" />}
               </button>
