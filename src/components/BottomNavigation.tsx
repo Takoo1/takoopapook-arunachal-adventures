@@ -24,7 +24,7 @@ const BottomNavigation = ({ isMenuOpen = false, onMenuToggle }: BottomNavigation
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-border shadow-lg pb-safe-area-bottom">
-      <div className="flex items-center justify-around py-2 px-2">
+      <div className="flex items-center justify-around py-1 px-2">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isItemActive = !item.isMenuButton && isActive(item.path);

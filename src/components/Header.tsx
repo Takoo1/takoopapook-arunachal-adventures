@@ -96,8 +96,8 @@ const Header = () => {
     window.open(whatsappUrl, '_blank');
   };
   return <header className={`fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-lg ${isNativeApp ? 'pt-safe-area-top' : ''}`}>
-      <div className={`container mx-auto container-padding ${isNativeApp ? 'pt-4' : ''}`}>
-        <div className="flex items-center justify-between h-14 sm:h-16 md:h-18">
+      <div className={`container mx-auto container-padding ${isNativeApp ? 'pt-1' : ''}`}>
+        <div className="flex items-center justify-between h-12 sm:h-14 md:h-16">
           {/* Logo */}
           <button onClick={playAudio} className="flex items-center space-x-2 group">
             <img src={logo} alt="Logo" className="h-14 w-14 sm:h-22 sm:w-22 object-contain group-hover:scale-105 transition-all duration-300" />
