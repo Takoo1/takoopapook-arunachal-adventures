@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useBackButtonHandler } from '@/hooks/useBackButtonHandler';
 interface AppLayoutProps {
   children: React.ReactNode;
   className?: string;
@@ -19,6 +20,9 @@ const AppLayout: React.FC<AppLayoutProps> = ({
   const isHomePage = location.pathname === '/';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  // Handle native back button
+  useBackButtonHandler();
+
   // Use mobile design for both native apps and mobile browsers
   const useMobileLayout = isNativeApp || isMobile;
 
@@ -27,7 +31,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-  return <div className={`min-h-screen font-sans ${useMobileLayout ? 'pb-16 pb-safe-area-bottom' : ''} ${className}`}>
+  return <div className={`min-h-screen font-sans ${useMobileLayout ? 'pb-24 pb-safe-area-bottom' : ''} ${className}`}>
       {showHeader && <Header />}
       <main className={`${isNativeApp ? 'pt-safe-area-top' : ''} ${useMobileLayout && isHomePage && !className?.includes('hero-no-gap') ? 'pt-20' : ''} ${className?.includes('hero-no-gap') && useMobileLayout && isHomePage ? 'pt-14' : ''}`}>
         {children}
