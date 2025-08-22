@@ -163,7 +163,7 @@ const ImageSlider = () => {
 
   return (
     <>
-      <section className="mobile-section bg-gradient-to-br from-primary/5 to-accent/10">
+      <section className="mobile-section bg-gradient-to-br from-primary/5 to-accent/10 pb-20 sm:pb-8">
         <div className="mobile-container">
           <div className="text-center mobile-spacing-lg hidden sm:block">
             <h2 className="mobile-heading-xl mb-3 sm:mb-4">Featured Gallery</h2>
