@@ -31,9 +31,9 @@ const AppLayout: React.FC<AppLayoutProps> = ({
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-  return <div className={`min-h-screen font-sans ${useMobileLayout ? 'pb-24 pb-safe-area-bottom' : ''} ${className}`}>
+  return <div className={`min-h-screen font-sans ${className}`}>
       {showHeader && <Header />}
-      <main className={`${isNativeApp ? 'pt-safe-area-top' : ''} ${useMobileLayout && isHomePage && !className?.includes('hero-no-gap') ? 'pt-20' : ''} ${className?.includes('hero-no-gap') && useMobileLayout && isHomePage ? 'pt-14' : ''}`}>
+      <main className={`${isNativeApp ? 'pt-safe-area-top' : ''} ${useMobileLayout && isHomePage && !className?.includes('hero-no-gap') ? 'pt-20' : ''} ${className?.includes('hero-no-gap') && useMobileLayout && isHomePage ? 'pt-14' : ''} ${useMobileLayout ? 'pb-20 mb-4' : ''}`}>
         {children}
       </main>
       {useMobileLayout && <BottomNavigation isMenuOpen={isMenuOpen} onMenuToggle={handleMenuToggle} />}
