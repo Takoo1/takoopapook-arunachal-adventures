@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+    PostgrestVersion: "14.1"
   }
   public: {
     Tables: {
@@ -479,14 +479,8 @@ export type Database = {
         Args: { ticket_prices: number[] }
         Returns: number
       }
-      award_referrer_bonus_if_applicable: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      ensure_fc_setup: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      award_referrer_bonus_if_applicable: { Args: never; Returns: boolean }
+      ensure_fc_setup: { Args: never; Returns: undefined }
       redeem_fc_by_rupees: {
         Args: { discount_rupees: number }
         Returns: {
