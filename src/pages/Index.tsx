@@ -9,6 +9,10 @@ import { Star, Eye, Heart, Users } from 'lucide-react';
 import { Capacitor } from '@capacitor/core';
 import { useEffect, useState } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import culturalIcon from '@/assets/categories/cultural-icon.png';
+import natureIcon from '@/assets/categories/nature-icon.png';
+import adventureIcon from '@/assets/categories/adventure-icon.png';
+import pilgrimsIcon from '@/assets/categories/pilgrims-icon.png';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -23,22 +27,10 @@ const Index = () => {
   const shouldHideFounderSection = isNativeApp || isMobile;
 
   const categories = [
-    {
-      name: 'Cultural',
-      icon: 'https://mhhfdjtqzcbcixnpnaqp.supabase.co/storage/v1/object/sign/icons/Cultural-removebg-preview.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mNzY4MTEyNS0zZjA1LTQ0YjMtOWMwOS1jOTg2ZTk1NWY0ZmQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJpY29ucy9DdWx0dXJhbC1yZW1vdmViZy1wcmV2aWV3LnBuZyIsImlhdCI6MTc1NTQ5NzA1MiwiZXhwIjoxNzg3MDMzMDUyfQ.x2sW0enXWjbL4qyFddvGtZmjgzNIoeCsVI_fSQRCX1E'
-    },
-    {
-      name: 'Nature',
-      icon: 'https://mhhfdjtqzcbcixnpnaqp.supabase.co/storage/v1/object/sign/icons/Nature-removebg-preview.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mNzY4MTEyNS0zZjA1LTQ0YjMtOWMwOS1jOTg2ZTk1NWY0ZmQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJpY29ucy9OYXR1cmUtcmVtb3ZlYmctcHJldmlldy5wbmciLCJpYXQiOjE3NTU0OTcwNzcsImV4cCI6MTc4NzAzMzA3N30.tvXg_RCWJSnbz20V9AnosdTViTX1GGlCJaWwAQIqSMk'
-    },
-    {
-      name: 'Adventure',
-      icon: 'https://mhhfdjtqzcbcixnpnaqp.supabase.co/storage/v1/object/sign/icons/Adventure-removebg-preview.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mNzY4MTEyNS0zZjA1LTQ0YjMtOWMwOS1jOTg2ZTk1NWY0ZmQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJpY29ucy9BZHZlbnR1cmUtcmVtb3ZlYmctcHJldmlldy5wbmciLCJpYXQiOjE3NTU0OTcxMDAsImV4cCI6MTc4NzAzMzEwMH0.FJpHSMOGn2DhMeaoN1qLIXod-fQFzfGv1Cg99kPn6Lc'
-    },
-    {
-      name: 'Pilgrims',
-      icon: 'https://mhhfdjtqzcbcixnpnaqp.supabase.co/storage/v1/object/sign/icons/Pilgrim-removebg-preview.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mNzY4MTEyNS0zZjA1LTQ0YjMtOWMwOS1jOTg2ZTk1NWY0ZmQiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJpY29ucy9QaWxncmltLXJlbW92ZWJnLXByZXZpZXcucG5nIiwiaWF0IjoxNzU1NDk3MTI2LCJleHAiOjE3ODcwMzMxMjZ9.tLiuPpZeA8CcGdpt7hyHLcJDfHTGlp-C7VXGC9-TTyM'
-    }
+    { name: 'Cultural', icon: culturalIcon },
+    { name: 'Nature', icon: natureIcon },
+    { name: 'Adventure', icon: adventureIcon },
+    { name: 'Pilgrims', icon: pilgrimsIcon },
   ];
 
   const handleCategoryClick = (category: string) => {
