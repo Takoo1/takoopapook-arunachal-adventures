@@ -481,6 +481,7 @@ export type Database = {
       }
       award_referrer_bonus_if_applicable: { Args: never; Returns: boolean }
       ensure_fc_setup: { Args: never; Returns: undefined }
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
       redeem_fc_by_rupees: {
         Args: { discount_rupees: number }
         Returns: {
