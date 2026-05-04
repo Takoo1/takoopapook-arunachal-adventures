@@ -1,0 +1,1 @@
+ALTER TABLE public.locations ENABLE ROW LEVEL SECURITY;
