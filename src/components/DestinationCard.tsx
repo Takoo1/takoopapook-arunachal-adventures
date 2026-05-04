@@ -100,7 +100,7 @@ const DestinationCard = ({ location, onClick }: DestinationCardProps) => {
 
       {/* Card Content */}
       <div className="mobile-card-content flex-1 flex flex-col pb-12 sm:pb-10">
-        <h3 className="mobile-heading-md mb-2 line-clamp-1 font-bold text-foreground bg-blue-500/10 px-3 py-1.5 rounded-lg group-hover:bg-gradient-to-r group-hover:from-primary group-hover:to-accent group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 drop-shadow-sm">
+        <h3 className="font-display text-base sm:text-lg font-semibold mb-2 line-clamp-1 text-foreground px-3 py-1.5 rounded-lg bg-primary/5 group-hover:bg-primary/10 group-hover:text-primary transition-all duration-300">
           {location.name}
         </h3>
         
