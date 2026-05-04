@@ -23,45 +23,43 @@ const BottomNavigation = ({ isMenuOpen = false, onMenuToggle }: BottomNavigation
 
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-border shadow-lg pb-safe-area-bottom">
-      <div className="flex items-center justify-around py-1 px-2">
+    <div className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-border/60 shadow-elegant pb-safe-area-bottom">
+      <div className="flex items-center justify-around py-1.5 px-2">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isItemActive = !item.isMenuButton && isActive(item.path);
-          
+
           if (item.isMenuButton) {
             return (
               <button
                 key={item.name}
                 onClick={onMenuToggle}
-                className="flex flex-col items-center space-y-1 p-2 rounded-lg transition-all duration-300 text-muted-foreground hover:text-primary"
+                className="flex flex-col items-center space-y-1 p-1.5 rounded-xl transition-all duration-300 text-muted-foreground hover:text-primary"
               >
-                <div className="p-2 bg-primary/10 rounded-lg transition-all duration-300 hover:bg-primary/20">
-                  <Icon className="h-5 w-5 transition-transform" />
+                <div className="p-2 rounded-xl bg-gradient-sunset text-white shadow-warm transition-transform duration-300 hover:scale-110">
+                  <Icon className="h-5 w-5" />
                 </div>
-                <span className="text-xs font-medium">{item.name}</span>
+                <span className="text-[10px] font-semibold tracking-wide">{item.name}</span>
               </button>
             );
           }
-          
+
           return (
             <Link
               key={item.name}
               to={item.path}
-              className={`flex flex-col items-center space-y-1 p-2 rounded-lg transition-all duration-300 ${
-                isItemActive
-                  ? 'text-primary'
-                  : 'text-muted-foreground hover:text-primary'
+              className={`flex flex-col items-center space-y-1 p-1.5 rounded-xl transition-all duration-300 ${
+                isItemActive ? 'text-primary' : 'text-muted-foreground hover:text-primary'
               }`}
             >
-              <div className={`p-2 rounded-lg transition-all duration-300 ${
+              <div className={`p-2 rounded-xl transition-all duration-300 ${
                 isItemActive
-                  ? 'bg-primary text-white'
-                  : 'bg-muted hover:bg-primary/10'
+                  ? 'bg-gradient-primary text-white shadow-glow scale-110'
+                  : 'bg-muted/60 hover:bg-primary/10'
               }`}>
-                <Icon className={`h-5 w-5 ${isItemActive ? 'scale-110' : ''} transition-transform`} />
+                <Icon className="h-5 w-5 transition-transform" />
               </div>
-              <span className="text-xs font-medium">{item.name}</span>
+              <span className={`text-[10px] tracking-wide ${isItemActive ? 'font-bold' : 'font-medium'}`}>{item.name}</span>
             </Link>
           );
         })}
