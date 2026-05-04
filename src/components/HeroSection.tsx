@@ -46,42 +46,62 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative h-[35vh] sm:h-[50vh] lg:h-[75vh] overflow-hidden">
+    <section className="relative h-[55vh] sm:h-[65vh] lg:h-[85vh] overflow-hidden">
       {/* Slides */}
       <div className="relative h-full">
         {slides.map((slide, index) => (
           <div
             key={index}
-            className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
-              index === currentSlide 
-                ? 'opacity-100 scale-100' 
-                : 'opacity-0 scale-105'
+            className={`absolute inset-0 transition-all duration-[1400ms] ease-out ${
+              index === currentSlide
+                ? 'opacity-100 scale-100'
+                : 'opacity-0 scale-110'
             }`}
           >
-            <div 
+            <div
               className="absolute inset-0 bg-cover bg-center bg-no-repeat"
               style={{ backgroundImage: `url(${slide.image})` }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent" />
-            
+            {/* Cinematic gradient overlay */}
+            <div className="absolute inset-0" style={{ background: 'var(--gradient-hero-overlay)' }} />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent" />
+
             {/* Content */}
-            <div className="relative h-full flex items-center">
-              <div className="container mx-auto container-padding">
+            <div className="relative h-full flex items-end pb-16 sm:pb-24 lg:items-center lg:pb-0">
+              <div className="container mx-auto px-5 sm:px-8">
                 <div className="max-w-xl lg:max-w-2xl">
                   <div className={`transform transition-all duration-1000 delay-300 ${
-                    index === currentSlide 
-                      ? 'translate-y-0 opacity-100' 
-                      : 'translate-y-8 opacity-0'
+                    index === currentSlide
+                      ? 'translate-y-0 opacity-100'
+                      : 'translate-y-10 opacity-0'
                   }`}>
-                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-3 sm:mb-4 leading-tight">
+                    <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass-dark text-white/90 text-xs sm:text-sm font-medium mb-4 tracking-wide uppercase">
+                      <Compass className="h-3.5 w-3.5" />
+                      Arunachal Pradesh
+                    </span>
+                    <h1 className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 leading-[1.05] tracking-tight drop-shadow-2xl">
                       {slide.title}
                     </h1>
-                    <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-emerald-200 mb-4 sm:mb-6 font-light">
+                    <p className="text-base sm:text-xl lg:text-2xl text-white/90 mb-6 font-light italic">
                       {slide.subtitle}
                     </p>
-                    <p className="text-sm sm:text-base lg:text-lg text-gray-200 mb-6 sm:mb-8 leading-relaxed hidden md:block">
+                    <p className="text-sm sm:text-base lg:text-lg text-white/75 mb-8 leading-relaxed hidden md:block max-w-xl">
                       {slide.description}
                     </p>
+                    <div className="flex flex-wrap gap-3">
+                      <button
+                        onClick={() => navigate('/explore')}
+                        className="mobile-btn-sunset text-sm sm:text-base"
+                      >
+                        Start Exploring
+                      </button>
+                      <button
+                        onClick={() => navigate('/packages')}
+                        className="px-6 py-3 rounded-full glass-dark text-white font-semibold text-sm sm:text-base hover:bg-white/15 transition-all duration-300"
+                      >
+                        View Packages
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -90,8 +110,21 @@ const HeroSection = () => {
         ))}
       </div>
 
+      {/* Slide indicators */}
+      <div className="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentSlide(i)}
+            aria-label={`Go to slide ${i + 1}`}
+            className={`h-1.5 rounded-full transition-all duration-500 ${
+              i === currentSlide ? 'w-8 bg-white' : 'w-2 bg-white/50 hover:bg-white/80'
+            }`}
+          />
+        ))}
+      </div>
 
-      {/* Scroll Indicator */}
+      {/* Scroll indicator */}
       <div className="absolute bottom-4 sm:bottom-8 right-4 sm:right-8 animate-bounce hidden sm:block">
         <div className="w-5 h-8 sm:w-6 sm:h-10 border-2 border-white/50 rounded-full flex justify-center">
           <div className="w-1 h-2 sm:h-3 bg-white/70 rounded-full mt-1.5 sm:mt-2 animate-pulse"></div>

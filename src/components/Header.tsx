@@ -95,7 +95,7 @@ const Header = () => {
     const whatsappUrl = `https://wa.me/${phoneNumber}`;
     window.open(whatsappUrl, '_blank');
   };
-  return <header className={`fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-lg ${isNativeApp ? 'pt-safe-area-top' : ''}`}>
+  return <header className={`fixed top-0 left-0 right-0 z-50 glass shadow-soft ${isNativeApp ? 'pt-safe-area-top' : ''}`}>
       <div className={`container mx-auto container-padding ${isNativeApp ? 'pt-1' : ''}`}>
         <div className="flex items-center justify-between h-12 sm:h-14 md:h-16">
           {/* Logo */}

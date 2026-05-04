@@ -46,29 +46,42 @@ const Index = () => {
       <HeroSection />
       
       {/* Categories Section */}
-      <section className="mobile-section bg-gradient-to-br from-primary/5 to-accent/10">
-        <div className="mobile-container">
-          <div className="text-center mobile-spacing-lg hidden md:block">
-            <h2 className="mobile-heading-xl mb-3 sm:mb-4">
-              Explore Categories
+      <section className="mobile-section relative overflow-hidden bg-gradient-soft">
+        {/* Decorative blobs */}
+        <div className="absolute -top-20 -left-20 w-72 h-72 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 -right-20 w-72 h-72 rounded-full bg-accent/10 blur-3xl pointer-events-none" />
+
+        <div className="mobile-container relative">
+          <div className="text-center mb-6 sm:mb-10">
+            <span className="inline-block text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase text-primary mb-2">
+              Discover
+            </span>
+            <h2 className="mobile-heading-xl mb-3">
+              Explore <span className="text-gradient-sunset italic">Categories</span>
             </h2>
-            <div className="w-16 sm:w-20 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full" />
+            <div className="divider-ornate">
+              <span className="text-primary text-lg">✦</span>
+            </div>
           </div>
-          
+
           {/* Categories Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-4xl mx-auto">
-            {categories.map((category) => (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5 max-w-4xl mx-auto">
+            {categories.map((category, idx) => (
               <button
                 key={category.name}
                 onClick={() => handleCategoryClick(category.name)}
-                className="group relative bg-card hover:bg-accent/50 rounded-2xl p-2 sm:p-3 transition-all duration-300 hover:scale-105 hover:shadow-lg border border-border/50 hover:border-primary/30"
+                style={{ animationDelay: `${idx * 80}ms` }}
+                className="group relative bg-card rounded-2xl p-4 sm:p-5 border border-border/60 shadow-soft hover:shadow-elegant hover:-translate-y-1.5 transition-all duration-500 animate-fade-in overflow-hidden"
               >
-                <div className="flex flex-col items-center space-y-2">
-                  <div className="flex items-center justify-center">
-                    <img 
-                      src={category.icon} 
+                {/* Hover gradient sweep */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-primary/10 via-transparent to-accent/10" />
+
+                <div className="relative flex flex-col items-center space-y-2.5">
+                  <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-soft group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                    <img
+                      src={category.icon}
                       alt={`${category.name} icon`}
-                      className="w-12 h-12 sm:w-16 sm:h-16 object-contain"
+                      className="w-12 h-12 sm:w-14 sm:h-14 object-contain drop-shadow-sm"
                     />
                   </div>
                   <span className="text-sm sm:text-base font-semibold text-foreground group-hover:text-primary transition-colors">
