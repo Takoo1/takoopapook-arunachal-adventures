@@ -389,7 +389,11 @@ const DestinationDetail = () => {
               <p className="text-gray-600 mb-6">
                 Don't see what you're looking for? Build a personalized package tailored to your preferences.
               </p>
-              <Button size="lg" className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-3">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-3"
+                onClick={() => navigate(`/custom-package/${destination.id}`)}
+              >
                 <Plus className="mr-2 h-5 w-5" />
                 Build My Package
               </Button>
